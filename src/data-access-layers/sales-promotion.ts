@@ -1,0 +1,148 @@
+'use server'
+import { Laundry, Pressing, Material } from '@/models'
+import { getSupabaseClient } from '@/utils/auth'
+
+async function getLaundry(): Promise<Laundry> {
+  const supabase = await getSupabaseClient()
+
+  // Récupération du laundry sans jointure
+  const laundryResult = await supabase
+    .from('laundry')
+    .select('*')
+    .neq('status', 'sold')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (laundryResult.error) {
+    throw laundryResult.error
+  }
+
+  // Récupération des images séparément
+  const picturesResult = await supabase
+    .from('laundry_picture')
+    .select('id, data_url')
+    .eq('laundry_id', laundryResult.data.id)
+    .limit(1)
+    .single()
+
+  if (picturesResult.error) {
+    throw picturesResult.error
+  }
+
+  return {
+    ...laundryResult.data,
+    pictures: picturesResult.data ? [picturesResult.data] : []
+  }
+}
+
+async function getMaterial(): Promise<Material | null> {
+  const supabase = await getSupabaseClient()
+
+  // Récupération du laundry sans jointure
+  const materialResult = await supabase
+    .from('materials')
+    .select('*')
+    .neq('status', 'sold')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  
+  if (materialResult.error) {
+    throw materialResult.error
+  } else if (!materialResult.data) {
+    return null
+  }
+  // Récupération des images séparément
+  const pictureResult = await supabase
+    .from('material_pictures')
+    .select('id, name')
+    .eq('material_id', materialResult.data.id)
+    .limit(1)
+    .single()
+
+  
+  if (pictureResult.error) {
+    throw pictureResult.error
+  } else if (!pictureResult.data) {
+    return materialResult.data
+  }
+
+
+  const { data } = await supabase
+    .storage
+    .from('images')
+    .createSignedUrl(`materials/${materialResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
+
+  return {
+    ...materialResult.data,
+    pictures: [{
+      id: pictureResult.data.id,
+      uuid: pictureResult.data.id,
+      name: pictureResult.data.name,
+      data_url: data?.signedUrl || ''
+    }]
+  }
+}
+
+async function getPressing(): Promise<Pressing | null> {
+  const supabase = await getSupabaseClient()
+
+  // Récupération du laundry sans jointure
+  const pressingResult = await supabase
+    .from('pressings')
+    .select('*')
+    .neq('status', 'sold')
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (pressingResult.error) {
+    throw pressingResult.error
+  } else if (!pressingResult.data) {
+    return null
+  }
+
+  // Récupération des images séparément
+  const pictureResult = await supabase
+    .from('pressing_pictures')
+    .select('id, name')
+    .eq('pressing_id', pressingResult.data.id)
+    .single()
+
+  if (pictureResult.error) {
+    throw pictureResult.error
+  } else if (!pictureResult.data) {
+    return pressingResult.data
+  }
+  const { data } = await supabase
+    .storage
+    .from('images')
+    .createSignedUrl(`pressings/${pressingResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
+  return {
+    ...pressingResult.data,
+    pictures: [{
+      id: pictureResult.data.id,
+      uuid: pictureResult.data.id,
+      name: pictureResult.data.name,
+      data_url: data?.signedUrl || ''
+    }]
+
+  }
+}
+
+export async function getSales(): Promise<{ laundry: Laundry, pressing: Pressing, material: Material }> {
+  const supabase = await getSupabaseClient()
+
+  const laundry = await getLaundry()
+  const pressing = await getPressing()
+  const material = await getMaterial()
+  //const { data: pressing } = await getPressing()
+  //const { data: material } = await getMaterial()
+
+  return {
+    laundry,
+    pressing,
+    material
+  }
+}

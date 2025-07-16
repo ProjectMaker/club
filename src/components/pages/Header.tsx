@@ -1,0 +1,320 @@
+'use client'
+
+import { useState, useEffect, useRef, useActionState, useTransition } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase-client'
+import { logout } from '@/actions/auth-logout'
+
+function Logout() {
+  const [state, formAction] = useActionState(logout, null as any);
+  const [isTransitioning, startTransition] = useTransition();
+  
+  const handleLogout = () => {
+    startTransition(async () => {
+      // Ajouter une classe de chargement au body
+      document.body.style.overflow = 'hidden';
+      const loadingDiv = document.createElement('div');
+      loadingDiv.id = 'logout-loading';
+      loadingDiv.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom right, #1e3a8a, #1e40af, #3730a3);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+      loadingDiv.innerHTML = `
+        <div style="color: white; text-align: center;">
+          <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+          <div>Déconnexion en cours...</div>
+        </div>
+        <style>
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+      `;
+      document.body.appendChild(loadingDiv);
+      
+      // Afficher progressivement
+      setTimeout(() => {
+        loadingDiv.style.opacity = '1';
+      }, 10);
+      
+      formAction(null);
+    });
+  };
+  
+  return (
+    <button
+      onClick={handleLogout}
+      className="w-full cursor-pointer text-left flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 text-white/90 hover:text-red-400 hover:bg-white/10 hover:scale-[1.02]"
+      disabled={isTransitioning}
+    >
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+      </svg>
+      <span>{isTransitioning ? 'Déconnexion...' : 'Déconnexion'}</span>
+    </button>
+  )
+
+}
+export default function Header() {
+  const pathname = usePathname()
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [supabase] = useState(() => createClient())
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+
+    getUser()
+
+    // Écouter les changements d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email)
+      setUser(session?.user ?? null)
+      
+      // Fermer le dropdown lors de la déconnexion
+      if (event === 'SIGNED_OUT') {
+        setIsDropdownOpen(false)
+      }
+      
+      // Si c'est un sign in et qu'on est sur une page publique, rafraîchir
+      if (event === 'SIGNED_IN' && (pathname === '/' || pathname === '/login')) {
+        router.refresh()
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      // Nettoyer le loading div si il existe
+      const loadingDiv = document.getElementById('logout-loading');
+      if (loadingDiv) {
+        loadingDiv.remove();
+        document.body.style.overflow = '';
+      }
+    }
+  }, [supabase, pathname, router])
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    setIsDropdownOpen(true)
+  }
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsDropdownOpen(false)
+    }, 150)
+  }
+
+
+
+  return (
+    <header className="w-full bg-gradient-to-r from-blue-900/95 via-blue-800/95 to-indigo-900/95 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo/Titre */}
+
+
+          {/* Navigation */}
+          <nav className="hidden md:flex space-x-6">
+            <a
+              href="/"
+              className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname === '/'
+                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+            >
+              Accueil
+            </a>
+            {user && (
+              <a
+                href="/laundries"
+                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/laundries') === 0
+                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+              >
+                Laveries
+              </a>
+            )}
+            {user && (
+              <a
+                href="/pressings"
+                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/pressings') === 0
+                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+              >
+                Pressings
+              </a>
+            )}
+            {user && (
+              <a
+                href="/materials"
+                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/materials') === 0
+                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+              >
+                Matériel
+              </a>
+            )}
+
+            {/* Mon espace - Dropdown */}
+            {user && (
+              <div
+                className="relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className={`px-3 py-2 rounded-lg transition-all duration-200 flex items-center space-x-1 ${pathname.indexOf('/profile') === 0 || pathname.indexOf('/admin') === 0
+                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                    }`}
+                >
+                  <span>Mon espace</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute top-full left-0 w-48 
+                                bg-gradient-to-br from-slate-800/95 via-blue-900/95 to-indigo-900/95 
+                                backdrop-blur-lg rounded-xl shadow-2xl shadow-black/40 
+                                border border-white/10 py-3
+                                transform transition-all duration-200 ease-out scale-100 opacity-100 translate-y-0
+                                before:content-[''] before:absolute before:-top-2 before:left-6 
+                                before:w-0 before:h-0 before:border-l-8 before:border-r-8 before:border-b-8
+                                before:border-l-transparent before:border-r-transparent before:border-b-slate-800/95">
+                    <a
+                      href="/profile/materials"
+                      className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/materials') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>Matériel</span>
+                    </a>
+                    <a
+                      href="/profile/laundries"
+                      className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M7 12h10" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M7 16h10" />
+                      </svg>
+                      <span>Laveries</span>
+                    </a>
+                    <a
+                      href="/profile/pressings"
+                      className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/pressings') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                      </svg>
+                      <span>Pressings</span>
+                    </a>
+                    <a
+                      href="/admin"
+                      className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                      <span>Administration</span>
+                    </a>
+                    <a
+                      href="/profile"
+                      className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === '/profile'
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Infos</span>
+                    </a>
+                    <div className="border-t border-white/10 mx-2 my-2" />
+                    <Logout />
+                  </div>
+                )}
+              </div>
+            )}
+          </nav>
+
+          {/* Menu mobile */}
+          <div className="md:hidden">
+            <button className="text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
