@@ -3,12 +3,12 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/lib/supabase-server'
+import { createAuthClient } from '@/lib/supabase-server'
 
 export async function login(state: { error?: string; data?: any } | null, formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   })
@@ -17,16 +17,26 @@ export async function login(state: { error?: string; data?: any } | null, formDa
     return { error: error.message }
   }
 
+  // Petite attente pour s'assurer que les cookies sont synchronisés
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  // Vérifier que l'utilisateur est bien connecté avant de rediriger
+  const { data: { user: verifiedUser } } = await supabase.auth.getUser()
+
+  if (!verifiedUser) {
+    return { error: 'Erreur de synchronisation de session' }
+  }
+
   // Forcer la revalidation de toutes les pages et du layout
   revalidatePath('/', 'layout')
   revalidatePath('/private/laundries', 'page')
 
-  // Rediriger après succès
+  // Rediriger directement vers la page privée
   redirect('/private/laundries')
 }
 
 export async function signup(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs

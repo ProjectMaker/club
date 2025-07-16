@@ -23,17 +23,14 @@ export function isNodeJS(): boolean {
 
 // Gestion automatique des instances Supabase
 export async function getSupabaseClient() {
-  console.log('******************************')
-  console.log(isClient())
-  console.log('******************************')
   if (isClient()) {
     // Côté client : utiliser l'import dynamique pour éviter les erreurs SSR
     const { createClient: createBrowserClient } = await import('@/lib/supabase-client')
     return createBrowserClient()
   } else {
-    // Côté serveur : utiliser l'instance serveur
-    const { createClient: createServerClient } = await import('@/lib/supabase-server')
-    return await createServerClient()
+    // Côté serveur : utiliser l'instance d'authentification pour lire les cookies de session
+    const { createAuthClient } = await import('@/lib/supabase-server')
+    return await createAuthClient()
   }
 }
 

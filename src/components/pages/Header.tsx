@@ -1,17 +1,17 @@
 'use client'
 
-import { useState, useEffect, useRef, useActionState, useTransition } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useState, useRef, useActionState, useTransition, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
-import { createClient } from '@/lib/supabase-client'
 import { logout } from '@/actions/auth-logout'
+import { useAuth } from '@/contexts/AuthContext'
 
 // Composant de loading overlay
 const LogoutLoadingOverlay = () => {
   const overlayContent = (
-    <div 
+    <div
       className="fixed top-0 left-0 w-screen h-screen bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 flex items-center justify-center"
-      style={{ 
+      style={{
         position: 'fixed',
         top: 0,
         left: 0,
@@ -28,7 +28,7 @@ const LogoutLoadingOverlay = () => {
   );
 
   // Utiliser un portal pour rendre au niveau du body
-  return typeof window !== 'undefined' 
+  return typeof window !== 'undefined'
     ? createPortal(overlayContent, document.body)
     : null;
 }
@@ -36,36 +36,20 @@ const LogoutLoadingOverlay = () => {
 function Logout() {
   const [state, formAction] = useActionState(logout, null as any);
   const [isTransitioning, startTransition] = useTransition();
-  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
 
   const handleLogout = () => {
-    // Afficher immédiatement le loader
-    setShowLoadingOverlay(true);
-    // Empêcher le scroll
-    document.body.style.overflow = 'hidden';
-
-    
-      startTransition(() => {
-        formAction(null);
-      });
-    
+    startTransition(() => {
+      formAction(null);
+    });
   };
-
-  // Nettoyer quand le composant est démonté
-  useEffect(() => {
-    return () => {
-      document.body.style.overflow = '';
-      setShowLoadingOverlay(false);
-    };
-  }, []);
 
   return (
     <>
-      {showLoadingOverlay && <LogoutLoadingOverlay />}
+      {isTransitioning && <LogoutLoadingOverlay />}
       <button
         onClick={handleLogout}
         className="w-full cursor-pointer text-left flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 text-white/90 hover:text-red-400 hover:bg-white/10 hover:scale-[1.02]"
-        disabled={showLoadingOverlay}
+        disabled={isTransitioning}
       >
         <svg
           className="w-4 h-4"
@@ -81,54 +65,16 @@ function Logout() {
             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
           />
         </svg>
-        <span>{showLoadingOverlay ? 'Déconnexion...' : 'Déconnexion'}</span>
+        <span>{isTransitioning ? 'Déconnexion...' : 'Déconnexion'}</span>
       </button>
     </>
   )
 }
 export default function Header() {
   const pathname = usePathname()
-  const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const { user } = useAuth()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [supabase] = useState(() => createClient())
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-    }
-
-    getUser()
-
-    // Écouter les changements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email)
-      setUser(session?.user ?? null)
-
-      // Fermer le dropdown lors de la déconnexion
-      if (event === 'SIGNED_OUT') {
-        setIsDropdownOpen(false)
-        // S'assurer qu'on est redirigé vers login après déconnexion
-        if (pathname.startsWith('/private')) {
-          router.push('/')
-        }
-      }
-
-      // Si c'est un sign in et qu'on est sur une page publique, rafraîchir
-      if (event === 'SIGNED_IN' && (pathname === '/' || pathname === '/login')) {
-        router.refresh()
-      }
-    })
-
-    return () => {
-      subscription.unsubscribe()
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [supabase, pathname, router])
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {
@@ -150,6 +96,13 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Titre */}
+          <div className="flex-shrink-0">
+            <h1 className="text-xl font-bold text-white">
+              <a href="/" className="hover:text-blue-200 transition-colors">
+                ClubManager
+              </a>
+            </h1>
+          </div>
 
 
           {/* Navigation */}
