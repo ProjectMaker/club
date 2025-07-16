@@ -20,7 +20,6 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
   const [supabase] = useState(() => createClient())
   const pathname = usePathname()
   const router = useRouter()
@@ -30,7 +29,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const { data: { user }, error } = await supabase.auth.getUser()
       setUser(user)
       setLoading(false)
-      setInitialLoadComplete(true)
     }
 
     getUser()
@@ -39,7 +37,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null)
       setLoading(false)
-      setInitialLoadComplete(true)
 
       // Gestion des redirections
       if (event === 'SIGNED_OUT') {
@@ -62,24 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, [supabase, pathname, router])
 
-  // Protection des pages privées avec double vérification
-  useEffect(() => {
-    if (initialLoadComplete && !loading && !user && pathname.startsWith('/private')) {
-      const timeoutId = setTimeout(() => {
-        // Double vérification après délai
-        supabase.auth.getUser().then(({ data: { user: reVerifiedUser } }) => {
-          if (!reVerifiedUser) {
-            router.push('/login')
-          } else {
-            setUser(reVerifiedUser)
-          }
-        })
-      }, 1000) // Délai pour synchronisation avec le serveur
-
-      return () => clearTimeout(timeoutId)
-    }
-  }, [user, loading, pathname, router, initialLoadComplete, supabase])
-
+  
   const value = {
     user,
     loading,
