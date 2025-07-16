@@ -2,10 +2,10 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/lib/supabase-server'
+import { createAuthClient } from '@/lib/supabase-server'
 
 export async function logout(state: { error?: string; data?: any }, params: any) {
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
   
   try {
     // S'assurer que la déconnexion est complète avec le scope 'global'
