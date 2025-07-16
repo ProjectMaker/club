@@ -8,26 +8,25 @@ export async function logout(state: { error?: string; data?: any }, params: any)
   const supabase = await createClient()
   
   try {
-    // S'assurer que la déconnexion est complète
-    const { error } = await supabase.auth.signOut()
+    // S'assurer que la déconnexion est complète avec le scope 'global'
+    const { error } = await supabase.auth.signOut({ scope: 'global' })
     
     if (error) {
       console.error('Erreur lors de la déconnexion:', error)
       return { error: error.message }
     }
     
-    // Invalider agressivement le cache
+    // Invalider agressivement le cache pour forcer le refresh
     revalidatePath('/', 'layout')
-    revalidatePath('/', 'page')
     revalidatePath('/private/laundries', 'page')
     
-    // Attendre un peu plus pour s'assurer de la synchronisation
-    await new Promise(resolve => setTimeout(resolve, 200))
+    // Attendre plus longtemps pour s'assurer de la synchronisation complète
+    await new Promise(resolve => setTimeout(resolve, 500))
     
   } catch (error) {
     console.error('Erreur inattendue lors de la déconnexion:', error)
     return { error: 'Une erreur inattendue s\'est produite' }
   }
   
-  redirect('/')
+  redirect('/login')
 }

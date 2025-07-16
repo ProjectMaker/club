@@ -2,80 +2,89 @@
 
 import { useState, useEffect, useRef, useActionState, useTransition } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import { createPortal } from 'react-dom'
 import { createClient } from '@/lib/supabase-client'
 import { logout } from '@/actions/auth-logout'
+
+// Composant de loading overlay
+const LogoutLoadingOverlay = () => {
+  const overlayContent = (
+    <div 
+      className="fixed top-0 left-0 w-screen h-screen bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 flex items-center justify-center"
+      style={{ 
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 999999
+      }}
+    >
+      <div className="text-white text-center">
+        <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+        <div className="text-lg font-medium">Déconnexion en cours...</div>
+      </div>
+    </div>
+  );
+
+  // Utiliser un portal pour rendre au niveau du body
+  return typeof window !== 'undefined' 
+    ? createPortal(overlayContent, document.body)
+    : null;
+}
 
 function Logout() {
   const [state, formAction] = useActionState(logout, null as any);
   const [isTransitioning, startTransition] = useTransition();
-  
-  const handleLogout = () => {
-    startTransition(async () => {
-      // Ajouter une classe de chargement au body
-      document.body.style.overflow = 'hidden';
-      const loadingDiv = document.createElement('div');
-      loadingDiv.id = 'logout-loading';
-      loadingDiv.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom right, #1e3a8a, #1e40af, #3730a3);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      `;
-      loadingDiv.innerHTML = `
-        <div style="color: white; text-align: center;">
-          <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
-          <div>Déconnexion en cours...</div>
-        </div>
-        <style>
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        </style>
-      `;
-      document.body.appendChild(loadingDiv);
-      
-      // Afficher progressivement
-      setTimeout(() => {
-        loadingDiv.style.opacity = '1';
-      }, 10);
-      
-      formAction(null);
-    });
-  };
-  
-  return (
-    <button
-      onClick={handleLogout}
-      className="w-full cursor-pointer text-left flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 text-white/90 hover:text-red-400 hover:bg-white/10 hover:scale-[1.02]"
-      disabled={isTransitioning}
-    >
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-        />
-      </svg>
-      <span>{isTransitioning ? 'Déconnexion...' : 'Déconnexion'}</span>
-    </button>
-  )
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
 
+  const handleLogout = () => {
+    // Afficher immédiatement le loader
+    setShowLoadingOverlay(true);
+    // Empêcher le scroll
+    document.body.style.overflow = 'hidden';
+
+    
+      startTransition(() => {
+        formAction(null);
+      });
+    
+  };
+
+  // Nettoyer quand le composant est démonté
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+      setShowLoadingOverlay(false);
+    };
+  }, []);
+
+  return (
+    <>
+      {showLoadingOverlay && <LogoutLoadingOverlay />}
+      <button
+        onClick={handleLogout}
+        className="w-full cursor-pointer text-left flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 text-white/90 hover:text-red-400 hover:bg-white/10 hover:scale-[1.02]"
+        disabled={showLoadingOverlay}
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
+        </svg>
+        <span>{showLoadingOverlay ? 'Déconnexion...' : 'Déconnexion'}</span>
+      </button>
+    </>
+  )
 }
 export default function Header() {
   const pathname = usePathname()
@@ -97,12 +106,16 @@ export default function Header() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.email)
       setUser(session?.user ?? null)
-      
+
       // Fermer le dropdown lors de la déconnexion
       if (event === 'SIGNED_OUT') {
         setIsDropdownOpen(false)
+        // S'assurer qu'on est redirigé vers login après déconnexion
+        if (pathname.startsWith('/private')) {
+          router.push('/')
+        }
       }
-      
+
       // Si c'est un sign in et qu'on est sur une page publique, rafraîchir
       if (event === 'SIGNED_IN' && (pathname === '/' || pathname === '/login')) {
         router.refresh()
@@ -113,12 +126,6 @@ export default function Header() {
       subscription.unsubscribe()
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
-      }
-      // Nettoyer le loading div si il existe
-      const loadingDiv = document.getElementById('logout-loading');
-      if (loadingDiv) {
-        loadingDiv.remove();
-        document.body.style.overflow = '';
       }
     }
   }, [supabase, pathname, router])
@@ -150,8 +157,8 @@ export default function Header() {
             <a
               href="/"
               className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname === '/'
-                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                  : 'text-white/80 hover:text-white hover:bg-white/10'
+                ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
             >
               Accueil
@@ -160,8 +167,8 @@ export default function Header() {
               <a
                 href="/laundries"
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/laundries') === 0
-                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
               >
                 Laveries
@@ -171,8 +178,8 @@ export default function Header() {
               <a
                 href="/pressings"
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/pressings') === 0
-                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
               >
                 Pressings
@@ -182,8 +189,8 @@ export default function Header() {
               <a
                 href="/materials"
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/materials') === 0
-                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
               >
                 Matériel
@@ -200,8 +207,8 @@ export default function Header() {
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className={`px-3 py-2 rounded-lg transition-all duration-200 flex items-center space-x-1 ${pathname.indexOf('/profile') === 0 || pathname.indexOf('/admin') === 0
-                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                    ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
                     }`}
                 >
                   <span>Mon espace</span>
@@ -228,8 +235,8 @@ export default function Header() {
                     <a
                       href="/profile/materials"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/materials') === 0
-                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -242,8 +249,8 @@ export default function Header() {
                     <a
                       href="/profile/laundries"
                       className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
-                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,8 +268,8 @@ export default function Header() {
                     <a
                       href="/profile/pressings"
                       className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/pressings') === 0
-                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -274,8 +281,8 @@ export default function Header() {
                     <a
                       href="/admin"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
-                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,8 +294,8 @@ export default function Header() {
                     <a
                       href="/profile"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === '/profile'
-                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
