@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
 import { createClient } from '@/lib/supabase-server'
 
@@ -17,9 +18,6 @@ export async function login(state: { error?: string; data?: any } | null, formDa
     return { error: error.message }
   }
 
-  // Petite attente pour s'assurer que les cookies sont synchronisés
-  await new Promise(resolve => setTimeout(resolve, 100))
-
   // Vérifier que l'utilisateur est bien connecté avant de rediriger
   const { data: { user: verifiedUser } } = await supabase.auth.getUser()
 
@@ -29,9 +27,10 @@ export async function login(state: { error?: string; data?: any } | null, formDa
 
   // Forcer la revalidation de toutes les pages et du layout
   revalidatePath('/', 'layout')
+  revalidatePath('/private', 'layout')
   revalidatePath('/private/laundries', 'page')
 
-  // Rediriger directement vers la page privée
+  // Rediriger directement vers la page privée puisque l'utilisateur est connecté
   redirect('/private/laundries')
 }
 

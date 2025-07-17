@@ -49,7 +49,7 @@ function Logout() {
       {isTransitioning && <LogoutLoadingOverlay />}
       <button
         onClick={handleLogout}
-        className="w-full cursor-pointer text-left flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 text-white/90 hover:text-red-400 hover:bg-white/10 hover:scale-[1.02]"
+        className="w-full cursor-pointer text-left flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 text-white/90 hover:text-red-400 hover:bg-white/10"
         disabled={isTransitioning}
       >
         <svg
@@ -74,6 +74,7 @@ function Logout() {
 export default function Header() {
   const pathname = usePathname()
   const { user } = useAuth()
+  console.log(user)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -190,7 +191,7 @@ export default function Header() {
                       href="/profile/materials"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/materials') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +205,7 @@ export default function Header() {
                       href="/profile/laundries"
                       className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,7 +224,7 @@ export default function Header() {
                       href="/profile/pressings"
                       className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/pressings') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,7 +237,7 @@ export default function Header() {
                       href="/admin"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,7 +250,7 @@ export default function Header() {
                       href="/profile"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === '/profile'
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10 hover:scale-[1.02]'
+                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
                         }`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

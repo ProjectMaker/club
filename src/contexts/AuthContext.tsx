@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode, useMemo, useRef } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-client'
 import { User } from '@supabase/supabase-js'
@@ -20,47 +20,70 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   
-  // Initialiser supabase une seule fois
   const pathname = usePathname()
   const router = useRouter()
   
-  // Stabiliser router avec useRef
-  // Effet pour l'initialisation de l'auth (une seule fois)
+  // Fonction pour synchroniser l'état d'authentification
+  const syncAuthState = async () => {
+    const supabase = createClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    setUser(user)
+    setLoading(false)
+  }
+
+  // Effet pour l'initialisation de l'auth
   useEffect(() => {
     const supabase = createClient()
-    const getUser = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser()
-      setUser(user)
-      setLoading(false)
-    }
-
-    getUser()
+    
+    // Synchronisation initiale
+    syncAuthState()
 
     // Écouter les changements d'authentification
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, session?.user?.email)
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
+    // Resynchroniser quand la fenêtre reprend le focus (au cas où l'auth aurait changé côté serveur)
+    const handleFocus = () => {
+      syncAuthState()
+    }
+
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        syncAuthState()
+      }
+    })
+
     return () => {
       subscription.unsubscribe()
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          syncAuthState()
+        }
+      })
     }
-  }, []) // Seulement supabase comme dépendance
+  }, [])
 
-  // Effet séparé pour la gestion des redirections
+  useEffect(() => {
+    if (pathname === '/' || pathname.startsWith('/private')) {
+      // Resynchroniser l'état quand on arrive sur une page qui pourrait nécessiter une mise à jour de l'auth
+      syncAuthState()
+    }
+  }, [pathname])
+
   useEffect(() => {
     if (loading) return // Attendre que l'auth soit initialisée
 
     if (!user && pathname.startsWith('/private')) {
       router.push('/login')
+      return
     }
+  }, [user, loading, pathname, router])
 
-    if (user && pathname === '/login') {
-      router.push('/')
-    }
-  }, [user, loading, pathname]) // Enlever router des dépendances
-
-  // Refs pour tracker les changements de dépendances
   return (
     <AuthContext.Provider value={{user, loading}}>
       {children}
