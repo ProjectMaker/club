@@ -1,5 +1,6 @@
 'use client'
 
+import Link from "next/link";
 import { useState, useRef, useActionState, useTransition, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
@@ -107,7 +108,7 @@ export default function Header() {
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <a
+            <Link
               href="/"
               className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname === '/'
                 ? 'text-white bg-blue-500/50 backdrop-blur-sm'
@@ -115,9 +116,9 @@ export default function Header() {
                 }`}
             >
               Accueil
-            </a>
+            </Link>
             {user && (
-              <a
+              <Link
                 href="/private/laundries"
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/private/laundries') === 0
                   ? 'text-white bg-blue-500/50 backdrop-blur-sm'
@@ -125,10 +126,10 @@ export default function Header() {
                   }`}
               >
                 Laveries
-              </a>
+              </Link>
             )}
             {user && (
-              <a
+              <Link
                 href="/pressings"
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/pressings') === 0
                   ? 'text-white bg-blue-500/50 backdrop-blur-sm'
@@ -136,10 +137,10 @@ export default function Header() {
                   }`}
               >
                 Pressings
-              </a>
+              </Link>
             )}
             {user && (
-              <a
+              <Link
                 href="/materials"
                 className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/materials') === 0
                   ? 'text-white bg-blue-500/50 backdrop-blur-sm'
@@ -147,7 +148,7 @@ export default function Header() {
                   }`}
               >
                 Matériel
-              </a>
+              </Link>
             )}
 
             {/* Mon espace - Dropdown */}
@@ -185,7 +186,7 @@ export default function Header() {
                                 before:content-[''] before:absolute before:-top-2 before:left-6 
                                 before:w-0 before:h-0 before:border-l-8 before:border-r-8 before:border-b-8
                                 before:border-l-transparent before:border-r-transparent before:border-b-slate-800/95">
-                    <a
+                    <Link
                       href="/profile/materials"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/materials') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
@@ -198,8 +199,8 @@ export default function Header() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       <span>Matériel</span>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="/profile/laundries"
                       className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
@@ -217,8 +218,8 @@ export default function Header() {
                           d="M7 16h10" />
                       </svg>
                       <span>Laveries</span>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="/profile/pressings"
                       className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/pressings') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
@@ -230,8 +231,8 @@ export default function Header() {
                           d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
                       </svg>
                       <span>Pressings</span>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="/admin"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
@@ -243,8 +244,8 @@ export default function Header() {
                           d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                       <span>Administration</span>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="/profile"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === '/profile'
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
@@ -256,7 +257,7 @@ export default function Header() {
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>Infos</span>
-                    </a>
+                    </Link>
                     <div className="border-t border-white/10 mx-2 my-2" />
                     <Logout />
                   </div>

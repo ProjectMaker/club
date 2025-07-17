@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import Sales from "./_Sales";
+import SalesLoading from "./_SalesLoading";
 import { createClient } from "@/lib/supabase-server";
 
 import LoginForm from "@/components/pages/LoginForm";
@@ -23,7 +25,9 @@ export default async function Home() {
             
           </div>
       
-      <Sales />
+      <Suspense fallback={<SalesLoading />}>
+        <Sales />
+      </Suspense>
     </div>
   )
 }
