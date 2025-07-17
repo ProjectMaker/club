@@ -2,6 +2,19 @@
 
 import { checkIsAdmin, getSupabaseClient } from '@/utils/auth'
 
+export async function getFirstPicture(laundryId: number) {
+    const supabase = await getSupabaseClient()
+    const picturesRecords = await supabase.from('laundry_picture')
+        .select()
+        .eq('laundry_id', laundryId)
+        .limit(1)
+    if (picturesRecords.error) {
+        throw picturesRecords.error
+    }
+    return picturesRecords.data[0]
+}
+
+
 export async function getLaundries({ from = 1, to = 4 }: { from: number, to: number }) {
     const supabase = await getSupabaseClient()
 

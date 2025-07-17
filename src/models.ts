@@ -26,7 +26,7 @@ export interface Laundry {
     surface: number;
     rent: number;
     price: number;
-    materials: string[];
+    materials: { name: string }[]
     created_at: string;
     status: 'available' | 'sold' | 'pending';
     updated_at: string;
@@ -44,7 +44,7 @@ export interface Pressing {
     surface: number;
     rent: number;
     price: number;
-    materials: string[];
+    materials: { name: string }[]
     created_at: string;
     status: 'available' | 'sold' | 'pending';
     updated_at: string;

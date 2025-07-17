@@ -3,11 +3,12 @@ import { Laundry } from "@/models";
 import Loader from "@/components/ui/Loader";
 
 import useList from './use-list'
+import Card from './_Card'
 
+console.log(Card)
 export default function List() {
     const { data, isLoading, isFetching, error, fetchNextPage, shouldFetchNextPage } = useList()
 
-    if (isLoading) return <div>Loading...</div>
     if (error) return (
         <div className="container mx-auto px-4 py-8">
             <div className="bg-red-500 text-white p-4 rounded-lg">
@@ -19,9 +20,8 @@ export default function List() {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            <h1>List</h1>
             {data?.pages?.flatMap(laundries => laundries.map((laundry) => (
-                <h1 key={laundry.id}>{laundry.name}</h1>
+                <Card key={laundry.id} laundry={laundry} />
             )))}
             {isFetching ? (
                 <Loader />

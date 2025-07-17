@@ -1,6 +1,6 @@
 'use client'
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getLaundries } from "@/data-access-layers/laundries-list"
+import { getLaundries } from "@/data-access-layers/laundries"
 
 const PAGE_SIZE = 6
 
