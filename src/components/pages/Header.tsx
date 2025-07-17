@@ -118,8 +118,8 @@ export default function Header() {
             </a>
             {user && (
               <a
-                href="/laundries"
-                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/laundries') === 0
+                href="/private/laundries"
+                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/private/laundries') === 0
                   ? 'text-white bg-blue-500/50 backdrop-blur-sm'
                   : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}

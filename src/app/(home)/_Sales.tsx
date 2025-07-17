@@ -29,7 +29,7 @@ function Product({ product }: { product: ProductProps }) {
           product.pictures.length > 0 && (
             <img
               src={product.pictures[0].data_url}
-              alt={product.name || ''}
+              alt={product.name}
               width={400}
               height={200}
               className="w-full h-48 object-cover hover:scale-110 transition-transform duration-500"
@@ -59,9 +59,6 @@ function Product({ product }: { product: ProductProps }) {
 
 export default async function Sales() {
   const { laundry, pressing, material } = await getSales()
-  console.log('******************************')
-  console.log(material)
-  console.log('******************************')
   return (
     <section id="annonces" className="py-16 px-4">
       <div className="max-w-7xl mx-auto">
@@ -70,7 +67,9 @@ export default async function Sales() {
         </h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <Product product={{ ...laundry, href: "/private/laundries", type: "Laverie" }} />
-          <Product product={{ ...pressing, href: "/private/pressing", type: "Pressing" }} />
+          {pressing && (
+            <Product product={{ ...pressing, href: "/private/pressing", type: "Pressing" }} />
+          )}
           {
             material && (
               <Product product={{ id: material.id, name: MATERIAL_CATEGORIES.find(category => category.name === material.category)?.label || '', pictures: material.pictures, href: "/private/materials", type: "Matériel" }} />
