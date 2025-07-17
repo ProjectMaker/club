@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useQuery } from "@tanstack/react-query";
 import { getFirstPicture } from "@/data-access-layers/laundries";
 import { Laundry } from "@/models";
@@ -32,7 +32,6 @@ function LaundryPicture({ laundry }: { laundry: Laundry }) {
 }
 
 export default function Card({ laundry }: { laundry: Laundry }) {
-  const router = useRouter();
   console.log(laundry)
   return (
 
@@ -97,19 +96,18 @@ export default function Card({ laundry }: { laundry: Laundry }) {
                   {
                     material.name
                   }
-{typeof material === 'object' && material !== null && 'name' in material ? (material as { name: string }).name : material}
                 </span>
               ))}
             </div>
           </div>
         )}
       </div>
-      <button
-        onClick={() => router.push(`/laundries/${laundry.id}`)}
-        className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors"
+      <Link
+        href={`/private/laundries/${laundry.id}`}
+        className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors text-center block"
       >
         Voir les détails
-      </button>
+      </Link>
     </div>
   )
 }

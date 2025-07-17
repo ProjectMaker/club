@@ -19,19 +19,21 @@ export default function List() {
     )
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-            {data?.pages?.flatMap(laundries => laundries.map((laundry) => (
-                <Card key={laundry.id} laundry={laundry} />
-            )))}
+        <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                {data?.pages?.flatMap(laundries => laundries.map((laundry) => (
+                    <Card key={laundry.id} laundry={laundry} />
+                )))}
+            </div>
             {isFetching ? (
                 <Loader />
             ) : shouldFetchNextPage && (
                 <div className="flex justify-center mt-6">
-                    <button onClick={() => fetchNextPage()} className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                    <button onClick={() => fetchNextPage()} className="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-semibold transition-colors">
                         Charger plus de laveries
                     </button>
                 </div>
             )}
-        </div>
+        </>
     )
 }
