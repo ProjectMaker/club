@@ -5,7 +5,6 @@ import Loader from "@/components/ui/Loader";
 import useList from './use-list'
 import Card from './_Card'
 
-console.log(Card)
 export default function List() {
     const { data, isLoading, isFetching, error, fetchNextPage, shouldFetchNextPage } = useList()
 

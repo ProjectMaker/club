@@ -32,7 +32,6 @@ function LaundryPicture({ laundry }: { laundry: Laundry }) {
 }
 
 export default function Card({ laundry }: { laundry: Laundry }) {
-  console.log(laundry)
   return (
 
 

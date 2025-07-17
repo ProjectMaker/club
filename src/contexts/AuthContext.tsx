@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode, useMemo, useRef } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-client'
 import { User } from '@supabase/supabase-js'
@@ -8,7 +8,6 @@ import { User } from '@supabase/supabase-js'
 interface AuthContextType {
   user: User | null
   loading: boolean
-  supabase: ReturnType<typeof createClient>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -20,11 +19,15 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const [supabase] = useState(() => createClient())
+  
+  // Initialiser supabase une seule fois
   const pathname = usePathname()
   const router = useRouter()
-
+  
+  // Stabiliser router avec useRef
+  // Effet pour l'initialisation de l'auth (une seule fois)
   useEffect(() => {
+    const supabase = createClient()
     const getUser = async () => {
       const { data: { user }, error } = await supabase.auth.getUser()
       setUser(user)
@@ -37,37 +40,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null)
       setLoading(false)
-
-      // Gestion des redirections
-      if (event === 'SIGNED_OUT') {
-        // Rediriger vers la page de connexion si on est sur une page privée
-        if (pathname.startsWith('/private')) {
-          router.push('/login')
-        }
-      }
-
-      if (event === 'SIGNED_IN') {
-        // Si connecté et sur page de connexion, rediriger vers l'accueil
-        if (pathname === '/login') {
-          router.push('/')
-        }
-      }
     })
 
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase, pathname, router])
+  }, []) // Seulement supabase comme dépendance
 
-  
-  const value = {
-    user,
-    loading,
-    supabase
-  }
+  // Effet séparé pour la gestion des redirections
+  useEffect(() => {
+    if (loading) return // Attendre que l'auth soit initialisée
 
+    if (!user && pathname.startsWith('/private')) {
+      router.push('/login')
+    }
+
+    if (user && pathname === '/login') {
+      router.push('/')
+    }
+  }, [user, loading, pathname]) // Enlever router des dépendances
+
+  // Refs pour tracker les changements de dépendances
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{user, loading}}>
       {children}
     </AuthContext.Provider>
   )

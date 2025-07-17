@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext'
 import AuthLoader from '@/components/ui/AuthLoader'
-import Header from '@/components/pages/Header'
+import Header from '@/components/pages/_Header'
 import { ReactNode } from 'react'
 
 interface AuthWrapperProps {
@@ -15,7 +15,7 @@ const AuthWrapper = ({ children }: AuthWrapperProps) => {
   if (loading) {
     return <AuthLoader />
   }
-
+  
   return (
     <>
       <Header />

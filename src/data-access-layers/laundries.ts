@@ -33,7 +33,7 @@ export async function getLaundries({ from = 1, to = 4 }: { from: number, to: num
         .order('updated_at', { ascending: false })
         .order('created_at', { ascending: false })
     const records = await query
-    console.log(records)
+    
     if (!records.error) {
         return records.data
     } else {

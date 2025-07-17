@@ -111,7 +111,7 @@ async function getPressing(): Promise<Pressing | null> {
       .select('id, name')
       .eq('pressing_id', pressingResult.data.id)
       .single()
-    console.log(pictureResult)
+    
     if (pictureResult.error) {
       console.warn('Erreur RLS ou absence d\'image pour pressing:', pictureResult.error)
       // Retourner le pressing sans image si erreur RLS
@@ -124,7 +124,7 @@ async function getPressing(): Promise<Pressing | null> {
       .storage
       .from('images')
       .createSignedUrl(`pressings/${pressingResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
-    console.log(data)
+    
     return {
       ...pressingResult.data,
       pictures: [{
