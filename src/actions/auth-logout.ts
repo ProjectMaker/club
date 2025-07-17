@@ -16,9 +16,9 @@ export async function logout(state: { error?: string; data?: any }, params: any)
       return { error: error.message }
     }
     
-    // Invalider agressivement le cache pour forcer le refresh
-    revalidatePath('/', 'layout')
-    revalidatePath('/private/laundries', 'page')
+    // Revalidation optimisée pour la déconnexion
+    revalidatePath('/', 'layout')           // Revalide le layout racine et toutes ses pages enfants
+    revalidatePath('/private', 'layout')    // Revalide toutes les routes privées en une fois
     
     // Attendre plus longtemps pour s'assurer de la synchronisation complète
     await new Promise(resolve => setTimeout(resolve, 500))
@@ -28,5 +28,5 @@ export async function logout(state: { error?: string; data?: any }, params: any)
     return { error: 'Une erreur inattendue s\'est produite' }
   }
   
-  redirect('/login')
+  redirect('/')
 }

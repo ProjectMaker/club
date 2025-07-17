@@ -19,11 +19,6 @@ export default async function Home() {
                     Découvrez les meilleures opportunités d'investissement dans les laveries automatiques.
                     Des emplacements premium, des rendements attractifs.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                        Parcourir les annonces
-                    </button>
-                </div>
             </div>
             {!user && (
                 <div className="flex justify-center lg:justify-end">

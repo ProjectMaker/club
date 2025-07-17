@@ -17,7 +17,6 @@ function Product({ product }: { product: ProductProps }) {
     return null
   }
 
-
   return (
     <div
       key={product.id}
