@@ -29,8 +29,8 @@ export async function getSupabaseClient() {
     return createBrowserClient()
   } else {
     // Côté serveur : utiliser l'instance d'authentification pour lire les cookies de session
-    const { createAuthClient } = await import('@/lib/supabase-server')
-    return await createAuthClient()
+    const { createClient: createServerClient } = await import('@/lib/supabase-server')
+    return await createServerClient()
   }
 }
 

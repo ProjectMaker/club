@@ -1,10 +1,10 @@
 import Sales from "./_Sales";
-import { createAuthClient } from "@/lib/supabase-server";
+import { createClient } from "@/lib/supabase-server";
 
 import LoginForm from "@/components/pages/LoginForm";
 
 export default async function Home() {
-  const supabase = await createAuthClient()
+  const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   
   return ( 
