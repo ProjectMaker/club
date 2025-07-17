@@ -131,15 +131,13 @@ async function getPressing(): Promise<Pressing | null> {
   }
 }
 
-export async function getSales(): Promise<{ laundry: Laundry, pressing: Pressing, material: Material }> {
+export async function getSales(): Promise<{ laundry: Laundry, pressing: Pressing | null, material: Material | null }> {
   const supabase = await getSupabaseClient()
 
   const laundry = await getLaundry()
   const pressing = await getPressing()
   const material = await getMaterial()
-  //const { data: pressing } = await getPressing()
-  //const { data: material } = await getMaterial()
-
+  
   return {
     laundry,
     pressing,
