@@ -5,7 +5,6 @@ import { useState, useRef, useActionState, useTransition, useEffect } from 'reac
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { logout } from '@/actions/auth-logout'
-import { useAuth } from '@/contexts/AuthContext'
 
 // Composant de loading overlay
 const LogoutLoadingOverlay = () => {
@@ -71,10 +70,8 @@ function Logout() {
     </>
   )
 }
-export default function Header() {
+export default function Header({ user }: { user: User }) {
   const pathname = usePathname()
-  const { user } = useAuth()
-  console.log(user)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
