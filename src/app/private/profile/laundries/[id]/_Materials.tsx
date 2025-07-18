@@ -115,11 +115,11 @@ export default function LaundryMaterials() {
                             type="button"
                             onClick={() => {
                                 if (!materials.includes(suggestion)) {
-                                    setValue('materials', [...materials, suggestion]);
+                                    setValue('materials', [...materials, {name: suggestion}]);
                                 }
                             }}
                             disabled={materials.includes(suggestion)}
-                            className="px-3 py-2 text-sm bg-white/10 text-white/80 rounded-md hover:bg-white/20 transition-colors disabled:bg-white/5 disabled:text-white/30 disabled:cursor-not-allowed"
+                            className="cursor-pointer px-3 py-2 text-sm bg-white/10 text-white/80 rounded-md hover:bg-white/20 transition-colors disabled:bg-white/5 disabled:text-white/30 disabled:cursor-not-allowed"
                         >
                             {suggestion}
                         </button>

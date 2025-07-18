@@ -73,7 +73,9 @@ export default function LaundryForm({ defaultValues }: Props) {
             const newPictures = picturesToDelete.concat(picturesToCreate);
             
             const laundryData = {...data, pictures: newPictures};
+            console.log('111',laundryData)
             startTransition(() => {
+              console.log('222',laundryData)
                 formAction(laundryData);
             });
             

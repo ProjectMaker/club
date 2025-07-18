@@ -1,28 +1,52 @@
 'use server'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase-server'
+import { Picture } from '@/models'
 
-export async function createLaundry(prevState: any, formData: FormData) {
+// Type pour les pictures avec les propriétés de traitement côté client
+interface PictureWithProcessing extends Partial<Picture> {
+  uuid?: string;
+  _deleted?: boolean;
+  data_url?: string;
+}
+
+async function processPictures(laundryId: number, pictures: PictureWithProcessing[]): Promise<void> {
   const supabase = await createClient()
-  
-  try {
-    // Extraire les données du FormData
-    const data = JSON.parse(formData.get('data') as string)
-    console.log('Données reçues:', data)
 
-    // Ici vous pouvez ajouter la logique pour sauvegarder en base de données
-    
-    return { 
-      success: true, 
-      data: data,
-      error: null 
-    }
-  } catch (error) {
-    console.error('Erreur lors de la création de la laverie:', error)
-    return { 
-      success: false, 
-      data: null,
-      error: 'Erreur lors de la sauvegarde' 
-    }
+  const picturesToRemove = pictures.filter(({ uuid, _deleted }: PictureWithProcessing) => uuid && _deleted)
+  if (picturesToRemove.length) {
+    await supabase
+      .from('laundry_picture')
+      .delete()
+      .in('id', picturesToRemove.map(({ id }: PictureWithProcessing) => id))
   }
+  const picturesToAdd = pictures.filter(({ uuid, _deleted }: PictureWithProcessing) => !uuid && !_deleted)
+  await Promise.all(
+    picturesToAdd.map(async ({ data_url, ...picture }: PictureWithProcessing) => {
+      await supabase.from('laundry_picture')
+        .upsert({ laundry_id: laundryId, data_url })
+    })
+  )
+}
+
+export async function createLaundry(prevState: any, { pictures, ...laundry }: { pictures: PictureWithProcessing[], [key: string]: any }) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('laundry')
+    .upsert({
+      ...laundry,
+      updated_at: new Date()
+    })
+    .select()
+    .single()
+  if (error) {
+    return { success: false, error: error.message }
+  }
+  await processPictures(data.id, pictures)
+
+  revalidatePath('/private/profile/laundries', 'page')
+  // Traitement des images
+  redirect('/private/profile/laundries')
 }
