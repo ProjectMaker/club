@@ -5,7 +5,7 @@ import "./globals.css";
 import {createClient } from '@/lib/supabase-server'
 import { QueryProvider } from "@/contexts/QueryContext";
 import Header from "@/components/pages/Header";
-
+import { getUser } from "@/utils/auth";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,8 +26,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
+  
   return (
     <html lang="en">
       <body

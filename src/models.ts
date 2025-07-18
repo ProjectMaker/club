@@ -7,6 +7,7 @@ export interface User {
     laundries_number: number;
     laundries_owner: boolean;
     created_at: string;
+    is_admin: boolean
 }
 
 export interface Picture {

@@ -5,6 +5,7 @@ import { useState, useRef, useActionState, useTransition, useEffect } from 'reac
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
 import { logout } from '@/actions/auth-logout'
+import { User } from "@/models";
 
 // Composant de loading overlay
 const LogoutLoadingOverlay = () => {
@@ -70,7 +71,7 @@ function Logout() {
     </>
   )
 }
-export default function Header({ user }: { user: User }) {
+export default function Header({ user }: { user: User | null }) {
   const pathname = usePathname()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -198,51 +199,57 @@ export default function Header({ user }: { user: User }) {
                       </svg>
                       <span>Matériel</span>
                     </Link>
-                    <Link
-                      href="/profile/laundries"
-                      className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
-                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
-                        }`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M7 12h10" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M7 16h10" />
-                      </svg>
-                      <span>Laveries</span>
-                    </Link>
-                    <Link
-                      href="/profile/pressings"
-                      className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/pressings') === 0
-                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
-                        }`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-                      </svg>
-                      <span>Pressings</span>
-                    </Link>
-                    <Link
-                      href="/admin"
-                      className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
-                        ? 'text-blue-300 bg-blue-500/30 shadow-sm'
-                        : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
-                        }`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
-                      <span>Administration</span>
-                    </Link>
+                    {user?.is_admin && (
+                      <Link
+                        href="/profile/laundries"
+                        className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
+                          }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M7 12h10" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M7 16h10" />
+                        </svg>
+                        <span>Laveries</span>
+                      </Link>
+                    )}
+                    {user?.is_admin && (
+                      <Link
+                        href="/profile/pressings"
+                        className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/pressings') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
+                          }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                        </svg>
+                        <span>Pressings</span>
+                      </Link>
+                    )}
+                    {user?.is_admin && (
+                      <Link
+                        href="/admin"
+                        className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
+                          ? 'text-blue-300 bg-blue-500/30 shadow-sm'
+                          : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
+                          }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        <span>Administration</span>
+                      </Link>
+                    )}
                     <Link
                       href="/profile"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === '/profile'

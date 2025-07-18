@@ -1,3 +1,4 @@
+import { User } from '@/models';
 import { jwtDecode, JwtPayload } from 'jwt-decode'
 
 interface CustomJwtPayload extends JwtPayload {
@@ -62,6 +63,13 @@ export async function isAuthenticated(): Promise<boolean> {
     console.error('Erreur lors de la vérification de l\'authentification:', error)
     return false
   }
+}
+
+export async function getUser(): Promise<User | null> {
+  const supabase = await getSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isAdmin = await checkIsAdmin()
+  return {...user, is_admin: isAdmin} as User
 }
 
 // Fonction pour récupérer le rôle utilisateur depuis le token
