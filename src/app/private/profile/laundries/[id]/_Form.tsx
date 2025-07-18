@@ -1,26 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useActionState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
+
 import LaundryInfos from './_Infos';
 import LaundryMaterials from './_Materials';
 import LaundryPictures from './_Pictures';
+import { createLaundry } from '@/actions/laundry-create';
 
 const schema = yup.object().shape({
     name: yup.string().required('Le nom est requis'),
-    address: yup.string(),
     postal_code: yup.string().required('Le code postal est requis'),
     city: yup.string().required('La ville est requise'),
     description: yup.string().required('La description est requise'),
     surface: yup.number().required('La surface est requise').min(1, 'La surface doit être supérieure à 0'),
     rent: yup.number().required('Le loyer est requis').min(0, 'Le loyer doit être supérieur ou égal à 0'),
     price: yup.number().required('Le prix est requis').min(0, 'Le prix doit être supérieur ou égal à 0'),
-    materials: yup.array().of(yup.string()),
+    materials: yup.array().of(
+        yup.object({
+            name: yup.string().required('Le nom du matériel est requis')
+        })
+    ),
     status: yup.string().required('Le statut est requis'),
     pictures: yup.array().min(1, 'Au moins une photo est requise')
 });
@@ -38,9 +43,8 @@ interface Props {
 export default function LaundryForm({ defaultValues }: Props) {
     const router = useRouter();
     const [currentStep, setCurrentStep] = useState(0);
-    
-    //const { save, loading: saveLoading, error: saveError } = useSave();
-
+    const [state, formAction, isPending] = useActionState(createLaundry, null);
+    const [isTransitioning, startTransition] = useTransition();
     const methods = useForm({
         resolver: yupResolver(schema),
         defaultValues,
@@ -53,21 +57,30 @@ export default function LaundryForm({ defaultValues }: Props) {
     useEffect(() => {
         reset(defaultValues);
     }, [defaultValues, reset]);
-
+    console.log(methods.formState.errors)
     const onSubmit = async ({pictures, ...data}: any) => {
-        const picturesToDelete = defaultValues.pictures
-            .filter((defaultPicture: any) =>
-                !pictures.find((picture: any) => picture.id === defaultPicture.id)
-            )
-            .map((picture: any) => ({
-                ...picture,
-                _deleted: true
-            }));
-
-        const picturesToCreate = pictures
-            .filter((picture: any) => !picture.uuid);
-        const newPictures = picturesToDelete.concat(picturesToCreate);
-        console.log({...data, pictures: newPictures})
+        try {
+            const picturesToDelete = defaultValues.pictures
+                .filter((defaultPicture: any) =>
+                    !pictures.find((picture: any) => picture.id === defaultPicture.id)
+                )
+                .map((picture: any) => ({
+                    ...picture,
+                    _deleted: true
+                }));
+            const picturesToCreate = pictures
+                .filter((picture: any) => !picture.uuid);
+            const newPictures = picturesToDelete.concat(picturesToCreate);
+            
+            const laundryData = {...data, pictures: newPictures};
+            startTransition(() => {
+                formAction(laundryData);
+            });
+            
+        } catch (error) {
+            console.error('Erreur lors de la sauvegarde:', error);
+            
+        }
     }
 
     const nextStep = useCallback(() => {
@@ -113,13 +126,13 @@ export default function LaundryForm({ defaultValues }: Props) {
                     <h1 className="text-3xl font-bold text-white">
                         {defaultValues.id ? 'Modifier la laverie' : 'Nouvelle laverie'}
                     </h1>
-                    {Object.keys(errors).length > 0 && (
+                    {(Object.keys(errors).length > 0 || state?.error) && (
                         <div className="flex items-center bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2">
                             <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
                             <span className="text-red-400 text-sm font-medium">
-                                {Object.keys(errors).length} erreur{Object.keys(errors).length > 1 ? 's' : ''} détectée{Object.keys(errors).length > 1 ? 's' : ''}
+                                {state?.error || `${Object.keys(errors).length} erreur${Object.keys(errors).length > 1 ? 's' : ''} détectée${Object.keys(errors).length > 1 ? 's' : ''}`}
                             </span>
                         </div>
                     )}
@@ -188,9 +201,10 @@ export default function LaundryForm({ defaultValues }: Props) {
                         <button
                             type="button"
                             onClick={handleSubmit(onSubmit)}
-                            className="py-2 px-4 cursor-pointer rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 disabled:bg-green-400 disabled:cursor-not-allowed"
+                            disabled={isTransitioning}
+                            className="py-2 px-4 cursor-pointer rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
                         >
-                            Enregistrer
+                            {isTransitioning ? 'Enregistrement...' : 'Enregistrer'}
                         </button>
                     )}
                 </div>
