@@ -26,8 +26,9 @@ export async function getLaundry(id: number) {
                 )
                 `)
     .eq('id', id)
+    .single()
   if (!records.error) {
-    return records.data[0]
+    return {...records.data, pictures: records.data.laundry_picture}
   } else {
     throw records.error
   }
