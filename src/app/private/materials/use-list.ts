@@ -1,6 +1,6 @@
 'use client'
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPressings } from "@/data-access-layers/pressings"
+import { getMaterials } from "@/data-access-layers/materials"
 
 const PAGE_SIZE = 6
 
@@ -14,10 +14,10 @@ export default function useMaterials() {
       fetchNextPage,
       hasNextPage
     } = useInfiniteQuery({
-      queryKey: ['pressings'],
+      queryKey: ['materials'],
       initialPageParam: 1,
       queryFn: ({pageParam = 1}) => {
-        return getPressings({
+        return getMaterials({
           from: (pageParam - 1) * PAGE_SIZE,
           to: pageParam * PAGE_SIZE - 1 ,
         })

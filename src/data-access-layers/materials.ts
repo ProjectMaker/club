@@ -1,14 +1,13 @@
 'use server'
 
 import { checkIsAdmin, getSupabaseClient } from '@/utils/auth'
-import { Pressing, Picture } from '@/models'
 
-export async function getFirstPicture(pressingId: number): Promise<Picture> {
+export async function getFirstPicture(materialId: number) {
   const supabase = await getSupabaseClient()
   const picturesRecords = await supabase
-    .from('pressing_pictures')
+    .from('material_pictures')
     .select()
-    .eq('pressing_id', pressingId)
+    .eq('material_id', materialId)
     .limit(1)
     .single()
   if (picturesRecords.error) {
@@ -18,7 +17,7 @@ export async function getFirstPicture(pressingId: number): Promise<Picture> {
   const { data } = await supabase
     .storage
     .from('images')
-    .createSignedUrl(`pressings/${pressingId}/${picture.name}`, 24 * 60 * 60)
+    .createSignedUrl(`materials/${materialId}/${picture.name}`, 24 * 60 * 60)
   return {
     uuid: picture.id,
     id: picture.id,
@@ -26,13 +25,13 @@ export async function getFirstPicture(pressingId: number): Promise<Picture> {
     data_url: data?.signedUrl || ''
   }
 }
-export async function getPressings({ from = 1, to = 4 }: { from: number, to: number }): Promise<Pressing[]> {
+export async function getMaterials({ from = 1, to = 10 }: { from: number, to: number }) {
   const supabase = await getSupabaseClient()
 
   const isAdmin = await checkIsAdmin()
 
   let query = supabase
-    .from('pressings')
+    .from('materials')
     .select()
   if (!isAdmin) {
     query = query.neq('status', 'sold')
@@ -43,9 +42,8 @@ export async function getPressings({ from = 1, to = 4 }: { from: number, to: num
     .order('updated_at', { ascending: false })
     .order('created_at', { ascending: false })
   const records = await query
-
   if (!records.error) {
-    return records.data.map(pressing => ({ ...pressing, pictures: [] }))
+    return records.data
   } else {
     throw records.error
   }

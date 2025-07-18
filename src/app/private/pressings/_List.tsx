@@ -4,7 +4,7 @@ import Loader from "@/components/ui/Loader";
 
 import Card from "./_Card";
 import useList from './use-list'
-
+console.log(useList)
 
 export default function List() {
     const { data, isLoading, isFetching, error, fetchNextPage, shouldFetchNextPage } = useList()
@@ -25,7 +25,7 @@ export default function List() {
                     <Card key={pressing.id} pressing={pressing} />
                 )))}
             </div>
-            {isFetching ? (
+            {isLoading || isFetching ? (
                 <Loader />
             ) : shouldFetchNextPage && (
                 <div className="flex justify-center mt-6">
