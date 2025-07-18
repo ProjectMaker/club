@@ -68,8 +68,11 @@ export async function isAuthenticated(): Promise<boolean> {
 export async function getUser(): Promise<User | null> {
   const supabase = await getSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return null
+  }
   const isAdmin = await checkIsAdmin()
-  return {...user, is_admin: isAdmin} as User
+  return {...user, is_admin: isAdmin} as unknown as User
 }
 
 // Fonction pour récupérer le rôle utilisateur depuis le token

@@ -89,7 +89,7 @@ export default function Header({ user }: { user: User | null }) {
     }, 150)
   }
 
-
+  console.log(user)
 
   return (
     <header className="w-full bg-gradient-to-r from-blue-900/95 via-blue-800/95 to-indigo-900/95 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50">
@@ -107,48 +107,48 @@ export default function Header({ user }: { user: User | null }) {
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-6">
-            <Link
-              href="/"
-              className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname === '/'
-                ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
-            >
-              Accueil
-            </Link>
-            {user && (
-              <Link
-                href="/private/laundries"
-                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/private/laundries') === 0
-                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                  : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
-              >
-                Laveries
-              </Link>
-            )}
-            {user && (
-              <Link
-                href="/pressings"
-                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/pressings') === 0
-                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                  : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
-              >
-                Pressings
-              </Link>
-            )}
-            {user && (
-              <Link
-                href="/materials"
-                className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/materials') === 0
-                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
-                  : 'text-white/80 hover:text-white hover:bg-white/10'
-                  }`}
-              >
-                Matériel
-              </Link>
-            )}
+            {
+              user && (
+                <>
+                  <Link
+                    href="/"
+                    className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname === '/'
+                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }`}
+                  >
+                    Accueil
+                  </Link>
+                  <Link
+                    href="/private/laundries"
+                    className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/private/laundries') === 0
+                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }`}
+                  >
+                    Laveries
+                  </Link>
+                  <Link
+                    href="/pressings"
+                    className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/pressings') === 0
+                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }`}
+                  >
+                    Pressings
+                  </Link>
+                  <Link
+                    href="/materials"
+                    className={`px-3 py-2 rounded-lg transition-all duration-200 ${pathname.indexOf('/materials') === 0
+                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }`}
+                  >
+                    Matériel
+                  </Link>
+                </>
+              )}
+
 
             {/* Mon espace - Dropdown */}
             {user && (
@@ -201,7 +201,7 @@ export default function Header({ user }: { user: User | null }) {
                     </Link>
                     {user?.is_admin && (
                       <Link
-                        href="/profile/laundries"
+                        href="/private/profile/laundries"
                         className={`flex items-center cursor-pointer space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/laundries') === 0
                           ? 'text-blue-300 bg-blue-500/30 shadow-sm'
                           : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
