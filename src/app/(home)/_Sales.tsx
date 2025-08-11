@@ -46,18 +46,19 @@ function Product({ product }: { product: ProductProps }) {
 
 
       {/* Link */}
-      <Link
+      <a
         href={product.href}
         className="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors text-center"
       >
         Voir les détails
-      </Link>
+      </a >
     </div>
   )
 }
 
 export default async function Sales() {
   const { laundry, pressing, material } = await getSales()
+  console.log(pressing)
   return (
     <section id="annonces" className="py-16 px-4">
       <div className="max-w-7xl mx-auto">
@@ -67,7 +68,7 @@ export default async function Sales() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <Product product={{ ...laundry, href: "/private/laundries", type: "Laverie" }} />
           {pressing && (
-            <Product product={{ ...pressing, href: "/private/pressing", type: "Pressing" }} />
+            <Product product={{ ...pressing, href: "/private/pressings", type: "Pressing" }} />
           )}
           {
             material && (

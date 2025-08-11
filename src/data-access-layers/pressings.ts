@@ -50,3 +50,39 @@ export async function getPressings({ from = 1, to = 4 }: { from: number, to: num
     throw records.error
   }
 }
+
+export async function getPressing(pressingId: number) {
+  const supabase = await getSupabaseClient()
+
+  const records = await supabase
+    .from('pressings')
+    .select(`
+                *,
+                pressing_pictures (
+                    id,
+                    name
+                )
+            `)
+    .eq('id', pressingId)
+  if (records.error) {
+    throw records.error
+  }
+  const pictures = await Promise.all(
+    records.data[0].pressing_pictures.map(async (picture: { name: any; id: any; }) => {
+      const { data } = await supabase
+        .storage
+        .from('images')
+        .createSignedUrl(`pressings/${pressingId}/${picture.name}`, 24 * 60 * 60)
+      return {
+        id: picture.id,
+        uuid: picture.id,
+        name: picture.name,
+        data_url: data?.signedUrl
+      }
+    })
+  )
+  return {
+    ...records.data[0],
+    pictures
+  }
+}

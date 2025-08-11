@@ -61,7 +61,6 @@ async function getMaterial(): Promise<Material | null> {
     .limit(1)
     .single()
 
-  
   if (pictureResult.error) {
     throw pictureResult.error
   } else if (!pictureResult.data) {
@@ -73,7 +72,6 @@ async function getMaterial(): Promise<Material | null> {
     .storage
     .from('images')
     .createSignedUrl(`materials/${materialResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
-
   return {
     ...materialResult.data,
     pictures: [{
@@ -110,8 +108,9 @@ async function getPressing(): Promise<Pressing | null> {
       .from('pressing_pictures')
       .select('id, name')
       .eq('pressing_id', pressingResult.data.id)
+      .limit(1)
       .single()
-    
+    console.log(pictureResult)
     if (pictureResult.error) {
       console.warn('Erreur RLS ou absence d\'image pour pressing:', pictureResult.error)
       // Retourner le pressing sans image si erreur RLS

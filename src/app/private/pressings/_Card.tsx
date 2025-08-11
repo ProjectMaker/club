@@ -89,8 +89,8 @@ export default function PressingCard({ pressing }: { pressing: Pressing }) {
                 )}
             </div>
             <Link 
-                href={`/pressings/${pressing.id}`}
-                className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors"
+                href={`/private/pressings/${pressing.id}`}
+                className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors text-center block"
             >
                 Voir les détails
             </Link>

@@ -18,7 +18,7 @@ export default function MaterialsSummary() {
           vous trouverez ici tout ce qu'il vous faut pour donner vie à vos ambitions.
         </div>
         <div className="text-base">
-          Grâce à notre plateforme, entrez facilement en contact avec les vendeurs, explorez les
+          Grâce à notre plateforme, entrez facilement en contact avec les vendeurs, explorez les&nbsp; 
           <span className="text-green-300 font-medium">meilleures options</span> et négociez en toute sérénité.
         </div>
         <div className="text-lg font-semibold text-blue-300">

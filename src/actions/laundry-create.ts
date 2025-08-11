@@ -7,9 +7,7 @@ import { Picture } from '@/models'
 
 // Type pour les pictures avec les propriétés de traitement côté client
 interface PictureWithProcessing extends Partial<Picture> {
-  uuid?: string;
   _deleted?: boolean;
-  data_url?: string;
 }
 
 async function processPictures(laundryId: number, pictures: PictureWithProcessing[]): Promise<void> {
