@@ -35,6 +35,15 @@ export async function getSupabaseClient() {
   }
 }
 
+// Nouveau: client service (bypass RLS) – serveur uniquement
+export async function getSupabaseServiceClient() {
+  if (!isServer()) {
+    throw new Error('getSupabaseServiceClient ne peut être utilisé que côté serveur')
+  }
+  const { createServiceClient } = await import('@/lib/supabase-service')
+  return createServiceClient()
+}
+
 // Fonction pour récupérer l'access_token selon l'environnement
 export async function getAccessToken(): Promise<string | null> {
   try {
