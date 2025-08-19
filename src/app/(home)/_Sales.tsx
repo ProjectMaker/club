@@ -20,7 +20,7 @@ function Product({ product }: { product: ProductProps }) {
   return (
     <div
       key={product.id}
-      className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105"
+      className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 flex flex-col h-full"
     >
       {/* Image */}
       <div className="relative mb-4 overflow-hidden rounded-lg">
@@ -44,14 +44,16 @@ function Product({ product }: { product: ProductProps }) {
       {/* Contenu */}
       <h4 className="text-xl font-bold text-white mb-2">{product.name}</h4>
 
+      <div className="flex-grow" />
 
       {/* Link */}
       <a
         href={product.href}
-        className="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors text-center"
+        className="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors text-center mt-4"
+        tabIndex={0}
       >
         Voir les détails
-      </a >
+      </a>
     </div>
   )
 }
