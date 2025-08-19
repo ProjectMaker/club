@@ -47,7 +47,7 @@ interface SignUpFormProps {
 	className?: string;
 }
 const SignUpPage: React.FC<SignUpFormProps> = () => {
-	const [state, formAction, isPending] = useActionState(signup, null);
+	const [state, formAction] = useActionState(signup, null);
   const [isTransitioning, startTransition] = useTransition();
 	const { register, handleSubmit, watch, formState: { errors }, getValues } = useForm({
 		resolver: yupResolver(signUpSchema),
@@ -64,17 +64,11 @@ const SignUpPage: React.FC<SignUpFormProps> = () => {
 	});
 
 	const ownsLaundries = watch('owns_laundries');
-	const [errorMessage, setErrorMessage] = useState('');
-
+	
 	const onSubmit = async (data: any) => {
-		setErrorMessage('');
-		try {
-			//await signUpMutation.mutateAsync(data);
-			// Handle successful sign-up, e.g., redirect or show a success message
-		} catch (error: any) {
-			console.log(error)
-			setErrorMessage(error.message || 'Une erreur est survenue lors de l\'inscription.');
-		}
+		startTransition(() => {
+			formAction(data);
+		});
 	};
 
 	return (
@@ -82,12 +76,31 @@ const SignUpPage: React.FC<SignUpFormProps> = () => {
 
 		<div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20 w-full max-w-3xl mx-auto">
 			<div className="text-3xl font-bold text-white text-center mb-6">S'inscrire</div>
+			<p className="text-xl text-white/80 mb-8 text-center">
+				Rejoignez notre plateforme pour accéder aux meilleures opportunités d'investissement dans les <span className="text-blue-300">laveries automatiques</span> et trouvez <span className="text-green-300">votre projet idéal.</span>
+			</p>
 
 			{state?.error && (
-				<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+				<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
 					{state?.error as string}
 				</div>
 			)}
+			{
+				state?.success && (
+					<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
+						Votre inscription a été effectuée avec succès.
+						&nbsp;
+						<a
+							href="/"
+							className="inline-block mt-2 text-blue-700 underline hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
+							tabIndex={0}
+							aria-label="Retour à l'accueil"
+						>
+							Retour à l'accueil
+						</a>
+					</div>
+				)
+			}
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<Text
@@ -168,7 +181,7 @@ const SignUpPage: React.FC<SignUpFormProps> = () => {
 					<Link href="/" className="px-6 py-2 rounded-lg text-sm font-medium text-white/80 bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-colors">
 						Annuler
 					</Link>
-					<button type="submit" disabled={isTransitioning} className="px-6 py-2 rounded-lg text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed">
+					<button type="submit" disabled={isTransitioning} className="px-6 py-2 cursor-pointer rounded-lg text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed">
 						{isTransitioning ? 'Inscription en cours...' : 'Valider'}
 					</button>
 				</div>
