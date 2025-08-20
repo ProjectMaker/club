@@ -6,9 +6,9 @@ import { useDropzone } from 'react-dropzone';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 interface PictureFile {
-    file: File;
+    fileName: string;
+    contentType: string;
     data_url: string;
-    id: string;
 }
 
 export default function LaundryPictures() {
@@ -19,6 +19,7 @@ export default function LaundryPictures() {
     });
 
     const onDrop = useCallback(async (acceptedFiles: File[], rejectedFiles: any[]) => {
+        console.log(acceptedFiles)
         if (rejectedFiles.length > 0) {
             const errorMessages = rejectedFiles.map(file => {
                 if (file.errors[0]?.code === 'file-invalid-type') {
@@ -30,6 +31,7 @@ export default function LaundryPictures() {
             console.error(errorMessages.join(', '));
             return;
         }
+
         // Ajouter les nouveaux fichiers avec conversion en base64
         await Promise.all(
             acceptedFiles.map(async (file) => {
@@ -42,9 +44,9 @@ export default function LaundryPictures() {
                 });
 
                 const pictureFile: PictureFile = {
-                    file,
-                    data_url: dataUrl,
-                    id: crypto.randomUUID()
+                    fileName: file.name,
+                    contentType: file.type,
+                    data_url: dataUrl
                 };
                 append(pictureFile);
             })

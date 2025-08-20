@@ -81,8 +81,23 @@ export async function getPressing(pressingId: number) {
       }
     })
   )
+  const { pressing_pictures, ...pressing } = records.data[0]
   return {
-    ...records.data[0],
+    ...pressing,
     pictures
+  }
+}
+
+export async function getProfilePressings() {
+  const supabase = await getSupabaseClient()
+
+  const records = await supabase
+    .from('pressings')
+    .select()
+    .order('created_at', { ascending: false })
+  if (!records.error) {
+    return records.data
+  } else {
+    throw records.error
   }
 }
