@@ -186,7 +186,7 @@ export default function Header({ user }: { user: User | null }) {
                                 before:w-0 before:h-0 before:border-l-8 before:border-r-8 before:border-b-8
                                 before:border-l-transparent before:border-r-transparent before:border-b-slate-800/95">
                     <Link
-                      href="/profile/materials"
+                      href="/private/profile/materials"
                       className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/materials') === 0
                         ? 'text-blue-300 bg-blue-500/30 shadow-sm'
                         : 'text-white/90 hover:text-blue-300 hover:bg-white/10'

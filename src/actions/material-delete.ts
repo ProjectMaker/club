@@ -3,27 +3,27 @@
 import { createClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
 
-export async function deletePressing(prevState: any, { pressingId }: { pressingId: number }) {
+export async function deleteMaterial(prevState: any, { materialId }: { materialId: number }) {
   const supabase = await createClient()
   const picturesResult = await supabase
-    .from('pressing_pictures')
+    .from('material_pictures')
     .select()
-    .eq('pressing_id', pressingId)
+    .eq('material_id', materialId)
   if (picturesResult.error) {
     throw picturesResult.error
   } else if (picturesResult.data.length) {
     await supabase
       .storage
       .from('images')
-      .remove(picturesResult.data.map(({ name }) => `pressings/${pressingId}/${name}`))
+      .remove(picturesResult.data.map(({ name }) => `materials/${materialId}/${name}`))
     await supabase
-      .from('pressing_pictures')
+      .from('material_pictures')
       .delete()
-      .eq('pressing_id', pressingId)
+      .eq('material_id', materialId)
   }
   await supabase
-    .from('pressings')
+    .from('materials')
     .delete()
-    .eq('id', pressingId)
-  revalidatePath('/private/profile/pressings', 'page')
+    .eq('id', materialId)
+  revalidatePath('/private/profile/materials', 'page')
 }

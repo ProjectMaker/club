@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 
 import { MATERIAL_CATEGORIES } from '@/utils/constants';
+import { getCategoryLabel, getBrandLabel, getSubcategoryLabel } from '@/utils/functions';
 import { Material } from '@/models';
 import { getFirstPicture } from '@/data-access-layers/materials';
 import ChipStatus from '@/components/ui/ChipStatus';
@@ -82,7 +83,7 @@ export default function Card({ material }: { material: Material }) {
         <div className="mb-4">
           <div className="flex flex-wrap gap-2 mb-3">
             <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-white/30 transition-colors duration-200">
-              {material.brand}
+              {getBrandLabel(material.brand)}
             </span>
             <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-white/30 transition-colors duration-200">
               {material.model}
@@ -90,10 +91,10 @@ export default function Card({ material }: { material: Material }) {
           </div>
           <div className="flex flex-wrap gap-2">
             <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-white/30 transition-colors duration-200">
-              {material.category}
+              {getCategoryLabel(material.category)}
             </span>
             <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-white/30 transition-colors duration-200">
-              {material.subcategory}
+              {getSubcategoryLabel(material.subcategory)}
             </span>
           </div>
         </div>
@@ -101,7 +102,7 @@ export default function Card({ material }: { material: Material }) {
 
       <Link
         href={`/materials/${material.id}`}
-        className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors"
+        className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors flex justify-center items-center text-center"
       >
         Voir les détails
       </Link>

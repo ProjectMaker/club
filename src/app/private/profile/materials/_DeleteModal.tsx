@@ -3,23 +3,23 @@
 import { createPortal } from 'react-dom'
 import { useState, useEffect, useActionState, useTransition } from 'react'
 
-import { Pressing } from "@/models"
-import { deletePressing } from '@/actions/pressing-delete';
+import { Material } from "@/models"
+import { deleteMaterial } from '@/actions/material-delete';
 
 
 interface DeleteModalProps {
-  pressing: Pressing
+  material: Material
   onClose: () => void
 }
 
-export default function DeleteModal({ pressing, onClose }: DeleteModalProps) {
+export default function DeleteModal({ material, onClose }: DeleteModalProps) {
   const [mounted] = useState(true)
-  const [, formAction] = useActionState(deletePressing, null);
+  const [state, formAction] = useActionState(deleteMaterial, null);
   const [isTransitioning, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(() => {
-      formAction({ pressingId: pressing.id })
+      formAction({ materialId: material.id })
     })
   }
 
@@ -53,8 +53,8 @@ export default function DeleteModal({ pressing, onClose }: DeleteModalProps) {
             Confirmer la suppression
           </h3>
           <p className="text-white/80 mb-6">
-            Êtes-vous sûr de vouloir supprimer le pressing{' '}
-            <span className="font-semibold text-white">"{pressing?.name}"</span> ?
+            Êtes-vous sûr de vouloir supprimer le matériel{' '}
+            <span className="font-semibold text-white">"{material?.model || material?.name}"</span> ?
             <br />
             Cette action est irréversible.
           </p>

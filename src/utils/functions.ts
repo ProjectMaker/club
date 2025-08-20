@@ -1,3 +1,5 @@
+import { MATERIAL_CATEGORIES, MATERIAL_SUBCATEGORIES, MATERIAL_BRANDS } from "@/utils/constants"
+
 export const formatDate = (dateString: string, withTime: boolean = false) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('fr-FR', {
@@ -27,4 +29,19 @@ export const getStatusColor = (status: string) => {
       case 'reserved': return 'text-orange-400';
       default: return 'text-gray-400';
   }
+};
+
+export const getCategoryLabel = (categoryName: string) => {
+  const category = MATERIAL_CATEGORIES.find(cat => cat.name === categoryName);
+  return category ? category.label : categoryName;
+};
+
+export const getSubcategoryLabel = (subcategoryName: string) => {
+  const subcategory = MATERIAL_SUBCATEGORIES.find(sub => sub.name === subcategoryName);
+  return subcategory ? subcategory.label : subcategoryName;
+};
+
+export const getBrandLabel = (brandName: string) => {
+  const brand = MATERIAL_BRANDS.find(b => b.name === brandName);
+  return brand ? brand.label : brandName;
 };

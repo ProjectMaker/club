@@ -1,6 +1,6 @@
 'use server'
 
-import { checkIsAdmin, getSupabaseClient } from '@/utils/auth'
+import { checkIsAdmin, getUser, getSupabaseClient } from '@/utils/auth'
 
 export async function getFirstPicture(materialId: number) {
   const supabase = await getSupabaseClient()
@@ -47,4 +47,35 @@ export async function getMaterials({ from = 1, to = 10 }: { from: number, to: nu
   } else {
     throw records.error
   }
+}
+
+export async function getProfileMaterials() {
+  const supabase = await getSupabaseClient()
+  let query = supabase.from('materials').select(`
+    *,
+    users (
+        id,
+        email,
+        firstname,
+        lastname,
+        phone_number,
+        laundries_number,
+        laundries_owner,
+        created_at
+    )
+  `)
+  const checkAdmin = await checkIsAdmin()
+  const user = await getUser()
+  if (!user) {
+    throw new Error('User not found')
+  }
+  if (!checkAdmin) {
+    query = query.eq('user_id', user.id)
+  }
+  query = query.order('created_at', { ascending: false })
+  const { data, error } = await query
+  if (error) {
+    throw error
+  }
+  return data
 }
