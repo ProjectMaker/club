@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getProfilePressings } from '@/data-access-layers/pressings'
 import { formatDate, getStatusLabel, getStatusColor } from '@/utils/functions'
 
+import DeleteButton from "./_DeleteButton"
 
 export default async function Pressings() {
   const pressings = await getProfilePressings()
@@ -28,7 +29,7 @@ export default async function Pressings() {
                         Liste de vos pressings ({pressings?.length || 0})
                     </h2>
                     <Link
-                        href={'/profile/laundries/new'}
+                        href={'/private/profile/pressings/new'}
                         className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                     >
                         Ajouter un pressing
@@ -108,7 +109,7 @@ export default async function Pressings() {
                                                 >
                                                     Voir
                                                 </Link>
-                                                
+                                                <DeleteButton pressing={pressing} />
                                             </div>
                                         </td>
                                     </tr>

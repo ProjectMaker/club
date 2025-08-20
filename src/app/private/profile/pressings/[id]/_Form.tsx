@@ -13,14 +13,19 @@ import PressingMaterials from './_Materials';
 import PressingPictures from './_Pictures';
 import { createPressing } from '@/actions/pressing-create';
 
+
 const schema = yup.object().shape({
   name: yup.string().required('Le nom est requis'),
   postal_code: yup.string().required('Le code postal est requis'),
   city: yup.string().required('La ville est requise'),
   description: yup.string().required('La description est requise'),
-  surface: yup.number().required('La surface est requise').min(1, 'La surface doit être supérieure à 0'),
-  rent: yup.number().required('Le loyer est requis').min(0, 'Le loyer doit être supérieur ou égal à 0'),
-  price: yup.number().required('Le prix est requis').min(0, 'Le prix doit être supérieur ou égal à 0'),
+  surface: yup
+    .number()
+    .typeError('La surface est requise')
+    .required('La surface est requise')
+    .min(1, 'La surface doit être supérieure à 0'),
+  rent: yup.number().typeError('Le loyer est requis').required('Le loyer est requis').min(0, 'Le loyer doit être supérieur ou égal à 0'),
+  price: yup.number().typeError('Le prix est requis').required('Le prix est requis').min(0, 'Le prix doit être supérieur ou égal à 0'),
   materials: yup.array().of(
     yup.object({
       name: yup.string().required('Le nom du matériel est requis')
@@ -43,7 +48,7 @@ interface Props {
 export default function LaundryForm({ defaultValues }: Props) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [state, formAction, isPending] = useActionState(createPressing, null);
+  const [state, formAction] = useActionState(createPressing, null);
   const [isTransitioning, startTransition] = useTransition();
   const methods = useForm({
     resolver: yupResolver(schema),
@@ -125,7 +130,7 @@ export default function LaundryForm({ defaultValues }: Props) {
       <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-white">
-            {defaultValues.id ? 'Modifier la laverie' : 'Nouvelle laverie'}
+            {defaultValues.id ? 'Modifier le pressing' : 'Nouveau pressing'}
           </h1>
           {(Object.keys(errors).length > 0 || state?.error) && (
             <div className="flex items-center bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2">

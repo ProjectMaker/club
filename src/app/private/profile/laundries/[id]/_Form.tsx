@@ -18,9 +18,13 @@ const schema = yup.object().shape({
   postal_code: yup.string().required('Le code postal est requis'),
   city: yup.string().required('La ville est requise'),
   description: yup.string().required('La description est requise'),
-  surface: yup.number().required('La surface est requise').min(1, 'La surface doit être supérieure à 0'),
-  rent: yup.number().required('Le loyer est requis').min(0, 'Le loyer doit être supérieur ou égal à 0'),
-  price: yup.number().required('Le prix est requis').min(0, 'Le prix doit être supérieur ou égal à 0'),
+  surface: yup
+    .number()
+    .typeError('La surface est requise')
+    .required('La surface est requise')
+    .min(1, 'La surface doit être supérieure à 0'),
+  rent: yup.number().typeError('Le loyer est requis').required('Le loyer est requis').min(0, 'Le loyer doit être supérieur ou égal à 0'),
+  price: yup.number().typeError('Le prix est requis').required('Le prix est requis').min(0, 'Le prix doit être supérieur ou égal à 0'),
   materials: yup.array().of(
     yup.object({
       name: yup.string().required('Le nom du matériel est requis')

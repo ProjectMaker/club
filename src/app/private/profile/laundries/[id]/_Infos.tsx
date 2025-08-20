@@ -19,10 +19,10 @@ export default function LaundryInfos() {
                 <Text
                     {...register('name')}
                     type="text"
-                    label="Nom de la laverie"
+                    label="Nom du pressing"
                     required
                     size="sm"
-                    placeholder="Saisir le nom de la laverie"
+                    placeholder="Saisir le nom du pressing"
                     error={errors.name?.message?.toString()}
                 />
                 </div>
