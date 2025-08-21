@@ -1,7 +1,10 @@
+import { today } from '@internationalized/date';
+
 import { getMaterial } from "@/data-access-layers/materials";
 import Form from "./_Form";
+
 const DEFAULT_VALUES = {
-  availability_date: '',
+  availability_date: today('Europe/Paris').toString(),
   category: '',
   subcategory: '',
   brand: '',
