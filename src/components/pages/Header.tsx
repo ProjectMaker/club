@@ -236,8 +236,8 @@ export default function Header({ user }: { user: User | null }) {
                     )}
                     {user?.is_admin && (
                       <Link
-                        href="/admin"
-                        className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/admin/onboarding-users') === 0
+                        href="/private/profile/admin"
+                        className={`flex items-center space-x-3 px-4 py-3 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname.indexOf('/profile/admin') === 0
                           ? 'text-blue-300 bg-blue-500/30 shadow-sm'
                           : 'text-white/90 hover:text-blue-300 hover:bg-white/10'
                           }`}

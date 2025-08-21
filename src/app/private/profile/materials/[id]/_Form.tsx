@@ -130,7 +130,7 @@ export default function MaterialForm({ defaultValues }: Props) {
       <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-white">
-            {defaultValues.id ? 'Modifier la laverie' : 'Nouvelle laverie'}
+            {defaultValues.id ? 'Modifier le matériel' : 'Nouveau matériel'}
           </h1>
           {(Object.keys(errors).length > 0 || state?.error) && (
             <div className="flex items-center bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2">

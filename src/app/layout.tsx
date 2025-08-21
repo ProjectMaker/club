@@ -35,7 +35,7 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <Header user={user} />
-          <div className=" flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900  min-h-screen">
+          <div className=" flex items-start justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900  min-h-screen">
             <div className="w-full max-w-7xl px-4">
               {children}
             </div>
