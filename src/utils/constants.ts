@@ -43,3 +43,9 @@ export const MATERIAL_BRANDS = [
   { name: 'lm_control', label: 'LM Control' },
   { name: 'other', label: 'Autre' },
 ]
+
+export const MATERIAL_PERCENTS_COM = [
+  { priceMin: 0, priceMax: 3000, com: 0.09 },
+  { priceMin: 3000, priceMax: 10000, com: 0.08 },
+  { priceMin: 10000, com: 0.07 },
+]

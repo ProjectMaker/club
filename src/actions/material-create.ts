@@ -1,18 +1,19 @@
 'use server'
+
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase-server'
 import { Picture } from '@/models'
+import { getUser } from '@/utils/auth'
 
-// Type pour les pictures avec les propriétés de traitement côté client
 interface PictureWithProcessing extends Partial<Picture> {
   fileName: string;
   contentType: string;
   _deleted?: boolean;
 }
 
-async function createPictures(pressingId: number, pictures: PictureWithProcessing[]): Promise<PictureWithProcessing[]> {
+async function createPictures(materialId: number, pictures: PictureWithProcessing[]): Promise<PictureWithProcessing[]> {
   const supabase = await createClient()
   const promises = pictures.map(async picture => {
     const [extension] = picture.fileName.split('.').slice(-1)
@@ -23,7 +24,7 @@ async function createPictures(pressingId: number, pictures: PictureWithProcessin
     const storageResult = await supabase
       .storage
       .from('images')
-      .upload(`pressings/${pressingId}/${fileName}`, buffer, {
+      .upload(`materials/${materialId}/${fileName}`, buffer, {
         cacheControl: '3600',
         upsert: false,
         contentType: picture.contentType
@@ -32,16 +33,17 @@ async function createPictures(pressingId: number, pictures: PictureWithProcessin
       throw new Error(storageResult.error.message)
     }
 
-    const pictureResult = await supabase.from('pressing_pictures')
-      .upsert({ pressing_id: pressingId, name: fileName })
+    const pictureResult = await supabase.from('material_pictures')
+      .upsert({ material_id: materialId, name: fileName })
       .select()
     if (pictureResult.error) {
       throw new Error(pictureResult.error.message)
     }
+    
     const signedUrlResult = await supabase
       .storage
       .from('images')
-      .createSignedUrl(`pressings/${pressingId}/${pictureResult.data[0].name}`, 24 * 60 * 60)
+      .createSignedUrl(`materials/${materialId}/${pictureResult.data[0].name}`, 24 * 60 * 60)
     return {
       ...pictureResult.data[0],
       uuid: pictureResult.data[0].id,
@@ -52,36 +54,37 @@ async function createPictures(pressingId: number, pictures: PictureWithProcessin
   return Promise.all(promises)
 }
 
-async function processPictures(pressingId: number, pictures: PictureWithProcessing[]): Promise<void> {
+async function processPictures(materialId: number, pictures: PictureWithProcessing[]): Promise<void> {
   const supabase = await createClient()
 
   const picturesToRemove = pictures.filter(({ uuid, _deleted }: PictureWithProcessing) => uuid && _deleted)
   if (picturesToRemove.length) {
     await supabase
-      .from('pressing_pictures')
+      .from('material_pictures')
       .delete()
       .in('id', picturesToRemove.map(({ id }: PictureWithProcessing) => id))
   }
   const picturesToAdd = pictures.filter(({ uuid, _deleted }: PictureWithProcessing) => !uuid && !_deleted)
-  await createPictures(pressingId, picturesToAdd)
+  await createPictures(materialId, picturesToAdd)
 }
 
-export async function createPressing(prevState: any, { pictures, ...pressing }: { pictures: PictureWithProcessing[], [key: string]: any }) {
+export async function createMaterial(prevState: any, { pictures, ...material }: { pictures: PictureWithProcessing[], [key: string]: any }) {
   const supabase = await createClient()
+  const user = await getUser()
   const { data, error } = await supabase
-    .from('pressings')
+    .from('materials')
     .upsert({
-      ...pressing,
+      ...material,
+      user_id: material.user_id || user?.id,
       updated_at: new Date()
     })
     .select()
     .single()
-    
   if (error) {
     return { success: false, error: error.message }
   }
   await processPictures(data.id, pictures)
-
-  revalidatePath('/private/profile/pressings', 'page')
-  redirect('/private/profile/pressings')
+  
+  revalidatePath('/private/profile/materials', 'page')
+  redirect('/private/profile/materials')
 }

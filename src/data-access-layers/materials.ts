@@ -2,6 +2,43 @@
 
 import { checkIsAdmin, getUser, getSupabaseClient } from '@/utils/auth'
 
+export async function getMaterial(materialId: number) {
+  const supabase = await getSupabaseClient()
+  const record = await supabase
+    .from('materials')
+    .select(`
+              *,
+              material_pictures (
+                  id,
+                  name
+              )
+            `)
+    .eq('id', materialId)
+    .single()
+    if (record.error) {
+      throw record.error
+    }
+    const pictures = await Promise.all(
+      record.data.material_pictures.map(async (picture: { name: any; id: any; }) => {
+        const { data } = await supabase
+          .storage
+          .from('images')
+          .createSignedUrl(`materials/${materialId}/${picture.name}`, 24 * 60 * 60)
+        return {
+          id: picture.id,
+          uuid: picture.id,
+          name: picture.name,
+          data_url: data?.signedUrl
+        }
+      })
+    )
+    const { material_pictures, ...material } = record.data
+    return {
+      ...material,
+      pictures
+    }
+}
+
 export async function getFirstPicture(materialId: number) {
   const supabase = await getSupabaseClient()
   const picturesRecords = await supabase

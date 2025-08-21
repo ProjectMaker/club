@@ -26,7 +26,6 @@ export async function signup(prevState: any, data: SignupData) {
   const supabase = await getSupabaseServiceClient()
 
   const { data: onboardingUser, error: onboardingUserError } = await supabase.from('onboarding_users').select('*').eq('email', data.email).single()
-  console.log(onboardingUserError)
   if (onboardingUserError) {
     return { error: 'Vous n\'êtes pas autorisé à vous inscrire' }
   } else if (onboardingUser.validated) {

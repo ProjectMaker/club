@@ -19,7 +19,6 @@ export default function LaundryPictures() {
     });
 
     const onDrop = useCallback(async (acceptedFiles: File[], rejectedFiles: any[]) => {
-        console.log(acceptedFiles)
         if (rejectedFiles.length > 0) {
             const errorMessages = rejectedFiles.map(file => {
                 if (file.errors[0]?.code === 'file-invalid-type') {

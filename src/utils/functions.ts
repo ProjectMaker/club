@@ -1,4 +1,9 @@
-import { MATERIAL_CATEGORIES, MATERIAL_SUBCATEGORIES, MATERIAL_BRANDS } from "@/utils/constants"
+import { 
+  MATERIAL_CATEGORIES, 
+  MATERIAL_SUBCATEGORIES, 
+  MATERIAL_BRANDS,
+  MATERIAL_PERCENTS_COM
+} from "@/utils/constants"
 
 export const formatDate = (dateString: string, withTime: boolean = false) => {
   const date = new Date(dateString);
@@ -45,3 +50,25 @@ export const getBrandLabel = (brandName: string) => {
   const brand = MATERIAL_BRANDS.find(b => b.name === brandName);
   return brand ? brand.label : brandName;
 };
+
+export const calculateMaterialPrices = ({ price, quantity }: { price: number, quantity: number }) => {
+  if (!price || !quantity) {
+      return {
+          total: 0,
+          com: 0,
+          sales: 0
+      }
+  }
+  const percents = MATERIAL_PERCENTS_COM.find(({ priceMin, priceMax }) => {
+      return price >= priceMin && price < (priceMax || price + 1)
+  })
+  const totalPrice = price * quantity
+  const com = totalPrice * (percents?.com || 0)
+  const salesPrice = totalPrice + com
+
+  return {
+      total: totalPrice,
+      com: com.toFixed(2),
+      sales: salesPrice.toFixed(2)
+  }
+}

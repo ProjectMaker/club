@@ -57,11 +57,11 @@ export async function getPressing(pressingId: number) {
   const records = await supabase
     .from('pressings')
     .select(`
-                *,
-                pressing_pictures (
-                    id,
-                    name
-                )
+              *,
+              pressing_pictures (
+                  id,
+                  name
+              )
             `)
     .eq('id', pressingId)
   if (records.error) {

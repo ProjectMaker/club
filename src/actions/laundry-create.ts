@@ -30,6 +30,7 @@ async function processPictures(laundryId: number, pictures: PictureWithProcessin
 }
 
 export async function createLaundry(prevState: any, { pictures, ...laundry }: { pictures: PictureWithProcessing[], [key: string]: any }) {
+  console.log('create laundry')
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('laundry')

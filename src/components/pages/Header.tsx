@@ -89,7 +89,6 @@ export default function Header({ user }: { user: User | null }) {
     }, 150)
   }
 
-  console.log(user)
 
   return (
     <header className="w-full bg-gradient-to-r from-blue-900/95 via-blue-800/95 to-indigo-900/95 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50">

@@ -8,36 +8,39 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 
-import PressingInfos from './_Infos';
-import PressingMaterials from './_Materials';
-import PressingPictures from './_Pictures';
-import { createPressing } from '@/actions/pressing-create';
-
+import MaterialInfos from './_Infos';
+import MaterialPictures from './_Pictures';
+import { createMaterial } from '@/actions/material-create';
 
 const schema = yup.object().shape({
-  name: yup.string().required('Le nom est requis'),
-  postal_code: yup.string().required('Le code postal est requis'),
-  city: yup.string().required('La ville est requise'),
-  description: yup.string().required('La description est requise'),
-  surface: yup
-    .number()
-    .typeError('La surface est requise')
-    .required('La surface est requise')
-    .min(1, 'La surface doit être supérieure à 0'),
-  rent: yup.number().typeError('Le loyer est requis').required('Le loyer est requis').min(0, 'Le loyer doit être supérieur ou égal à 0'),
-  price: yup.number().typeError('Le prix est requis').required('Le prix est requis').min(0, 'Le prix doit être supérieur ou égal à 0'),
-  materials: yup.array().of(
-    yup.object({
-      name: yup.string().required('Le nom du matériel est requis')
-    })
-  ),
+  availability_date: yup.string().required('La date de disponibilité est requise'),
+  category: yup.string().required('La catégorie est requise'),
+  subcategory: yup.string().required('La sous-catégorie est requise'),
+  brand: yup.string().required('La marque est requise'),
+  model: yup.string().required('Le modèle est requis'),
+  year: yup.number()
+      .typeError('L\'année est requise')
+      .required('L\'année est requise')
+      .min(1900, 'L\'année doit être supérieure à 1900')
+      .max(new Date().getFullYear() + 1, 'L\'année ne peut pas être dans le futur'),
   status: yup.string().required('Le statut est requis'),
-  pictures: yup.array().min(1, 'Au moins une photo est requise')
+  postal_code: yup.string()
+      .required('Le code postal est requis'),
+  city: yup.string().required('La ville est requise'),
+  price: yup.number()
+      .typeError('Le prix unitaire HT doit être un nombre valide')
+      .required('Le prix unitaire HT est requis')
+      .min(0, 'Le prix unitaire HT doit être positif'),
+  quantity: yup.number()
+      .typeError('La quantité est requise')
+      .required('La quantité est requise')
+      .min(1, 'La quantité doit être au moins de 1'),
+  infos: yup.string().default(''),
+  pictures: yup.array().default([])
 });
 
 const STEPS = [
   { key: 'infos', label: 'Informations' },
-  { key: 'materials', label: 'Matériaux' },
   { key: 'pictures', label: 'Photos' }
 ];
 
@@ -45,18 +48,19 @@ interface Props {
   defaultValues: any;
 }
 
-export default function LaundryForm({ defaultValues }: Props) {
+export default function MaterialForm({ defaultValues }: Props) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [state, formAction] = useActionState(createPressing, null);
+  const [state, formAction] = useActionState(createMaterial, null);
   const [isTransitioning, startTransition] = useTransition();
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues,
     mode: 'onChange'
   });
-  
+
   const { handleSubmit, formState: { errors }, reset } = methods;
+
   // Réinitialiser le formulaire quand les defaultValues changent
   useEffect(() => {
     reset(defaultValues);
@@ -102,11 +106,9 @@ export default function LaundryForm({ defaultValues }: Props) {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return <PressingInfos />;
+        return <MaterialInfos />;
       case 1:
-        return <PressingMaterials />;
-      case 2:
-        return <PressingPictures />;
+        return <MaterialPictures />;
       default:
         return null;
     }
@@ -116,19 +118,19 @@ export default function LaundryForm({ defaultValues }: Props) {
     <div className="container mx-auto px-4 py-8">
       {/* Bouton retour */}
       <Link
-        href={'/private/profile/pressings'}
+        href={'/private/profile/materials'}
         className="mb-6 flex items-center cursor-pointer text-white/80 hover:text-white transition-colors duration-200"
       >
         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Retour aux pressings
+        Retour au matériel
       </Link>
 
       <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-white">
-            {defaultValues.id ? 'Modifier le pressing' : 'Nouveau pressing'}
+            {defaultValues.id ? 'Modifier la laverie' : 'Nouvelle laverie'}
           </h1>
           {(Object.keys(errors).length > 0 || state?.error) && (
             <div className="flex items-center bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2">

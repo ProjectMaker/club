@@ -27,6 +27,6 @@ export const sendTransactionnal = async ({ templateId, params }: TransactionalEm
       body: JSON.stringify(body)
     })
     const json = await res.json()
-    console.log(json)
+    return json
   }
   

@@ -28,7 +28,7 @@ export default function LaundryMaterials() {
             addMaterial();
         }
     };
-    console.log(materials)
+    
     return (
         <div className="space-y-6">
             <h2 className="text-xl font-semibold text-white mb-6">Matériaux disponibles</h2>

@@ -60,7 +60,7 @@ function Product({ product }: { product: ProductProps }) {
 
 export default async function Sales() {
   const { laundry, pressing, material } = await getSales()
-  console.log(pressing)
+  
   return (
     <section id="annonces" className="py-16 px-4">
       <div className="max-w-7xl mx-auto">
