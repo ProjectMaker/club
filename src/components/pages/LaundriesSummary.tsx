@@ -6,7 +6,7 @@ export default function LaundriesSummary() {
       </h1>
       <div className="text-white/90 leading-relaxed">
         <div className="text-lg">
-          Vous rêvez d'ouvrir ou d'investir dans une <span className="font-semibold text-blue-300">laverie</span> ?
+          Vous rêvez d&apos;ouvrir ou d&apos;investir dans une <span className="font-semibold text-blue-300">laverie</span> ?
           Votre parcours commence ici.
         </div>
         <div className="text-base">

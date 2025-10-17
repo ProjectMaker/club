@@ -105,7 +105,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       <p className="mt-6 text-center text-sm text-gray-400">
         Pas encore de compte?{' '}
         <Link href="/signup" className="font-semibold leading-6 text-blue-400 hover:text-blue-300">
-          S'inscrire
+          S&apos;inscrire
         </Link>
       </p>
     </div>

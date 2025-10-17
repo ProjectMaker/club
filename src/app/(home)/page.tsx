@@ -17,7 +17,7 @@ export default async function Home() {
             Trouvez votre <span className="text-blue-300">laverie</span>, <span className="text-green-300">pressing</span> ou <span className="text-purple-300">matériel</span> idéal
           </h2>
           <p className="text-xl text-white/80 mb-8">
-            Découvrez les meilleures opportunités d'investissement dans les laveries automatiques.
+            Découvrez les meilleures opportunités d&apos;investissement dans les laveries automatiques.
             Des emplacements premium, des rendements attractifs.
           </p>
         </div>

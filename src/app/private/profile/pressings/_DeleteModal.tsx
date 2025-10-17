@@ -54,7 +54,7 @@ export default function DeleteModal({ pressing, onClose }: DeleteModalProps) {
           </h3>
           <p className="text-white/80 mb-6">
             Êtes-vous sûr de vouloir supprimer le pressing{' '}
-            <span className="font-semibold text-white">"{pressing?.name}"</span> ?
+            <span className="font-semibold text-white">&quot;{pressing?.name}&quot;</span> ?
             <br />
             Cette action est irréversible.
           </p>

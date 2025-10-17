@@ -255,7 +255,7 @@ export default function MaterialInfos() {
       {/* Description */}
       <div>
         <label htmlFor="description" className="block text-sm text-white font-semibold text-gray-700 mb-2">
-          Description - Décrivez l'état général du matériel et ses caractéristiques
+          Description - Décrivez l&apos;état général du matériel et ses caractéristiques
         </label>
         <textarea
           {...register('infos')}

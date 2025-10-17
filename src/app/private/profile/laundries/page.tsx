@@ -38,7 +38,7 @@ export default async function Laundries() {
                 {laundries?.length === 0 ? (
                     <div className="text-center py-12">
                         <div className="text-white/60 text-lg mb-4">
-                            Vous n'avez pas encore de laveries en vente
+                            Vous n&apos;avez pas encore de laveries en vente
                         </div>
                         <div className="text-white/40 text-base">
                             Contactez notre équipe pour ajouter votre première laverie

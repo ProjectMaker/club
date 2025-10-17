@@ -75,9 +75,9 @@ const SignUpPage: React.FC<SignUpFormProps> = () => {
 
 
 		<div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20 w-full max-w-3xl mx-auto">
-			<div className="text-3xl font-bold text-white text-center mb-6">S'inscrire</div>
+			<div className="text-3xl font-bold text-white text-center mb-6">S&apos;inscrire</div>
 			<p className="text-xl text-white/80 mb-8 text-center">
-				Rejoignez notre plateforme pour accéder aux meilleures opportunités d'investissement dans les <span className="text-blue-300">laveries automatiques</span> et trouvez <span className="text-green-300">votre projet idéal.</span>
+				Rejoignez notre plateforme pour accéder aux meilleures opportunités d&apos;investissement dans les <span className="text-blue-300">laveries automatiques</span> et trouvez <span className="text-green-300">votre projet idéal.</span>
 			</p>
 
 			{state?.error && (
@@ -90,14 +90,14 @@ const SignUpPage: React.FC<SignUpFormProps> = () => {
 					<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
 						Votre inscription a été effectuée avec succès.
 						&nbsp;
-						<a
+						<Link
 							href="/"
 							className="inline-block mt-2 text-blue-700 underline hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded"
 							tabIndex={0}
-							aria-label="Retour à l'accueil"
+							aria-label="Retour à l&apos;accueil"
 						>
-							Retour à l'accueil
-						</a>
+							Retour à l&apos;accueil
+						</Link>
 					</div>
 				)
 			}

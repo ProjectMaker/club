@@ -97,9 +97,9 @@ export default function Header({ user }: { user: User | null }) {
           {/* Logo/Titre */}
           <div className="flex-shrink-0">
             <h1 className="text-xl font-bold text-white">
-              <a href="/" className="hover:text-blue-200 transition-colors">
+              <Link href="/" className="hover:text-blue-200 transition-colors">
                 ClubManager
-              </a>
+              </Link>
             </h1>
           </div>
 

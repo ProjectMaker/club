@@ -6,7 +6,7 @@ export default function PressingsSummary() {
       </h1>
       <div className="text-white/90 leading-relaxed">
         <div className="text-lg">
-          Vous rêvez d'ouvrir ou d'investir dans un <span className="font-semibold text-blue-300">pressing</span> ?
+          Vous rêvez d&apos;ouvrir ou d&apos;investir dans un <span className="font-semibold text-blue-300">pressing</span> ?
           Votre parcours commence ici.
         </div>
         <div className="text-base">

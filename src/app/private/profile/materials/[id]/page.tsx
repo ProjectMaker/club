@@ -21,11 +21,11 @@ const DEFAULT_VALUES = {
 
 export default async function Material({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  let {pictures, ...material} = id === 'new' ? DEFAULT_VALUES : await getMaterial(parseInt(id))
-  material = {...material, pictures: pictures.map((picture: any) => ({...picture, uuid: picture.id}))}
+  const {pictures, ...material} = id === 'new' ? DEFAULT_VALUES : await getMaterial(parseInt(id))
+  const newMaterial = {...material, pictures: pictures.map((picture: any) => ({...picture, uuid: picture.id}))}
   return (
     <div className="w-7xl">
-      <Form defaultValues={material} />
+      <Form defaultValues={newMaterial} />
     </div>
   )
 }

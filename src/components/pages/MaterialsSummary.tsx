@@ -10,12 +10,12 @@ export default function MaterialsSummary() {
           Club Laverie est là pour vous aider à les concrétiser.
         </div>
         <div className="text-base">
-          Parcourez les annonces de matériel neuf ou d'occasion vendu exclusivement par des
+          Parcourez les annonces de matériel neuf ou d&apos;occasion vendu exclusivement par des
           <span className="text-yellow-300 font-medium"> professionnels</span> du secteur, tous sélectionnés avec soin.
         </div>
         <div className="text-base">
           <span className="font-semibold text-purple-300">Lave-linges, séchoirs, monnayeurs</span>, et bien plus encore –
-          vous trouverez ici tout ce qu'il vous faut pour donner vie à vos ambitions.
+          vous trouverez ici tout ce qu&apos;il vous faut pour donner vie à vos ambitions.
         </div>
         <div className="text-base">
           Grâce à notre plateforme, entrez facilement en contact avec les vendeurs, explorez les&nbsp; 

@@ -147,7 +147,7 @@ export default function LaundryPictures() {
       <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mt-6">
         <h4 className="text-blue-300 font-medium mb-2">Conseils pour de bonnes photos</h4>
         <ul className="text-sm text-blue-200 space-y-1">
-          <li>• Prenez des photos de l'extérieur et de l'intérieur</li>
+          <li>• Prenez des photos de l&apos;extérieur et de l&apos;intérieur</li>
           <li>• Montrez les équipements et machines</li>
           <li>• Assurez-vous que les photos soient bien éclairées</li>
           <li>• La première photo sera utilisée comme photo principale</li>

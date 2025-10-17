@@ -54,7 +54,7 @@ export default function DeleteModal({ material, onClose }: DeleteModalProps) {
           </h3>
           <p className="text-white/80 mb-6">
             Êtes-vous sûr de vouloir supprimer le matériel{' '}
-            <span className="font-semibold text-white">"{material?.model || material?.name}"</span> ?
+            <span className="font-semibold text-white">&quot;{material?.model || material?.name}&quot;</span> ?
             <br />
             Cette action est irréversible.
           </p>

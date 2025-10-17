@@ -16,11 +16,11 @@ const DEFAULT_VALUES = {
 
 export default async function Pressing({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  let {pictures, ...pressing} = id === 'new' ? DEFAULT_VALUES : await getPressing(parseInt(id))
-  pressing = {...pressing, pictures: pictures.map((picture: any) => ({...picture, uuid: picture.id}))}
+  const {pictures, ...pressing} = id === 'new' ? DEFAULT_VALUES : await getPressing(parseInt(id))
+  const newPressing = {...pressing, pictures: pictures.map((picture: any) => ({...picture, uuid: picture.id}))}
   return (
     <div className="w-7xl">
-      <Form defaultValues={pressing} />
+      <Form defaultValues={newPressing} />
     </div>
   )
 }
