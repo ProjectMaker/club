@@ -4,6 +4,7 @@ import SalesLoading from "./_SalesLoading";
 import { createClient } from "@/lib/supabase-server";
 
 import LoginForm from "@/components/pages/LoginForm";
+import { User } from "@/models";
 
 export default async function Home() {
   const supabase = await createClient()
@@ -31,7 +32,7 @@ export default async function Home() {
         )}
       </div>
       <Suspense fallback={<SalesLoading />}>
-        <Sales />
+        <Sales user={user as unknown as User} />
       </Suspense>
     </div>
   )
