@@ -40,13 +40,7 @@ interface SignUpFormData {
 	laundries_count: number;
 }
 
-interface SignUpFormProps {
-	onSubmit?: (data: SignUpFormData) => void;
-	onSuccess?: (user: any) => void;
-	onError?: (error: string) => void;
-	className?: string;
-}
-const SignUpPage: React.FC<SignUpFormProps> = () => {
+const SignUpPage = () => {
 	const [state, formAction] = useActionState(signup, null);
   const [isTransitioning, startTransition] = useTransition();
 	const { register, handleSubmit, watch, formState: { errors }, getValues } = useForm({
