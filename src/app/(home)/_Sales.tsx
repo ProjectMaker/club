@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Picture } from "@/models";
+import { Picture, User } from "@/models";
 import { getSales } from "@/data-access-layers/sales-promotion";
 import { MATERIAL_CATEGORIES } from "@/utils/constants";
 
@@ -58,7 +58,7 @@ function Product({ product }: { product: ProductProps }) {
   )
 }
 
-export default async function Sales() {
+export default async function Sales({ user }: { user: User | null }) {
   const { laundry, pressing, material } = await getSales()
   
   return (
@@ -68,13 +68,13 @@ export default async function Sales() {
           Annonces à la une
         </h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Product product={{ ...laundry, href: "/private/laundries", type: "Laverie" }} />
+          <Product product={{ ...laundry, href: user ? "/private/laundries" : "/disclaimers/laundries", type: "Laverie" }} />
           {pressing && (
-            <Product product={{ ...pressing, href: "/private/pressings", type: "Pressing" }} />
+            <Product product={{ ...pressing, href: user ? "/private/pressings" : "/disclaimers/pressings", type: "Pressing" }} />
           )}
           {
             material && (
-              <Product product={{ id: material.id, name: MATERIAL_CATEGORIES.find(category => category.name === material.category)?.label || '', pictures: material.pictures, href: "/private/materials", type: "Matériel" }} />
+              <Product product={{ id: material.id, name: MATERIAL_CATEGORIES.find(category => category.name === material.category)?.label || '', pictures: material.pictures, href: user ? "/private/materials" : "/disclaimers/materials", type: "Matériel" }} />
             )
           }
         </div>

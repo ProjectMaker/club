@@ -1,6 +1,7 @@
 'use client'
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef, useActionState, useTransition, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
@@ -98,7 +99,13 @@ export default function Header({ user }: { user: User | null }) {
           <div className="flex-shrink-0">
             <h1 className="text-xl font-bold text-white">
               <Link href="/" className="hover:text-blue-200 transition-colors">
-                ClubManager
+              <Image
+                src="/club-laverie-logo.svg"
+                alt="Club Laverie"
+                width={200}
+                height={80}
+                className="text-white"
+              />
               </Link>
             </h1>
           </div>
