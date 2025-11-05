@@ -8,14 +8,6 @@ import useList from './use-list'
 export default function List() {
     const { data, isLoading, isFetching, error, fetchNextPage, shouldFetchNextPage } = useList()
     const sentinelRef = useRef<HTMLDivElement>(null)
-    if (error) return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="bg-red-500 text-white p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-2">Erreur</h2>
-                <p>Impossible de charger les matériaux. Veuillez réessayer plus tard.</p>
-            </div>
-        </div>
-    )
 
     useEffect(() => {
         const sentinel = sentinelRef.current
@@ -41,6 +33,15 @@ export default function List() {
             }
         }
     }, [shouldFetchNextPage, isFetching, fetchNextPage])
+    
+    if (error) return (
+        <div className="container mx-auto px-4 py-8">
+            <div className="bg-red-500 text-white p-4 rounded-lg">
+                <h2 className="text-xl font-bold mb-2">Erreur</h2>
+                <p>Impossible de charger les matériaux. Veuillez réessayer plus tard.</p>
+            </div>
+        </div>
+    )
 
     return (
         <>

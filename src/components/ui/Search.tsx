@@ -1,4 +1,5 @@
-export default ({value, onChange}: {value: string, onChange: (value: string) => void}) => {
+
+const Search = ({value, onChange}: {value: string, onChange: (value: string) => void}) => {
   return (
     <div className="relative justify-self-end">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -26,3 +27,5 @@ export default ({value, onChange}: {value: string, onChange: (value: string) => 
     </div>
   )
 }
+
+export default Search;
