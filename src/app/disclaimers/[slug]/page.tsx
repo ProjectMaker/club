@@ -1,14 +1,176 @@
-'use client'
+//'use client'
 
 import { use } from 'react'
+import type { Metadata } from "next";
 import LaundriesSummary from "@/components/pages/LaundriesSummary"
 import PressingsSummary from "@/components/pages/PressingsSummary"
 import MaterialsSummary from "@/components/pages/MaterialsSummary"
 
-const handleEmailClick = () => {
-  const subject = encodeURIComponent("Contact depuis Club Laverie")
-  const body = encodeURIComponent("Bonjour,\n\nJe vous contacte depuis Club Laverie.\n\nCordialement,")
-  window.location.href = `mailto:contact@clublaverie.com?subject=${subject}&body=${body}`
+import ButtonEmail from '../_ButtonEmail'
+
+const getMetadataBySlug = (slug: string): Metadata => {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  
+  const metadataMap: Record<string, Metadata> = {
+    laundries: {
+      title: "Laveries - Club Laverie",
+      description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Trouvez la laverie qui correspond à votre profil et commencez votre aventure entrepreneuriale avec Club Laverie.",
+      keywords: [
+        "laverie automatique",
+        "laverie à vendre",
+        "investissement laverie",
+        "achat laverie",
+        "opportunité laverie",
+        "laverie professionnelle",
+        "laverie self-service",
+        "business laverie",
+        "club laverie",
+        "ouvrir laverie",
+        "projet laverie",
+      ],
+      authors: [{ name: "Club Laverie" }],
+      creator: "Club Laverie",
+      publisher: "Club Laverie",
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+      openGraph: {
+        type: "website",
+        locale: "fr_FR",
+        url: `${baseUrl}/disclaimers/laundries`,
+        title: "Laveries - Club Laverie",
+        description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Trouvez la laverie qui correspond à votre profil.",
+        siteName: "Club Laverie",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Laveries - Club Laverie",
+        description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Trouvez la laverie qui correspond à votre profil.",
+      },
+      alternates: {
+        canonical: `${baseUrl}/disclaimers/laundries`,
+      },
+      category: "Business",
+    },
+    pressings: {
+      title: "Pressings - Club Laverie",
+      description: "Découvrez les meilleures opportunités d'investissement dans les pressings. Trouvez le pressing qui correspond à votre profil et commencez votre aventure entrepreneuriale avec Club Laverie.",
+      keywords: [
+        "pressing",
+        "pressing à vendre",
+        "investissement pressing",
+        "achat pressing",
+        "opportunité pressing",
+        "pressing professionnel",
+        "blanchisserie",
+        "business pressing",
+        "club laverie",
+        "ouvrir pressing",
+        "projet pressing",
+      ],
+      authors: [{ name: "Club Laverie" }],
+      creator: "Club Laverie",
+      publisher: "Club Laverie",
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+      openGraph: {
+        type: "website",
+        locale: "fr_FR",
+        url: `${baseUrl}/disclaimers/pressings`,
+        title: "Pressings - Club Laverie",
+        description: "Découvrez les meilleures opportunités d'investissement dans les pressings. Trouvez le pressing qui correspond à votre profil.",
+        siteName: "Club Laverie",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Pressings - Club Laverie",
+        description: "Découvrez les meilleures opportunités d'investissement dans les pressings. Trouvez le pressing qui correspond à votre profil.",
+      },
+      alternates: {
+        canonical: `${baseUrl}/disclaimers/pressings`,
+      },
+      category: "Business",
+    },
+    materials: {
+      title: "Matériel Laverie - Club Laverie",
+      description: "Découvrez une large sélection de matériel professionnel pour laverie : lave-linges, séchoirs, monnayeurs et bien plus encore. Trouvez l'équipement idéal pour votre projet avec Club Laverie.",
+      keywords: [
+        "matériel laverie",
+        "machines à laver professionnelles",
+        "sécheuses professionnelles",
+        "monnayeur laverie",
+        "équipement laverie",
+        "matériel pressing",
+        "matériel blanchisserie",
+        "achat matériel laverie",
+        "vente matériel laverie",
+        "club laverie",
+        "équipement professionnel",
+      ],
+      authors: [{ name: "Club Laverie" }],
+      creator: "Club Laverie",
+      publisher: "Club Laverie",
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-video-preview": -1,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+        },
+      },
+      openGraph: {
+        type: "website",
+        locale: "fr_FR",
+        url: `${baseUrl}/disclaimers/materials`,
+        title: "Matériel Laverie - Club Laverie",
+        description: "Découvrez une large sélection de matériel professionnel pour laverie : lave-linges, séchoirs, monnayeurs et bien plus encore.",
+        siteName: "Club Laverie",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: "Matériel Laverie - Club Laverie",
+        description: "Découvrez une large sélection de matériel professionnel pour laverie : lave-linges, séchoirs, monnayeurs et bien plus encore.",
+      },
+      alternates: {
+        canonical: `${baseUrl}/disclaimers/materials`,
+      },
+      category: "Business",
+    },
+  };
+
+  return metadataMap[slug] || {
+    title: "Club Laverie",
+    description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques, pressings et matériel professionnel.",
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+};
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  return getMetadataBySlug(slug);
 }
 
 export default function Disclaimer({ params }: { params: Promise<{ slug: string }> }) {
@@ -61,35 +223,7 @@ export default function Disclaimer({ params }: { params: Promise<{ slug: string 
       </div>
 
       <div className="mt-8 flex justify-center">
-        <button
-          onClick={handleEmailClick}
-          className="cursor-pointer group relative inline-flex items-center gap-2 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-300/50"
-          tabIndex={0}
-          aria-label="Ouvrir la boîte mail pour nous contacter"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              handleEmailClick()
-            }
-          }}
-        >
-          <svg
-            className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
-          </svg>
-          <span>Nous Contacter</span>
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
-        </button>
+        <ButtonEmail />
       </div>
 
 

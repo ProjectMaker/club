@@ -90,7 +90,7 @@ const UpdatePasswordForm: React.FC = () => {
         <button
           type="submit"
           disabled={isTransitioning}
-          className={`w-full py-3 px-6 text-white font-medium rounded-lg transition-colors ${
+          className={`w-full py-3 px-6 text-white font-medium rounded-lg transition-colors cursor-pointer ${
             isTransitioning
               ? 'bg-gray-600 cursor-not-allowed'
               : 'bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500'

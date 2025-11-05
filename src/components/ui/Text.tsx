@@ -77,7 +77,7 @@ const Text = forwardRef<HTMLInputElement, TextProps>(({
         onFocus={onFocus}
       />
       {error && (
-        <p className="text-red-300 text-sm mt-1">{error}</p>
+        <p className="text-red-300 text-sm mt-1 justify-self-start">{error}</p>
       )}
     </div>
   );
