@@ -1,10 +1,11 @@
 'use client'
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getUsers } from "@/data-access-layers/users";
+import { getOnboardingUsers } from "@/data-access-layers/users";
 import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
+import Search from "@/components/ui/Search";
 
 function useList({ verbatim }: { verbatim: string }) {
   const {
@@ -16,9 +17,9 @@ function useList({ verbatim }: { verbatim: string }) {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['users', verbatim],
+    queryKey: ['onboarding-users', verbatim],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => {
-      return getUsers({
+      return getOnboardingUsers({
         verbatim,
         page: pageParam,
         count: 20,
@@ -44,35 +45,6 @@ function useList({ verbatim }: { verbatim: string }) {
   }
 }
 
-const Search = ({value, onChange}: {value: string, onChange: (value: string) => void}) => {
-  return (
-    <div className="relative">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <svg className="h-5 w-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-      </div>
-      <input
-        type="text"
-        placeholder="Rechercher par email..."
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-white/10 border border-white/20 rounded-lg pl-10 pr-4 py-2 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full sm:w-64"
-      />
-      {value && (
-        <button
-          onClick={() => onChange('')}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/40 hover:text-white/80"
-        >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      )}
-    </div>
-  )
-}
-
 export default function Users() {
   const [verbatim, setVerbatim] = useState('');
   const debouncedVerbatim = useDebounce(verbatim, 500);
@@ -88,28 +60,18 @@ export default function Users() {
   });
 
 
-  console.log(users)
   return (
     <div>
       {users.length > 0 && (
         <>
           {/* Tableau */}
-          <div className="overflow-x-auto">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 w-full mx-auto mt-2 p-6">
             <Search value={verbatim} onChange={setVerbatim} />
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/20">
                   <th className="text-left py-2 px-4 text-white font-semibold">
                     Email
-                  </th>
-                  <th className="text-left py-2 px-4 text-white font-semibold">
-                    Prénom
-                  </th>
-                  <th className="text-left py-2 px-4 text-white font-semibold">
-                    Nom
-                  </th>
-                  <th className="text-left py-2 px-4 text-white font-semibold">
-                    Laveries
                   </th>
                   <th className="text-left py-2 px-4 text-white font-semibold">
                     Date de création
@@ -135,11 +97,6 @@ export default function Users() {
                       ) : (
                         user.email
                       )}
-                    </td>
-                    <td className="py-2 px-4 text-white/80">{user.firstname}</td>
-                    <td className="py-2 px-4 text-white/80">{user.lastname}</td>
-                    <td className="py-2 px-4 text-white/80">
-                      {user.laundries_number}
                     </td>
                     <td className="py-2 px-4 text-white/80">
                       {formatDate(user.created_at)}

@@ -56,7 +56,7 @@ const Text = forwardRef<HTMLInputElement, TextProps>(({
       {label && (
         <label 
           htmlFor={id || name} 
-          className={`block text-${labelColor} text-sm font-semibold mb-2`}
+          className={`block text-${labelColor} text-sm font-semibold mb-2 flex justify-start`}
         >
           {label}
           {required && <span className="text-red-300 ml-1">*</span>}

@@ -24,10 +24,7 @@ export default async function Home() {
         </div>
         {!user && (
           <div className="flex justify-center lg:justify-end">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20 w-full max-w-md">
-              <div className="text-3xl font-bold text-white text-center mb-6">Se connecter</div>
-              <LoginForm />
-            </div>
+            <LoginForm />
           </div>
         )}
       </div>

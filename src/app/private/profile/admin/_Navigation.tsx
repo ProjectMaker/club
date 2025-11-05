@@ -10,12 +10,12 @@ const navigationItems = [
     },
     {
         name: 'Utilisateurs en attente',
-        href: '/admin/onboarding-users',
-    },
+        href: '/private/profile/admin//onboarding-users',
+    },/*
     {
         name: 'Analytics',
         href: '/admin/analytics',
-    },
+    },*/
 ];
 
 export default function AdminNavigation() {
@@ -32,8 +32,8 @@ export default function AdminNavigation() {
                                 key={item.name}
                                 href={item.href}
                                 className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${isActive
-                                        ? 'border-blue-400 text-blue-300'
-                                        : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
+                                    ? 'border-blue-400 text-blue-300'
+                                    : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
                                     }`}
                             >
                                 {item.name}

@@ -67,7 +67,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const loading = isPending || isTransitioning;
   
   return (
-    <div className={`flex flex-col gap-4 ${className}`}>
+    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20 w-full max-w-md">
+      <div className="text-3xl font-bold text-white text-center mb-6">Se connecter</div>
       {state?.error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {state.error}
@@ -90,16 +91,24 @@ const LoginForm: React.FC<LoginFormProps> = ({
           type="password"
           required
         />
-
+        <div className="flex justify-end">
+          <Link 
+            href="/reset-password" 
+            className="text-sm text-blue-400 hover:text-blue-300"
+          >
+            Mot de passe oublié ?
+          </Link>
+        </div>
         <button
           type="submit"
-          disabled={loading}
-          className={`w-full py-3 px-6 text-white font-medium rounded-lg transition-colors ${loading
+          disabled={isTransitioning}
+          className={`w-full py-3 px-6 text-white font-medium rounded-lg transition-colors cursor-pointer ${
+            isTransitioning
               ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-900 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500'
-            }`}
+              : 'bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500'
+          }`}
         >
-          {loading ? 'Connexion en cours...' : 'Se connecter'}
+          {isTransitioning ? 'Connexion en cours...' : 'Se connecter'}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-gray-400">
