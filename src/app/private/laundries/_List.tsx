@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useRef } from 'react'
 import { Laundry } from "@/models";
 import Loader from "@/components/ui/Loader";
 
@@ -6,7 +7,32 @@ import useList from './use-list'
 import Card from './_Card'
 
 export default function List() {
-    const { data, isLoading, isFetching, error, fetchNextPage, shouldFetchNextPage } = useList()
+    const { data, isFetching, error, fetchNextPage, shouldFetchNextPage } = useList()
+    const sentinelRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const sentinel = sentinelRef.current
+        if (!sentinel || !shouldFetchNextPage || isFetching) return
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && shouldFetchNextPage && !isFetching) {
+                    fetchNextPage()
+                }
+            },
+            {
+                rootMargin: '100px',
+            }
+        )
+
+        observer.observe(sentinel)
+
+        return () => {
+            if (sentinel) {
+                observer.unobserve(sentinel)
+            }
+        }
+    }, [shouldFetchNextPage, isFetching, fetchNextPage])
 
     if (error) return (
         <div className="container mx-auto px-4 py-8">
@@ -24,13 +50,9 @@ export default function List() {
                     <Card key={laundry.id} laundry={laundry} />
                 )))}
             </div>
-            {isFetching ? (
-                <Loader />
-            ) : shouldFetchNextPage && (
-                <div className="flex justify-center mt-6">
-                    <button onClick={() => fetchNextPage()} className="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                        Charger plus de laveries
-                    </button>
+            {shouldFetchNextPage && (
+                <div ref={sentinelRef} className="flex justify-center mt-6 min-h-[100px]">
+                    {isFetching && <Loader />}
                 </div>
             )}
         </>

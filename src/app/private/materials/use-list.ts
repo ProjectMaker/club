@@ -17,6 +17,7 @@ export default function useMaterials() {
       queryKey: ['materials'],
       initialPageParam: 1,
       queryFn: ({pageParam = 1}) => {
+        console.log('pageParam', pageParam)
         return getMaterials({
           from: (pageParam - 1) * PAGE_SIZE,
           to: pageParam * PAGE_SIZE - 1 ,
