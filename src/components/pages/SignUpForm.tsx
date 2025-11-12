@@ -67,7 +67,7 @@ const SignUpForm = () => {
 
 	return (
 		<div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20 w-full max-w-3xl mx-auto mt-10">
-			<div className="text-3xl font-bold text-white text-center mb-6">S&apos;inscrire</div>
+			<div className="text-3xl font-bold text-white text-center mb-6">S&apos;inscrire gratuitement</div>
 			<p className="text-xl text-white/80 mb-8 text-center">
 				Rejoignez notre plateforme pour accéder aux meilleures opportunités d&apos;investissement dans les <span className="text-blue-300">laveries automatiques</span> et trouvez <span className="text-green-300">votre projet idéal.</span>
 			</p>

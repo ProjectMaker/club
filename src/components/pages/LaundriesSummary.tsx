@@ -11,7 +11,7 @@ export default function LaundriesSummary() {
         </div>
         <div className="text-base">
           Sur <span className="font-semibold text-purple-300">Club Laverie</span>, nous mettons à votre disposition une
-          sélection de laveries à vendre, soigneusement mises en ligne par des
+          sélection de laveries  à vendre en exclusivité, soigneusement mises en ligne par des
           <span className="text-yellow-300 font-medium"> professionnels</span>.
         </div>
         <div className="text-base">

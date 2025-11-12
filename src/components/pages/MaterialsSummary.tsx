@@ -29,7 +29,7 @@ export default function MaterialsSummary() {
         </div>
         <div className="text-base">
           <span className="font-semibold text-purple-300">Vendeur</span>, postez gratuitement vos annonces sur
-          <span className="font-semibold text-blue-300">Club Laverie</span>.
+          <span className="font-semibold text-blue-300">&nbsp;Club Laverie</span>.
         </div>
       </div>
     </div>

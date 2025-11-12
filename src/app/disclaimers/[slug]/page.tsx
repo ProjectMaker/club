@@ -211,11 +211,11 @@ export default function Disclaimer({ params }: { params: Promise<{ slug: string 
           </svg>
           <div className="text-white">
             <h3 className="text-lg font-semibold text-amber-200 mb-2">
-              Accès Complet avec Compte
+              Accès Complet Gratuit avec Compte
             </h3>
             <p className="text-white/90 leading-relaxed">
               Pour accéder à toutes nos fonctionnalités et consulter le détail des produits disponibles,
-              la création d&apos;un compte est requise. Cela nous permet de vous proposer une expérience
+              la création d&apos;un compte gratuit est requise. Cela nous permet de vous proposer une expérience
               personnalisée et de garantir la qualité de nos services.
             </p>
           </div>
