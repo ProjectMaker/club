@@ -16,8 +16,8 @@ const DEFAULT_VALUES = {
 
 export default async function Laundries({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const {laundry_picture, ...laundry} = id === 'new' ? DEFAULT_VALUES : await getLaundry(parseInt(id))
-  const newLaundry = {...laundry, pictures: laundry_picture.map((picture: any) => ({...picture, uuid: picture.id}))}
+  const {pictures, ...laundry} = id === 'new' ? DEFAULT_VALUES : await getLaundry(parseInt(id))
+  const newLaundry = {...laundry, pictures: pictures.map((picture: any) => ({...picture, uuid: picture.id}))}
   return (
     <div className="w-7xl">
       <Form defaultValues={newLaundry} />

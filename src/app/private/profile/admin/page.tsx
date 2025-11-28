@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getUsers } from "@/data-access-layers/users";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { getUsers, getCountUsers } from "@/data-access-layers/users";
 import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
@@ -45,6 +45,16 @@ function useList({ verbatim }: { verbatim: string }) {
   }
 }
 
+function CountUsers() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['count-users'],
+    queryFn: () => getCountUsers()
+  })
+  return (
+    <div className="text-white">Nombre total d'utilisateurs : {isLoading ? '...' : data}</div>
+  )
+}
+
 export default function Admin() {
   const [verbatim, setVerbatim] = useState('');
   const debouncedVerbatim = useDebounce(verbatim, 500);
@@ -62,6 +72,9 @@ export default function Admin() {
 
   return (
     <div>
+      <div className="flex justify-end">
+        <CountUsers />
+      </div>
       {users.length > 0 && (
         <>
           {/* Tableau */}

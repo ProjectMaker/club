@@ -71,3 +71,15 @@ export async function getOnboardingUsers({
     return [];
   }
 }
+
+export async function getCountUsers() {
+  const supabase = await createServiceClient()
+  const { data } = await supabase.rpc('count_users')
+  return data
+}
+
+export async function getCountOnboardingUsers() {
+  const supabase = await createServiceClient()
+  const { data } = await supabase.rpc('count_onboarding_users')
+  return data
+}

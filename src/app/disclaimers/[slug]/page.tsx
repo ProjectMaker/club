@@ -218,6 +218,9 @@ export default function Disclaimer({ params }: { params: Promise<{ slug: string 
               la création d&apos;un compte gratuit est requise. Cela nous permet de vous proposer une expérience
               personnalisée et de garantir la qualité de nos services.
             </p>
+            <p className="text-white/90 leading-relaxed">
+              
+            </p>
           </div>
         </div>
       </div>

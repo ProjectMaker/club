@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getOnboardingUsers } from "@/data-access-layers/users";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { getOnboardingUsers, getCountOnboardingUsers } from "@/data-access-layers/users";
 import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
@@ -43,6 +43,16 @@ function useList({ verbatim }: { verbatim: string }) {
     },
     shouldFetchNextPage: hasNextPage,
   }
+}
+
+function CountUsers() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['count-onboarding-users'],
+    queryFn: () => getCountOnboardingUsers()
+  })
+  return (
+    <div className="text-white">Nombre total d'utilisateurs : {isLoading ? '...' : data}</div>
+  )
 }
 
 export default function Users() {

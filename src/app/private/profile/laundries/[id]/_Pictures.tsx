@@ -6,10 +6,10 @@ import { useDropzone } from 'react-dropzone';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 interface PictureFile {
-    file: File;
+    fileName: string;
+    contentType: string;
     data_url: string;
-    id: string;
-}
+  }
 
 export default function LaundryPictures() {
     const { control, formState: { errors } } = useFormContext()
@@ -42,10 +42,10 @@ export default function LaundryPictures() {
                 });
 
                 const pictureFile: PictureFile = {
-                    file,
-                    data_url: dataUrl,
-                    id: crypto.randomUUID()
-                };
+                    fileName: file.name,
+                    contentType: file.type,
+                    data_url: dataUrl
+                  };
                 append(pictureFile);
             })
         );
