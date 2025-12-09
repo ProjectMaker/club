@@ -101,7 +101,7 @@ export default function Card({ material }: { material: Material }) {
       </div>
 
       <Link
-        href={`/materials/${material.id}`}
+        href={`/private/materials/${material.id}`}
         className="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold transition-colors flex justify-center items-center text-center"
       >
         Voir les détails

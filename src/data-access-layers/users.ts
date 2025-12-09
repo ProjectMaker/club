@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase-service";
 
 export async function getUsers({ 
   verbatim = '', 
+  isApproved = true,
   page, 
   count 
 }: { 
@@ -28,6 +29,7 @@ export async function getUsers({
 
   const records = await query
     .range(from, to)
+    .eq('is_approved', isApproved)
     .order('created_at', { ascending: false });
 
   if (!records.error) {
@@ -35,6 +37,15 @@ export async function getUsers({
   } else {
     return [];
   }
+}
+
+export async function getUser(id: string) {
+  const supabase = await createServiceClient()
+  const { data, error } = await supabase.from('users').select('*').eq('id', id).single()
+  if (error) {
+    throw error
+  }
+  return data
 }
 
 export async function getOnboardingUsers({ 
@@ -63,8 +74,9 @@ export async function getOnboardingUsers({
 
   const records = await query
     .range(from, to)
+    .eq('is_approved', false)
     .order('created_at', { ascending: false });
-
+  console.log('----records----', records)
   if (!records.error) {
     return records.data;
   } else {

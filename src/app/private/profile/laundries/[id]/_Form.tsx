@@ -113,7 +113,7 @@ export default function LaundryForm({ defaultValues }: Props) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container px-4 py-8">
       {/* Bouton retour */}
       <Link
         href={'/private/profile/laundries'}

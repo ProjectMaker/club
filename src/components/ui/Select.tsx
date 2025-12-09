@@ -6,7 +6,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
 
 export interface SelectOption {
-    value: string;
+    value: string | boolean;
     label: string;
     disabled?: boolean;
     icon?: React.ReactNode;
@@ -16,7 +16,7 @@ export interface SelectOption {
 export interface SelectProps {
     id?: string;
     name?: string;
-    value: string;
+    value: string | boolean;
     options: SelectOption[];
     placeholder?: string;
     required?: boolean;

@@ -8,6 +8,7 @@ export interface User {
     laundries_owner: boolean;
     created_at: string;
     is_admin: boolean
+    is_approved: boolean;
 }
 
 export interface Picture {

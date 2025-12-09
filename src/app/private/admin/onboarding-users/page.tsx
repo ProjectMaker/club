@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getUsers, getCountUsers } from "@/data-access-layers/users";
+import { getOnboardingUsers, getCountOnboardingUsers } from "@/data-access-layers/users";
 import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
@@ -17,9 +17,9 @@ function useList({ verbatim }: { verbatim: string }) {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['users', verbatim],
+    queryKey: ['onboarding-users', verbatim],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => {
-      return getUsers({
+      return getOnboardingUsers({
         verbatim,
         page: pageParam,
         count: 20,
@@ -47,15 +47,15 @@ function useList({ verbatim }: { verbatim: string }) {
 
 function CountUsers() {
   const { data, isLoading } = useQuery({
-    queryKey: ['count-users'],
-    queryFn: () => getCountUsers()
+    queryKey: ['count-onboarding-users'],
+    queryFn: () => getCountOnboardingUsers()
   })
   return (
     <div className="text-white">Nombre total d'utilisateurs : {isLoading ? '...' : data}</div>
   )
 }
 
-export default function Admin() {
+export default function Users() {
   const [verbatim, setVerbatim] = useState('');
   const debouncedVerbatim = useDebounce(verbatim, 500);
   const {
@@ -69,12 +69,16 @@ export default function Admin() {
     verbatim: debouncedVerbatim
   });
 
+  if (users.length === 0) {
+    return (
+      <div>
+        <h1 className="text-white text-xl font-bold mt-3">Aucun utilisateur à valider</h1>
+      </div>
+    )
+  }
 
   return (
     <div>
-      <div className="flex justify-end">
-        <CountUsers />
-      </div>
       {users.length > 0 && (
         <>
           {/* Tableau */}
@@ -85,15 +89,6 @@ export default function Admin() {
                 <tr className="border-b border-white/20">
                   <th className="text-left py-2 px-4 text-white font-semibold">
                     Email
-                  </th>
-                  <th className="text-left py-2 px-4 text-white font-semibold">
-                    Prénom
-                  </th>
-                  <th className="text-left py-2 px-4 text-white font-semibold">
-                    Nom
-                  </th>
-                  <th className="text-left py-2 px-4 text-white font-semibold">
-                    Laveries
                   </th>
                   <th className="text-left py-2 px-4 text-white font-semibold">
                     Date de création
@@ -119,11 +114,6 @@ export default function Admin() {
                       ) : (
                         user.email
                       )}
-                    </td>
-                    <td className="py-2 px-4 text-white/80">{user.firstname}</td>
-                    <td className="py-2 px-4 text-white/80">{user.lastname}</td>
-                    <td className="py-2 px-4 text-white/80">
-                      {user.laundries_number}
                     </td>
                     <td className="py-2 px-4 text-white/80">
                       {formatDate(user.created_at)}

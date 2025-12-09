@@ -1,11 +1,12 @@
 'use client'
 import { useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getOnboardingUsers, getCountOnboardingUsers } from "@/data-access-layers/users";
+import { getUsers, getCountUsers } from "@/data-access-layers/users";
 import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
 import Search from "@/components/ui/Search";
+import Link from "next/link";
 
 function useList({ verbatim }: { verbatim: string }) {
   const {
@@ -17,9 +18,9 @@ function useList({ verbatim }: { verbatim: string }) {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['onboarding-users', verbatim],
+    queryKey: ['users', verbatim],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => {
-      return getOnboardingUsers({
+      return getUsers({
         verbatim,
         page: pageParam,
         count: 20,
@@ -47,15 +48,15 @@ function useList({ verbatim }: { verbatim: string }) {
 
 function CountUsers() {
   const { data, isLoading } = useQuery({
-    queryKey: ['count-onboarding-users'],
-    queryFn: () => getCountOnboardingUsers()
+    queryKey: ['count-users'],
+    queryFn: () => getCountUsers()
   })
   return (
     <div className="text-white">Nombre total d'utilisateurs : {isLoading ? '...' : data}</div>
   )
 }
 
-export default function Users() {
+export default function Admin() {
   const [verbatim, setVerbatim] = useState('');
   const debouncedVerbatim = useDebounce(verbatim, 500);
   const {
@@ -72,11 +73,19 @@ export default function Users() {
 
   return (
     <div>
+      <div className="flex justify-between mt-3 space-x-4 mt-3 items-center">
+        <CountUsers />
+        <Search value={verbatim} onChange={setVerbatim} />
+      </div>
+      {
+        users.length === 0 && (
+          <h1 className="text-white text-xl font-bold">Aucun utilisateur</h1>
+        )
+      }
       {users.length > 0 && (
         <>
           {/* Tableau */}
           <div className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 w-full mx-auto mt-2 p-6">
-            <Search value={verbatim} onChange={setVerbatim} />
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/20">
@@ -84,7 +93,19 @@ export default function Users() {
                     Email
                   </th>
                   <th className="text-left py-2 px-4 text-white font-semibold">
+                    Prénom
+                  </th>
+                  <th className="text-left py-2 px-4 text-white font-semibold">
+                    Nom
+                  </th>
+                  <th className="text-left py-2 px-4 text-white font-semibold">
+                    Laveries
+                  </th>
+                  <th className="text-left py-2 px-4 text-white font-semibold">
                     Date de création
+                  </th>
+                  <th className="text-left py-3 px-4 text-white font-semibold">
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -108,8 +129,24 @@ export default function Users() {
                         user.email
                       )}
                     </td>
+                    <td className="py-2 px-4 text-white/80">{user.firstname}</td>
+                    <td className="py-2 px-4 text-white/80">{user.lastname}</td>
+                    <td className="py-2 px-4 text-white/80">
+                      {user.laundries_number}
+                    </td>
                     <td className="py-2 px-4 text-white/80">
                       {formatDate(user.created_at)}
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/private/admin/${user.id}`}
+                          className="text-blue-400 hover:text-blue-300 text-sm font-medium cursor-pointer"
+                        >
+                          Voir
+                        </Link>
+
+                      </div>
                     </td>
                   </tr>
                 ))}
