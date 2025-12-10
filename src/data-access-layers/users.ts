@@ -11,6 +11,7 @@ export async function getUsers({
   verbatim?: string; 
   page: number; 
   count: number; 
+  isApproved?: boolean;
 }) {
   // Calculer from et to pour Supabase à partir de page et count
   const from = (page - 1) * count;
@@ -76,7 +77,6 @@ export async function getOnboardingUsers({
     .range(from, to)
     .eq('is_approved', false)
     .order('created_at', { ascending: false });
-  console.log('----records----', records)
   if (!records.error) {
     return records.data;
   } else {
@@ -84,14 +84,17 @@ export async function getOnboardingUsers({
   }
 }
 
-export async function getCountUsers() {
+export async function getCountUsers({ isApproved = true }: { isApproved?: boolean }) {
   const supabase = await createServiceClient()
-  const { data } = await supabase.rpc('count_users')
-  return data
-}
 
-export async function getCountOnboardingUsers() {
-  const supabase = await createServiceClient()
-  const { data } = await supabase.rpc('count_onboarding_users')
-  return data
+  const { count, error } = await supabase
+    .from('users')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_approved', isApproved)
+  
+  if (error) {
+    return 0
+  }
+  
+  return count || 0
 }

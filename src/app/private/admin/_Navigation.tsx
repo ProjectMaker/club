@@ -1,40 +1,35 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const navigationItems = [
   {
     name: 'Utilisateurs inscrits',
-    href: '/private/admin',
+    href: '/private/admin?approved=true',
   },
   {
     name: 'Utilisateurs en attente',
-    href: '/private/admin/onboarding-users',
-  },/*
-    {
-        name: 'Analytics',
-        href: '/admin/analytics',
-    },*/
+    href: '/private/admin?approved=false',
+  }
 ];
 
 export default function AdminNavigation() {
   const pathname = usePathname();
-
-  // Trier les items par longueur décroissante pour vérifier d'abord les routes les plus spécifiques
-  const sortedItems = [...navigationItems].sort((a, b) => b.href.length - a.href.length);
-
+  const searchParams = useSearchParams();
+  const isApproved = searchParams.get('approved') === 'true';
+  console.log('params', searchParams.get('approved'))
+  console.log(`${pathname}?approved=${isApproved}`)
   return (
     <nav className="w-64 flex-shrink-0">
       <div className="flex flex-col space-y-2">
         {navigationItems.map((item) => {
-          // Vérifier si cette route correspond, mais seulement si aucune route plus spécifique ne correspond
-          const matchesThisRoute = pathname === item.href || pathname.startsWith(item.href + '/');
-          const hasMoreSpecificMatch = sortedItems.some(
-            otherItem => otherItem.href.length > item.href.length &&
-              (pathname === otherItem.href || pathname.startsWith(otherItem.href + '/'))
-          );
-          const isActive = matchesThisRoute && !hasMoreSpecificMatch;
+          let isActive = false
+          if (item.href === '/private/admin?approved=true' && isApproved) {
+            isActive = true
+          } else if (item.href === '/private/admin?approved=false' && !isApproved) {
+            isActive = true
+          }
           return (
             <Link
               key={item.name}

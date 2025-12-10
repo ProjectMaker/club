@@ -3,7 +3,6 @@
 import { checkIsAdmin, getSupabaseClient } from '@/utils/auth'
 
 export async function getFirstPicture(laundryId: number) {
-  console.log('getFirstPicture', laundryId)
   const supabase = await getSupabaseClient()
   const picturesRecords = await supabase
     .from('laundry_pictures')
@@ -11,7 +10,6 @@ export async function getFirstPicture(laundryId: number) {
     .eq('laundry_id', laundryId)
     .limit(1)
     .single()
-    console.log('picturesRecords', picturesRecords)
   if (picturesRecords.error) {
     throw picturesRecords.error
   }

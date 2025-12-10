@@ -1,3 +1,5 @@
+'use client'
+
 import { Pressing } from "@/models";
 
 export default function ButtonMail({pressing}: {pressing: Pressing}) {

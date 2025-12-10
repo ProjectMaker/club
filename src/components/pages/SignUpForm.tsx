@@ -16,17 +16,7 @@ const signUpSchema = yup.object().shape({
 	password: yup.string().required('Le mot de passe est requis').min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
 	password_confirmation: yup.string()
 		.oneOf([yup.ref('password')], 'Les mots de passe doivent correspondre')
-		.required('La confirmation du mot de passe est requise'),
-	owns_laundries: yup.string().required(),
-	laundries_count: yup.number().transform((value) => {
-		if (value === '' || value === null || value === undefined) return undefined;
-		const num = Number(value);
-		return isNaN(num) ? undefined : num;
-	}).when('owns_laundries', {
-		is: 'yes',
-		then: schema => schema.min(1, 'Veuillez indiquer combien de laveries vous possédez').required('Ce champ est requis si vous possédez des laveries'),
-		otherwise: schema => schema.notRequired(),
-	}),
+		.required('La confirmation du mot de passe est requise')
 });
 
 interface SignUpFormData {
@@ -36,14 +26,12 @@ interface SignUpFormData {
 	email: string;
 	password: string;
 	password_confirmation: string;
-	owns_laundries: string;
-	laundries_count: number;
 }
 
 const SignUpForm = () => {
 	const [state, formAction] = useActionState(signup, null);
   const [isTransitioning, startTransition] = useTransition();
-	const { register, handleSubmit, watch, formState: { errors } } = useForm({
+	const { register, handleSubmit, formState: { errors } } = useForm({
 		resolver: yupResolver(signUpSchema),
 		defaultValues: {
 			last_name: '',
@@ -51,14 +39,10 @@ const SignUpForm = () => {
 			phone_number: '',
 			email: '',
 			password: '',
-			password_confirmation: '',
-			owns_laundries: 'yes',
-			laundries_count: undefined,
+			password_confirmation: ''
 		}
 	});
 
-	const ownsLaundries = watch('owns_laundries');
-	
 	const onSubmit = async (data: any) => {
 		startTransition(() => {
 			formAction(data);
@@ -80,7 +64,7 @@ const SignUpForm = () => {
 			{
 				state?.success && (
 					<div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
-						Votre inscription a été effectuée avec succès.
+						Votre inscription a été effectuée avec succès, votre compte est en cours de validation
 						&nbsp;
 						<Link
 							href="/"
@@ -140,34 +124,6 @@ const SignUpForm = () => {
 						required
 					/>
 				</div>
-
-				<div>
-					<label className="block text-sm font-medium text-white/80 mb-2">Possédez-vous des laveries ?</label>
-					<div className="flex items-center space-x-4">
-						<label className="flex items-center cursor-pointer">
-							<input {...register('owns_laundries')} type="radio" value="yes" className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-transparent" />
-							<span className="ml-2 text-sm text-white/80">Oui</span>
-						</label>
-						<label className="flex items-center cursor-pointer">
-							<input {...register('owns_laundries')} type="radio" value="no" className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-transparent" />
-							<span className="ml-2 text-sm text-white/80">Non</span>
-						</label>
-					</div>
-				</div>
-
-				{ownsLaundries === 'yes' && (
-					<div>
-						<Text
-							{...register('laundries_count')}
-							label="Combien"
-							id="laundriesCount"
-							type="text"
-							placeholder="0"
-							error={errors.laundries_count?.message}
-							required
-						/>
-					</div>
-				)}
 
 				<div className="flex justify-end pt-4 space-x-3">
 					<Link href="/" className="px-6 py-2 rounded-lg text-sm font-medium text-white/80 bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-colors">

@@ -63,7 +63,6 @@ export async function getFirstPicture(materialId: number) {
   }
 }
 export async function getMaterials({ from = 1, to = 10 }: { from: number, to: number }) {
-  console.log('from', from, 'to', to)
   const supabase = await getSupabaseClient()
 
   const isAdmin = await checkIsAdmin()

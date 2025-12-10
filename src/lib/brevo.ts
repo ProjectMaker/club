@@ -1,7 +1,5 @@
 interface TransactionalEmailParams {
   email: string;
-  firstname: string;
-  lastname: string;
   [key: string]: any; // Pour permettre d'autres paramètres dynamiques
 }
 

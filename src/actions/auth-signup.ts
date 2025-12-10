@@ -1,9 +1,8 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { sendTransactionnal } from '@/lib/brevo'
 
-import { getSupabaseServiceClient } from '@/utils/auth'
+import { createServiceClient } from '@/lib/supabase-service'
 
 interface SignupData {
   email: string
@@ -16,21 +15,14 @@ interface SignupData {
 }
 
 export async function signup(prevState: any, data: SignupData) {
-  const required: Array<keyof SignupData> = ['email', 'password', 'first_name', 'last_name', 'phone_number', 'owns_laundries']
+  const required: Array<keyof SignupData> = ['email', 'password', 'first_name', 'last_name', 'phone_number']
   for (const key of required) {
     if (!data[key]) {
       return { error: `Le champ ${String(key)} est requis` }
     }
   }
 
-  const supabase = await getSupabaseServiceClient()
-
-  const { data: onboardingUser, error: onboardingUserError } = await supabase.from('onboarding_users').select('*').eq('email', data.email).single()
-  if (onboardingUserError) {
-    return { error: 'Vous n\'êtes pas autorisé à vous inscrire' }
-  } else if (onboardingUser.validated) {
-    return { error: 'Vous avez déjà validé votre inscription' }
-  }
+  const supabase = await createServiceClient()
 
   const userExist = await supabase.rpc('user_exist', {
     email: data.email
@@ -57,19 +49,19 @@ export async function signup(prevState: any, data: SignupData) {
       email: data.email,
       firstname: data.first_name,
       lastname: data.last_name,
-      phone_number: data.phone_number,
-      laundries_number: data.laundries_count,
-      laundries_owner: data.owns_laundries
+      phone_number: data.phone_number
     })
     .select()
   if (publicUsers.error) {
     return { error: {status: 500, message: publicUsers.error.message}}
   }
   
-  await supabase
-    .from('onboarding_users')
-    .update({ validated: true })
-    .eq('email', data.email)
-
+  await sendTransactionnal({
+    templateId: 393,
+    params: {
+      email: data.email,
+      firstname: data.first_name || ''
+    }
+  })
   return { success: true}
 }

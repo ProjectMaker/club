@@ -16,7 +16,6 @@ export default function List() {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && shouldFetchNextPage && !isFetching) {
-                    console.log('fetching next page')
                     fetchNextPage()
                 }
             },

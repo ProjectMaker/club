@@ -65,13 +65,10 @@ async function processPictures(laundryId: number, pictures: PictureWithProcessin
       .in('id', picturesToRemove.map(({ id }: PictureWithProcessing) => id))
   }
   const picturesToAdd = pictures.filter(({ uuid, _deleted }: PictureWithProcessing) => !uuid && !_deleted)
-  console.log('picturesToAdd', picturesToAdd.length)
   await createPictures(laundryId, picturesToAdd)
 }
 
 export async function createLaundry(prevState: any, { pictures, ...laundry }: { pictures: PictureWithProcessing[], [key: string]: any }) {
-  console.log('create laundry')
-  const user = await getUser()
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('laundry')

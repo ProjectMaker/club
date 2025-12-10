@@ -1,7 +1,8 @@
 'use client'
 
-import { useActionState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Text from '@/components/ui/Text';
 import Link from 'next/link';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -43,8 +44,8 @@ type UserFormData = {
 };
 
 const UserForm = ({ defaultValues }: { defaultValues: User }) => {
-	const [state, formAction] = useActionState(createUser, null);
 	const [isTransitioning, startTransition] = useTransition();
+	const queryClient = useQueryClient();
 	const { register, handleSubmit, watch, formState: { errors }, control } = useForm<UserFormData>({
 		resolver: yupResolver(userSchema) as any,
 		defaultValues: {
@@ -61,13 +62,26 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 
 	const ownsLaundries = watch('laundries_owner');
 
+	const mutation = useMutation({
+		mutationFn: async (data: UserFormData) => {
+			return await createUser(null, data);
+		},
+		onSuccess: (result) => {
+			if (result?.success) {
+				// Invalider toutes les queries liées aux utilisateurs pour forcer le rafraîchissement
+				queryClient.invalidateQueries({ queryKey: ['users'] });
+				queryClient.invalidateQueries({ queryKey: ['count-users'] });
+			}
+		},
+	});
+
 	const onSubmit = async (data: UserFormData) => {
-		console.log(data)
-		//return
 		startTransition(() => {
-			formAction(data);
+			mutation.mutate(data);
 		});
 	};
+
+	const state = mutation.data;
 
 	return (
 		<div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 border border-white/20 w-full max-w-3xl">

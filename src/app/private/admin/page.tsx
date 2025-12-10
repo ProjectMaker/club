@@ -1,14 +1,19 @@
 'use client'
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+
 import { getUsers, getCountUsers } from "@/data-access-layers/users";
 import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
 import Search from "@/components/ui/Search";
-import Link from "next/link";
+
 
 function useList({ verbatim }: { verbatim: string }) {
+  const searchParams = useSearchParams();
+  const isApproved = searchParams.get('approved') === 'true';
   const {
     data,
     isLoading,
@@ -18,12 +23,13 @@ function useList({ verbatim }: { verbatim: string }) {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['users', verbatim],
+    queryKey: ['users', isApproved, verbatim],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => {
       return getUsers({
         verbatim,
         page: pageParam,
         count: 20,
+        isApproved
       })
     },
     initialPageParam: 1,
@@ -47,12 +53,14 @@ function useList({ verbatim }: { verbatim: string }) {
 }
 
 function CountUsers() {
+  const searchParams = useSearchParams();
+  const isApproved = searchParams.get('approved') === 'true';
   const { data, isLoading } = useQuery({
-    queryKey: ['count-users'],
-    queryFn: () => getCountUsers()
+    queryKey: ['count-users', isApproved],
+    queryFn: () => getCountUsers({ isApproved })
   })
   return (
-    <div className="text-white">Nombre total d'utilisateurs : {isLoading ? '...' : data}</div>
+    <div className="text-white">Nombre total d&apos;utilisateurs : {isLoading ? '...' : data}</div>
   )
 }
 
@@ -78,7 +86,7 @@ export default function Admin() {
         <Search value={verbatim} onChange={setVerbatim} />
       </div>
       {
-        users.length === 0 && (
+        users.length === 0 && !isLoading && (
           <h1 className="text-white text-xl font-bold">Aucun utilisateur</h1>
         )
       }
@@ -140,7 +148,7 @@ export default function Admin() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <Link
-                          href={`/private/admin/${user.id}`}
+                          href={`/private/admin/${user.id}?approved=${user.is_approved}`}
                           className="text-blue-400 hover:text-blue-300 text-sm font-medium cursor-pointer"
                         >
                           Voir

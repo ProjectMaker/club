@@ -68,13 +68,13 @@ export default async function Sales({ user }: { user: User | null }) {
           Annonces à la une
         </h3>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Product product={{ ...laundry, href: user ? "/private/laundries" : "/disclaimers/laundries", type: "Laverie" }} />
+          <Product product={{ ...laundry, href: user ? `/private/laundries/${laundry.id}` : "/disclaimers/laundries", type: "Laverie" }} />
           {pressing && (
-            <Product product={{ ...pressing, href: user ? "/private/pressings" : "/disclaimers/pressings", type: "Pressing" }} />
+            <Product product={{ ...pressing, href: user ? `/private/pressings/${pressing.id}` : "/disclaimers/pressings", type: "Pressing" }} />
           )}
           {
             material && (
-              <Product product={{ id: material.id, name: MATERIAL_CATEGORIES.find(category => category.name === material.category)?.label || '', pictures: material.pictures, href: user ? "/private/materials" : "/disclaimers/materials", type: "Matériel" }} />
+              <Product product={{ id: material.id, name: MATERIAL_CATEGORIES.find(category => category.name === material.category)?.label || '', pictures: material.pictures, href: user ? `/private/materials/${material.id}` : "/disclaimers/materials", type: "Matériel" }} />
             )
           }
         </div>
