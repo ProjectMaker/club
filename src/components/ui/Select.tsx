@@ -118,7 +118,7 @@ const Select: React.FC<SelectProps> = ({
                             <Listbox.Options className="absolute mt-2 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none border border-gray-200 z-10">
                                 {options.map((option) => (
                                     <Listbox.Option
-                                        key={option.value}
+                                        key={option.value as string}
                                         className={({ active, selected }) =>
                                             `relative cursor-default select-none py-3 pl-4 pr-10 transition-colors duration-150 ${
                                                 active 
