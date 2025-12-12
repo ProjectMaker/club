@@ -64,7 +64,7 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 
 	const mutation = useMutation({
 		mutationFn: async (data: UserFormData) => {
-			return await createUser(null, {...data, is_approved: data.is_approved === 'true'});
+			return await createUser(null, data);
 		},
 		onSuccess: (result) => {
 			if (result?.success) {
@@ -80,7 +80,7 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 			mutation.mutate(data);
 		});
 	};
-
+	
 	const state = mutation.data;
 
 	return (
