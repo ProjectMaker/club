@@ -66,11 +66,11 @@ export default async function Home() {
       <div className={`py-8 px-4 grid gap-12 items-center ${user ? 'lg:grid-cols-1' : 'lg:grid-cols-2'}`}>
         <div className="text-center lg:text-left">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Trouvez votre <span className="text-blue-300">laverie</span>, <span className="text-green-300">pressing</span> ou <span className="text-purple-300">matériel</span> idéal
+            Réseau des <span className="text-blue-300">professionnels</span>, <span className="text-green-300">investisseurs</span> et <span className="text-purple-300">nouveaux entrepreneurs</span> dans le domaine du lavage.
+          
           </h1>
           <p className="text-xl text-white/80 mb-8">
-            Découvrez les meilleures opportunités d&apos;investissement dans les laveries automatiques.
-            Des emplacements premium, des rendements attractifs.
+            Découvrez les meilleures opportunités d&apos;investissement dans les laveries automatiques, pressings, lavages automobiles et la vente de matériel professionnel.
           </p>
         </div>
         {!user && (
