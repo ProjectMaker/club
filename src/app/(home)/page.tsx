@@ -63,21 +63,29 @@ export default async function Home() {
 
   return (
     <div>
-      <div className={`py-8 px-4 grid gap-12 items-center ${user ? 'lg:grid-cols-1' : 'lg:grid-cols-2'}`}>
+      <div className={`py-8 px-4 grid gap-6`}>
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-4xl font-bold text-white mb-6 leading-tight">
             Réseau des <span className="text-blue-300">professionnels</span>, <span className="text-green-300">investisseurs</span> et <span className="text-purple-300">nouveaux entrepreneurs</span> dans le domaine du lavage.
           
           </h1>
-          <p className="text-xl text-white/80 mb-8">
-            Découvrez les meilleures opportunités d&apos;investissement dans les laveries automatiques, pressings, lavages automobiles et la vente de matériel professionnel.
-          </p>
         </div>
-        {!user && (
-          <div className="flex justify-center lg:justify-end">
-            <LoginForm />
+        <div className="flex flex-row gap-12 items-center justify-center">
+          <div className="flex w-full flex-row gap-8">
+            <div className="w-1/2">
+              <p className="text-xl text-white/80 mb-8">
+                Découvrez les meilleures opportunités d&apos;investissement dans les laveries automatiques, pressings, lavages automobiles et la vente de matériel professionnel.
+              </p>
+            </div>
+            {!user && (
+              <div className="w-1/2 flex justify-center">
+                <LoginForm />
+              </div>
+            )}
           </div>
-        )}
+
+      </div>
+        
       </div>
       <Suspense fallback={<SalesLoading />}>
         <Sales user={user as unknown as User} />
