@@ -6,7 +6,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { Fragment } from 'react';
 
 export interface SelectOption {
-    value: string | boolean;
+    value: string;
     label: string;
     disabled?: boolean;
     icon?: React.ReactNode;
@@ -16,7 +16,7 @@ export interface SelectOption {
 export interface SelectProps {
     id?: string;
     name?: string;
-    value: string | boolean;
+    value: string;
     options: SelectOption[];
     placeholder?: string;
     required?: boolean;
@@ -116,9 +116,9 @@ const Select: React.FC<SelectProps> = ({
                             leaveTo="opacity-0"
                         >
                             <Listbox.Options className="absolute mt-2 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none border border-gray-200 z-10">
-                                {options.map((option, idx) => (
+                                {options.map((option) => (
                                     <Listbox.Option
-                                        key={idx}
+                                        key={option.value}
                                         className={({ active, selected }) =>
                                             `relative cursor-default select-none py-3 pl-4 pr-10 transition-colors duration-150 ${
                                                 active 

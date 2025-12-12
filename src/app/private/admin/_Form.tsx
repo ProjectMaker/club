@@ -34,7 +34,7 @@ const userSchema = yup.object().shape({
 
 type UserFormData = {
 	id: string;
-	is_approved: boolean;
+	is_approved: string;
 	lastname: string;
 	firstname: string;
 	phone_number: string;
@@ -55,7 +55,7 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 			phone_number: defaultValues.phone_number || '',
 			email: defaultValues.email || '',
 			laundries_owner: defaultValues.laundries_owner ? 'yes' : 'no',
-			is_approved: defaultValues.is_approved || false,
+			is_approved: defaultValues.is_approved ? 'true' : 'false',
 			laundries_number: defaultValues.laundries_number || 0,
 		}
 	});
@@ -64,7 +64,7 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 
 	const mutation = useMutation({
 		mutationFn: async (data: UserFormData) => {
-			return await createUser(null, data);
+			return await createUser(null, {...data, is_approved: data.is_approved === 'true'});
 		},
 		onSuccess: (result) => {
 			if (result?.success) {
@@ -141,8 +141,8 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 								label="Validé"
 								size="sm"
 								options={[
-									{ value: true, label: 'Oui' },
-									{ value: false, label: 'Non' }
+									{ value: 'true', label: 'Oui' },
+									{ value: 'false', label: 'Non' }
 								]}
 								error={errors.is_approved?.message?.toString()}
 							/>
