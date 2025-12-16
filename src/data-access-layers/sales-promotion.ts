@@ -19,20 +19,32 @@ async function getLaundry(): Promise<Laundry> {
   }
 
   // Récupération des images séparément
-  const picturesResult = await supabase
-    .from('laundry_picture')
-    .select('id, data_url')
+  const pictureResult = await supabase
+    .from('laundry_pictures')
+    .select('id, name')
     .eq('laundry_id', laundryResult.data.id)
     .limit(1)
     .single()
 
-  if (picturesResult.error) {
-    throw picturesResult.error
+  if (pictureResult.error) {
+    throw pictureResult.error
+  } else if (!pictureResult.data) {
+    return laundryResult.data
   }
 
+
+  const { data } = await supabase
+    .storage
+    .from('images')
+    .createSignedUrl(`laundries/${laundryResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
   return {
     ...laundryResult.data,
-    pictures: picturesResult.data ? [picturesResult.data] : []
+    pictures: [{
+      id: pictureResult.data.id,
+      uuid: pictureResult.data.id,
+      name: pictureResult.data.name,
+      data_url: data?.signedUrl || ''
+    }]
   }
 }
 

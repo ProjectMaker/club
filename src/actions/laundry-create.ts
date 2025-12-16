@@ -74,7 +74,7 @@ export async function createLaundry(prevState: any, { pictures, ...laundry }: { 
     .from('laundry')
     .upsert({
       ...laundry,
-      updated_at: new Date()
+      //updated_at: new Date()
     })
     .select()
     .single()
