@@ -8,6 +8,8 @@ import {
 } from "@/data-access-layers/analytics"
 import { UsersIcon, UserPlusIcon, UserMinusIcon } from "@heroicons/react/24/outline"
 
+import Activity from "./_Activity"
+
 function Kpis() {
   const { data: laundriesUsersCount, isLoading: isLoadingLaundries } = useQuery({
     queryKey: ['count-laundries-users'],
@@ -95,6 +97,9 @@ function Kpis() {
 }
 export default function AnalyticsPage() {
   return (
-    <Kpis />
+    <>
+      <Kpis />
+      <Activity />
+    </>
   )
 }
