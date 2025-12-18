@@ -4,7 +4,11 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 import { createServiceClient } from './supabase-service'
 
-async function addAnalytics({user, request}: {user: User, request: NextRequest}) {
+async function addAnalytics({ user, request }: { user: User, request: NextRequest }) {
+  if (process.env.NODE_ENV === 'development') {
+    return
+  }
+
   let code
   if (request.nextUrl.pathname.indexOf('/private/laundries') === 0) {
     code = 'laundries'
@@ -25,6 +29,7 @@ async function addAnalytics({user, request}: {user: User, request: NextRequest})
       })
   }
 }
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -53,10 +58,6 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  console.log('----------------------------')
-  console.log(request.nextUrl.pathname)
-  console.log('----------------------------')
-  
   // IMPORTANT: DO NOT REMOVE auth.getUser()
   const {
     data: { user },
