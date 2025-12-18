@@ -11,6 +11,10 @@ const navigationItems = [
   {
     name: 'Utilisateurs en attente',
     href: '/private/admin?approved=false',
+  },
+  {
+    name: 'Analytics',
+    href: '/private/admin/analytics',
   }
 ];
 
@@ -18,16 +22,17 @@ export default function AdminNavigation() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isApproved = searchParams.get('approved') === 'true';
-  console.log('params', searchParams.get('approved'))
-  console.log(`${pathname}?approved=${isApproved}`)
+  
   return (
     <nav className="w-64 flex-shrink-0">
       <div className="flex flex-col space-y-2">
         {navigationItems.map((item) => {
           let isActive = false
-          if (item.href === '/private/admin?approved=true' && isApproved) {
+          if (item.href === '/private/admin?approved=true' && pathname.indexOf('/private/admin/analytics') === -1 && isApproved) {
             isActive = true
-          } else if (item.href === '/private/admin?approved=false' && !isApproved) {
+          } else if (item.href === '/private/admin?approved=false' && pathname.indexOf('/private/admin/analytics') === -1 && !isApproved) {
+            isActive = true
+          } else if (item.href === '/private/admin/analytics' && pathname.indexOf('/private/admin/analytics') === 0) {
             isActive = true
           }
           return (
