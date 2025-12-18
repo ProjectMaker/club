@@ -1,7 +1,30 @@
 import { createServerClient } from '@supabase/ssr'
-import { createClient } from '@supabase/supabase-js'
+import { createClient, User } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { createServiceClient } from './supabase-service'
+
+async function addAnalytics({user, request}: {user: User, request: NextRequest}) {
+  let code
+  if (request.nextUrl.pathname.indexOf('/private/laundries') === 0) {
+    code = 'laundries'
+  } else if (request.nextUrl.pathname.indexOf('/private/materials') === 0) {
+    code = 'materials'
+  } else if (request.nextUrl.pathname.indexOf('/private/pressings') === 0) {
+    code = 'pressings'
+  }
+  
+  if (code) {
+    const serviceClient = createServiceClient()
+    await serviceClient
+      .from('analytics')
+      .insert({
+        path: request.nextUrl.pathname,
+        user_id: user.id,
+        code,
+      })
+  }
+}
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -29,6 +52,10 @@ export async function updateSession(request: NextRequest) {
       },
     }
   )
+
+  console.log('----------------------------')
+  console.log(request.nextUrl.pathname)
+  console.log('----------------------------')
   
   // IMPORTANT: DO NOT REMOVE auth.getUser()
   const {
@@ -47,34 +74,24 @@ export async function updateSession(request: NextRequest) {
 
   // Si l'utilisateur est connecté et accède à une page privée, vérifier is_approved
   if (user && isPrivatePage) {
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    if (serviceRoleKey) {
-      const serviceClient = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        serviceRoleKey,
-        {
-          auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-          },
-        }
-      )
+    await addAnalytics({user, request})
+    const serviceClient = createServiceClient()
 
-      const { data: userData } = await serviceClient
-        .from('users')
-        .select('is_approved')
-        .eq('id', user.id)
-        .single()
+    const { data: userData } = await serviceClient
+      .from('users')
+      .select('is_approved')
+      .eq('id', user.id)
+      .single()
 
-      // Si l'utilisateur n'est pas approuvé, déconnecter et rediriger
-      if (!userData?.is_approved) {
-        await supabase.auth.signOut()
-        const url = request.nextUrl.clone()
-        url.pathname = '/login'
-        url.searchParams.set('error', 'account_not_approved')
-        return NextResponse.redirect(url)
-      }
+    // Si l'utilisateur n'est pas approuvé, déconnecter et rediriger
+    if (!userData?.is_approved) {
+      await supabase.auth.signOut()
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      url.searchParams.set('error', 'account_not_approved')
+      return NextResponse.redirect(url)
     }
+    
   }
   
   return supabaseResponse
