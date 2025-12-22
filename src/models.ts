@@ -30,7 +30,7 @@ export interface Laundry {
     price: number;
     materials: { name: string }[]
     created_at: string;
-    status: 'available' | 'sold' | 'pending';
+    status: 'available' | 'reserved' | 'sold';
     updated_at: string;
     user: User;
     pictures: Picture[];
@@ -48,7 +48,7 @@ export interface Pressing {
     price: number;
     materials: { name: string }[]
     created_at: string;
-    status: 'available' | 'sold' | 'pending';
+    status: 'available' | 'reserved' | 'sold';
     updated_at: string;
     pictures: Picture[];
     user: User;
