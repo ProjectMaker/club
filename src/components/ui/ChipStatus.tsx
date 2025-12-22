@@ -1,4 +1,4 @@
-type Status = 'available' | 'reserved' | 'sold'
+import { Status } from '@/models'
 
 const STATUS_CONFIG: Record<Status, { label: string; className: string }> = {
     available: {

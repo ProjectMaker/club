@@ -1,3 +1,5 @@
+export type Status = 'available' | 'reserved' | 'sold'
+
 export interface User {
     id: string;
     email: string | null;
@@ -30,7 +32,7 @@ export interface Laundry {
     price: number;
     materials: { name: string }[]
     created_at: string;
-    status: 'available' | 'reserved' | 'sold';
+    status: Status;
     updated_at: string;
     user: User;
     pictures: Picture[];
@@ -48,7 +50,7 @@ export interface Pressing {
     price: number;
     materials: { name: string }[]
     created_at: string;
-    status: 'available' | 'reserved' | 'sold';
+    status: Status;
     updated_at: string;
     pictures: Picture[];
     user: User;
@@ -64,7 +66,7 @@ export interface Material {
     quantity: number;
     infos: string | null;
     created_at: string;
-    status: 'available' | 'sold' | 'reserved';
+    status: Status;
     user_id: string;
     category: string;
     subcategory: string;
