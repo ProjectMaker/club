@@ -1,25 +1,24 @@
 'use client';
 
 import { useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function LaundryMaterials() {
-    const { watch, setValue, formState: { errors } } = useFormContext();
+    const { watch, setValue, control, formState: { errors } } = useFormContext();
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'materials'
+    });
     const [newMaterial, setNewMaterial] = useState('');
     
     const materials = watch('materials') || [];
 
     const addMaterial = () => {
-        if (newMaterial.trim() && !materials.includes(newMaterial.trim())) {
-            setValue('materials', [...materials, newMaterial.trim()]);
+        if (newMaterial.trim()) {
+            append({ name: newMaterial.trim() });
             setNewMaterial('');
         }
-    };
-
-    const removeMaterial = (index: number) => {
-        const updatedMaterials = materials.filter((_: any, i: number) => i !== index);
-        setValue('materials', updatedMaterials);
     };
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -68,22 +67,22 @@ export default function LaundryMaterials() {
                     Matériaux ajoutés ({materials.length})
                 </h3>
                 
-                {materials.length === 0 ? (
+                {fields.length === 0 ? (
                     <div className="text-center py-8 text-white/60">
                         <p>Aucun matériel ajouté pour le moment.</p>
                         <p className="text-sm mt-2">Ajoutez des matériaux pour décrire les équipements disponibles dans la laverie.</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {materials.map((material: { name: string }, index: number) => (
+                        {fields.map((field: any, index: number) => (
                             <div
-                                key={index}
+                                key={field.id}
                                 className="flex items-center justify-between p-3 bg-white/10 border border-white/20 rounded-md"
                             >
-                                <span className="text-white flex-1">{material.name}.</span>
+                                <span className="text-white flex-1">{field.name}</span>
                                 <button
                                     type="button"
-                                    onClick={() => removeMaterial(index)}
+                                    onClick={() => remove(index)}
                                     className="p-1 text-red-400 hover:text-red-300 transition-colors"
                                     title="Supprimer ce matériel"
                                 >
@@ -114,11 +113,9 @@ export default function LaundryMaterials() {
                             key={suggestion}
                             type="button"
                             onClick={() => {
-                                if (!materials.includes(suggestion)) {
-                                    setValue('materials', [...materials, {name: suggestion}]);
-                                }
+                                append({ name: suggestion });
                             }}
-                            disabled={materials.includes(suggestion)}
+                            disabled={fields.some((material:any) => material.name === suggestion)}
                             className="cursor-pointer px-3 py-2 text-sm bg-white/10 text-white/80 rounded-md hover:bg-white/20 transition-colors disabled:bg-white/5 disabled:text-white/30 disabled:cursor-not-allowed"
                         >
                             {suggestion}
