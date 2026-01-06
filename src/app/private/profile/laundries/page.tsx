@@ -28,7 +28,7 @@ export default async function Laundries() {
                         Liste de vos laveries ({laundries?.length || 0})
                     </h2>
                     <Link
-                        href={'/profile/laundries/new'}
+                        href={'/private/profile/laundries/new'}
                         className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                     >
                         Ajouter une laverie
