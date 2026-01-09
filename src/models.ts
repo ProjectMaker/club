@@ -8,6 +8,8 @@ export interface User {
     phone_number: string | null;
     laundries_number: number;
     laundries_owner: boolean;
+    pressings_number: number;
+    carwashes_number: number;
     created_at: string;
     is_admin: boolean
     is_approved: boolean;

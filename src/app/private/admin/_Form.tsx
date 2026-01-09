@@ -30,6 +30,26 @@ const userSchema = yup.object().shape({
 		then: schema => schema.min(1, 'Veuillez indiquer le nombre de laveries').required('Ce champ est requis si vous possédez des laveries'),
 		otherwise: schema => schema.notRequired(),
 	}),
+	pressings_owner: yup.string().required(),
+	pressings_number: yup.number().transform((value) => {
+		if (value === '' || value === null || value === undefined) return undefined;
+		const num = Number(value);
+		return isNaN(num) ? undefined : num;
+	}).when('pressings_owner', {
+		is: 'yes',
+		then: schema => schema.min(1, 'Veuillez indiquer le nombre de pressings').required('Ce champ est requis si vous possédez des pressings'),
+		otherwise: schema => schema.notRequired(),
+	}),
+	carwashes_owner: yup.string().required(),
+	carwashes_number: yup.number().transform((value) => {
+		if (value === '' || value === null || value === undefined) return undefined;
+		const num = Number(value);
+		return isNaN(num) ? undefined : num;
+	}).when('carwashes_owner', {
+		is: 'yes',
+		then: schema => schema.min(1, 'Veuillez indiquer le nombre de stations de lavage auto').required('Ce champ est requis si vous possédez des stations de lavage auto'),
+		otherwise: schema => schema.notRequired(),
+	}),
 });
 
 type UserFormData = {
@@ -41,9 +61,14 @@ type UserFormData = {
 	email: string;
 	laundries_owner: string;
 	laundries_number: number | undefined;
+	pressings_owner: string;
+	pressings_number: number | undefined;
+	carwashes_owner: string;
+	carwashes_number: number | undefined;
 };
 
 const UserForm = ({ defaultValues }: { defaultValues: User }) => {
+	console.log(defaultValues);
 	const [isTransitioning, startTransition] = useTransition();
 	const queryClient = useQueryClient();
 	const { register, handleSubmit, watch, formState: { errors }, control } = useForm<UserFormData>({
@@ -57,14 +82,23 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 			laundries_owner: defaultValues.laundries_owner ? 'yes' : 'no',
 			is_approved: defaultValues.is_approved ? 'true' : 'false',
 			laundries_number: defaultValues.laundries_number || 0,
+			pressings_owner: defaultValues.pressings_number ? 'yes' : 'no',
+			pressings_number: defaultValues.pressings_number,
+			carwashes_owner: defaultValues.carwashes_number ? 'yes' : 'no',
+			carwashes_number: defaultValues.carwashes_number,
 		}
 	});
-
 	const ownsLaundries = watch('laundries_owner');
+	const ownsPressings = watch('pressings_owner');
+	const ownsCarwashes = watch('carwashes_owner');
 
 	const mutation = useMutation({
-		mutationFn: async (data: UserFormData) => {
-			return await createUser(null, data);
+		mutationFn: async ({pressings_owner, carwashes_owner, ...data}: UserFormData) => {
+			return await createUser(null, {
+				...data,
+				pressings_number: pressings_owner === 'yes' ? data.pressings_number : 0,
+				carwashes_number: carwashes_owner === 'yes' ? data.carwashes_number : 0,
+			});
 		},
 		onSuccess: (result) => {
 			if (result?.success) {
@@ -173,6 +207,63 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 							type="text"
 							placeholder="0"
 							error={errors.laundries_number?.message}
+							required
+						/>
+					</div>
+				)}
+
+				
+				<div>
+					<label className="block text-sm font-medium text-white/80 mb-2">Posséde des pressings ?</label>
+					<div className="flex items-center space-x-4">
+						<label className="flex items-center cursor-pointer">
+							<input {...register('pressings_owner')} type="radio" value="yes" className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-transparent" />
+							<span className="ml-2 text-sm text-white/80">Oui</span>
+						</label>
+						<label className="flex items-center cursor-pointer">
+							<input {...register('pressings_owner')} type="radio" value="no" className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-transparent" />
+							<span className="ml-2 text-sm text-white/80">Non</span>
+						</label>
+					</div>
+				</div>
+
+				{ownsPressings === 'yes' && (
+					<div>
+						<Text
+							{...register('pressings_number', { valueAsNumber: true })}
+							label="Combien"
+							id="pressingsCount"
+							type="text"
+							placeholder="0"
+							error={errors.pressings_number?.message}
+							required
+						/>
+					</div>
+				)}
+
+				<div>
+					<label className="block text-sm font-medium text-white/80 mb-2">Posséde des stations de lavage auto ?</label>
+					<div className="flex items-center space-x-4">
+						<label className="flex items-center cursor-pointer">
+							<input {...register('carwashes_owner')} type="radio" value="yes" className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-transparent" />
+							<span className="ml-2 text-sm text-white/80">Oui</span>
+						</label>
+						<label className="flex items-center cursor-pointer">
+							<input {...register('carwashes_owner')} type="radio" value="no" className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 bg-transparent" />
+							<span className="ml-2 text-sm text-white/80">Non</span>
+						</label>
+					</div>
+				</div>
+
+				{ownsCarwashes === 'yes' && (
+					<div>
+						<Text
+							{...register('carwashes_number', { valueAsNumber: true })}
+							label="Combien"
+							id="carwashesCount"
+							type="text"
+							placeholder="0"
+							error={errors.carwashes_number?.message}
 							required
 						/>
 					</div>
