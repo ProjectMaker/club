@@ -1,7 +1,7 @@
 'use client'
+import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { getUsers, getCountUsers } from "@/data-access-layers/users";
@@ -10,8 +10,42 @@ import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
 import Search from "@/components/ui/Search";
 
+type OwnerFilter = 'laundries' | 'pressings' | 'carwashes';
 
-function useList({ verbatim }: { verbatim: string }) {
+const FILTER_OPTIONS: { value: OwnerFilter; label: string; icon: React.ReactNode; activeColor: string }[] = [
+  { 
+    value: 'laundries', 
+    label: 'Laveries',
+    activeColor: 'from-blue-500 to-cyan-400',
+    icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+      </svg>
+    )
+  },
+  { 
+    value: 'pressings', 
+    label: 'Pressings',
+    activeColor: 'from-violet-500 to-purple-400',
+    icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+      </svg>
+    )
+  },
+  { 
+    value: 'carwashes', 
+    label: 'Car Wash',
+    activeColor: 'from-emerald-500 to-teal-400',
+    icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+      </svg>
+    )
+  },
+];
+
+function useList({ verbatim, ownerFilters }: { verbatim: string; ownerFilters: OwnerFilter[] }) {
   const searchParams = useSearchParams();
   const isApproved = searchParams.get('approved') === 'true';
   const {
@@ -23,13 +57,14 @@ function useList({ verbatim }: { verbatim: string }) {
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['users', isApproved, verbatim],
+    queryKey: ['users', isApproved, verbatim, ownerFilters],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => {
       return getUsers({
         verbatim,
         page: pageParam,
         count: 20,
-        isApproved
+        isApproved,
+        ownerFilters
       })
     },
     initialPageParam: 1,
@@ -52,20 +87,74 @@ function useList({ verbatim }: { verbatim: string }) {
   }
 }
 
-function CountUsers() {
+function CountUsers({ ownerFilters }: { ownerFilters: OwnerFilter[] }) {
   const searchParams = useSearchParams();
   const isApproved = searchParams.get('approved') === 'true';
   const { data, isLoading } = useQuery({
-    queryKey: ['count-users', isApproved],
-    queryFn: () => getCountUsers({ isApproved })
+    queryKey: ['count-users', isApproved, ownerFilters],
+    queryFn: () => getCountUsers({ isApproved, ownerFilters })
   })
   return (
     <div className="text-white">Nombre total d&apos;utilisateurs : {isLoading ? '...' : data}</div>
   )
 }
 
+function OwnerFilters({ 
+  selectedFilters, 
+  onFilterChange 
+}: { 
+  selectedFilters: OwnerFilter[]; 
+  onFilterChange: (filters: OwnerFilter[]) => void;
+}) {
+  const handleToggleFilter = (filter: OwnerFilter) => {
+    if (selectedFilters.includes(filter)) {
+      onFilterChange(selectedFilters.filter(f => f !== filter));
+    } else {
+      onFilterChange([...selectedFilters, filter]);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      {FILTER_OPTIONS.map(({ value, label, icon, activeColor }) => {
+        const isActive = selectedFilters.includes(value);
+        return (
+          <button
+            key={value}
+            type="button"
+            onClick={() => handleToggleFilter(value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleToggleFilter(value)}
+            aria-label={`Filtrer par ${label}`}
+            aria-pressed={isActive}
+            tabIndex={0}
+            className={`
+              group relative flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium
+              transition-all duration-300 ease-out cursor-pointer select-none
+              ${isActive 
+                ? `bg-gradient-to-r ${activeColor} text-white shadow-lg shadow-white/10` 
+                : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80 border border-white/10 hover:border-white/20'
+              }
+            `}
+          >
+            <span className={`transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`}>
+              {icon}
+            </span>
+            <span>{label}</span>
+            {isActive && (
+              <svg className="w-3.5 h-3.5 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Admin() {
   const [verbatim, setVerbatim] = useState('');
+  const [ownerFilters, setOwnerFilters] = useState<OwnerFilter[]>([]);
   const debouncedVerbatim = useDebounce(verbatim, 500);
   const {
     users,
@@ -75,14 +164,16 @@ export default function Admin() {
     shouldFetchNextPage,
     isFetchingNextPage
   } = useList({
-    verbatim: debouncedVerbatim
+    verbatim: debouncedVerbatim,
+    ownerFilters
   });
 
 
   return (
     <div>
       <div className="flex justify-between mt-3 space-x-4 mt-3 items-center">
-        <CountUsers />
+        <CountUsers ownerFilters={ownerFilters} />
+        <OwnerFilters selectedFilters={ownerFilters} onFilterChange={setOwnerFilters} />
         <Search value={verbatim} onChange={setVerbatim} />
       </div>
       {
@@ -108,6 +199,12 @@ export default function Admin() {
                   </th>
                   <th className="text-left py-2 px-4 text-white font-semibold">
                     Laveries
+                  </th>
+                  <th className="text-left py-2 px-4 text-white font-semibold">
+                    Pressings
+                  </th>
+                  <th className="text-left py-2 px-4 text-white font-semibold">
+                    Auto
                   </th>
                   <th className="text-left py-2 px-4 text-white font-semibold">
                     Date de création
@@ -141,6 +238,12 @@ export default function Admin() {
                     <td className="py-2 px-4 text-white/80">{user.lastname}</td>
                     <td className="py-2 px-4 text-white/80">
                       {user.laundries_number}
+                    </td>
+                    <td className="py-2 px-4 text-white/80">
+                      {user.pressings_number}
+                    </td>
+                    <td className="py-2 px-4 text-white/80">
+                      {user.carwashes_number}
                     </td>
                     <td className="py-2 px-4 text-white/80">
                       {formatDate(user.created_at)}

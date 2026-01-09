@@ -2,16 +2,20 @@
 
 import { createServiceClient } from "@/lib/supabase-service";
 
+type OwnerFilter = 'laundries' | 'pressings' | 'carwashes';
+
 export async function getUsers({ 
   verbatim = '', 
   isApproved = true,
   page, 
-  count 
+  count,
+  ownerFilters = []
 }: { 
   verbatim?: string; 
   page: number; 
   count: number; 
   isApproved?: boolean;
+  ownerFilters?: OwnerFilter[];
 }) {
   // Calculer from et to pour Supabase à partir de page et count
   const from = (page - 1) * count;
@@ -26,6 +30,22 @@ export async function getUsers({
   // Ajouter le filtre de recherche si fourni
   if (verbatim && verbatim.trim()) {
     query = query.or(`email.ilike.%${verbatim.trim()}%,firstname.ilike.%${verbatim.trim()}%,lastname.ilike.%${verbatim.trim()}%`);
+  }
+  // Ajouter les filtres de propriétaire (OR)
+  if (ownerFilters.length > 0) {
+    const orConditions: string[] = [];
+    if (ownerFilters.includes('laundries')) {
+      orConditions.push('laundries_number.gt.0');
+    }
+    if (ownerFilters.includes('pressings')) {
+      orConditions.push('pressings_number.gt.0');
+    }
+    if (ownerFilters.includes('carwashes')) {
+      orConditions.push('carwashes_number.gt.0');
+    }
+    if (orConditions.length > 0) {
+      query = query.or(orConditions.join(','));
+    }
   }
 
   const records = await query
@@ -84,13 +104,38 @@ export async function getOnboardingUsers({
   }
 }
 
-export async function getCountUsers({ isApproved = true }: { isApproved?: boolean }) {
+export async function getCountUsers({ 
+  isApproved = true,
+  ownerFilters = []
+}: { 
+  isApproved?: boolean;
+  ownerFilters?: OwnerFilter[];
+}) {
   const supabase = await createServiceClient()
 
-  const { count, error } = await supabase
+  let query = supabase
     .from('users')
     .select('*', { count: 'exact', head: true })
     .eq('is_approved', isApproved)
+
+  // Ajouter les filtres de propriétaire (OR)
+  if (ownerFilters.length > 0) {
+    const orConditions: string[] = [];
+    if (ownerFilters.includes('laundries')) {
+      orConditions.push('laundries_number.gt.0');
+    }
+    if (ownerFilters.includes('pressings')) {
+      orConditions.push('pressings_number.gt.0');
+    }
+    if (ownerFilters.includes('carwashes')) {
+      orConditions.push('carwashes_number.gt.0');
+    }
+    if (orConditions.length > 0) {
+      query = query.or(orConditions.join(','));
+    }
+  }
+
+  const { count, error } = await query
   
   if (error) {
     return 0
