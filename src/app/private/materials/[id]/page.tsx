@@ -1,5 +1,7 @@
+
 import Link from "next/link"
 
+import { calculateMaterialPrices } from '@/utils/functions';
 import { getMaterial } from "@/data-access-layers/materials"
 import ChipStatus from '@/components/ui/ChipStatus'
 import Carousel from "./_Carousel"
@@ -7,7 +9,7 @@ import Carousel from "./_Carousel"
 export default async function Material({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const material = await getMaterial(parseInt(id))
-  
+  const prices = calculateMaterialPrices({ price: material.price, quantity: material.quantity })
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Bouton retour */}
@@ -48,8 +50,8 @@ export default async function Material({ params }: { params: Promise<{ id: strin
             {/* Statistiques principales */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-white/10 p-6 rounded-lg text-center">
-                <div className="text-3xl font-bold text-blue-300 mb-2">{material.price.toLocaleString()}</div>
-                <div className="text-white/80 font-semibold">Prix (€)</div>
+                <div className="text-3xl font-bold text-blue-300 mb-2">{prices.sales.toString()}</div>
+                <div className="text-white/80 font-semibold">Prix (€ HT)</div>
               </div>
               <div className="bg-white/10 p-6 rounded-lg text-center">
                 <div className="text-3xl font-bold text-green-300 mb-2">{material.quantity}</div>

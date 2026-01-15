@@ -1,11 +1,12 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 
 import { MATERIAL_CATEGORIES } from '@/utils/constants';
-import { getCategoryLabel, getBrandLabel, getSubcategoryLabel } from '@/utils/functions';
+import { getCategoryLabel, getBrandLabel, getSubcategoryLabel, calculateMaterialPrices } from '@/utils/functions';
 import { Material } from '@/models';
 import { getFirstPicture } from '@/data-access-layers/materials';
 import ChipStatus from '@/components/ui/ChipStatus';
@@ -36,6 +37,9 @@ function MaterialPicture({ material }: { material: Material }) {
 }
 
 export default function Card({ material }: { material: Material }) {
+  const prices = useMemo(() => {
+    return calculateMaterialPrices({ price: material.price, quantity: material.quantity })
+  }, [material.price, material.quantity])
   return (
     <div
       key={material.id}
@@ -74,7 +78,7 @@ export default function Card({ material }: { material: Material }) {
             <div className="text-xs text-white/60">Qté</div>
           </div>
           <div className="text-center p-2 bg-white/10 rounded">
-            <div className="text-lg font-bold text-yellow-300">{material.price}</div>
+            <div className="text-lg font-bold text-yellow-300">{prices.sales.toString()}</div>
             <div className="text-xs text-white/60">€</div>
           </div>
         </div>
