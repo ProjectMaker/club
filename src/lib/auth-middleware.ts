@@ -1,9 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
-import { createClient, User } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { createServiceClient } from './supabase-service'
 import { getUser } from '@/utils/auth'
+import { User } from '@/models'
 
 async function addAnalytics({ user, request }: { user: User | null, request: NextRequest }) {
   if (!user) {
