@@ -25,5 +25,5 @@ export async function deletePressing(prevState: any, { pressingId }: { pressingI
     .from('pressings')
     .delete()
     .eq('id', pressingId)
-  revalidatePath('/private/profile/pressings', 'page')
+  revalidatePath('/private/admin/pressings', 'page')
 }

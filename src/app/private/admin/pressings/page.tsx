@@ -29,7 +29,7 @@ export default async function Pressings() {
                         Liste de vos pressings ({pressings?.length || 0})
                     </h2>
                     <Link
-                        href={'/private/profile/pressings/new'}
+                        href={'/private/admin/pressings/new'}
                         className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                     >
                         Ajouter un pressing
@@ -104,7 +104,7 @@ export default async function Pressings() {
                                         <td className="py-3 px-4">
                                             <div className="flex items-center gap-3">
                                                 <Link
-                                                    href={`/private/profile/pressings/${pressing.id}`}
+                                                    href={`/private/admin/pressings/${pressing.id}`}
                                                     className="text-blue-400 hover:text-blue-300 text-sm font-medium cursor-pointer"
                                                 >
                                                     Voir

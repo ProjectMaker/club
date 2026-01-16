@@ -1,20 +1,27 @@
 import Link from "next/link";
-import { getProfileLaundries } from '@/data-access-layers/laundries'
-import { formatDate, getStatusLabel, getStatusColor } from '@/utils/functions'
+import { getProfileMaterials } from '@/data-access-layers/materials'
+import { 
+  formatDate, 
+  getStatusLabel, 
+  getStatusColor,
+  getCategoryLabel,
+  getBrandLabel
+} from '@/utils/functions'
 
+import DeleteButton from "./_DeleteButton"
 
-export default async function Laundries() {
-  const laundries = await getProfileLaundries()
+export default async function Materials() {
+  const materials = await getProfileMaterials()
   return (
     <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-white mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                    Mes laveries
+                    Mon matériel
                 </h1>
                 <div className="text-white/90 leading-relaxed">
                     <div className="text-lg">
-                        Consultez la liste de <span className="font-semibold text-blue-300">vos laveries</span> mises en vente.
+                        Consultez la liste de <span className="font-semibold text-blue-300">votre matériel</span> mises en vente.
                     </div>
                     <div className="text-base">
                         Gérez vos annonces et suivez leur statut.
@@ -25,23 +32,23 @@ export default async function Laundries() {
             <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
                     <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">
-                        Liste de vos laveries ({laundries?.length || 0})
+                        Liste de votre matériel ({materials?.length || 0})
                     </h2>
                     <Link
-                        href={'/private/profile/laundries/new'}
+                        href={'/private/admin/materials/new'}
                         className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200"
                     >
-                        Ajouter une laverie
+                        Ajouter un matériel
                     </Link>
                 </div>
 
-                {laundries?.length === 0 ? (
+                {materials?.length === 0 ? (
                     <div className="text-center py-12">
                         <div className="text-white/60 text-lg mb-4">
-                            Vous n&apos;avez pas encore de laveries en vente
+                            Vous n&apos;avez pas encore de pressing en vente
                         </div>
                         <div className="text-white/40 text-base">
-                            Contactez notre équipe pour ajouter votre première laverie
+                            Contactez notre équipe pour ajouter votre premier matériel
                         </div>
                     </div>
                 ) : (
@@ -51,22 +58,28 @@ export default async function Laundries() {
                             <thead>
                                 <tr className="border-b border-white/20">
                                     <th className="text-left py-3 px-4 text-white font-semibold">
-                                        Nom
+                                        Nom/Modèle
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
-                                        Ville
+                                        Catégorie
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
-                                        Surface
+                                        Marque
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
                                         Prix
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
+                                        Qté
+                                    </th>
+                                    <th className="text-left py-3 px-4 text-white font-semibold">
                                         Statut
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
-                                        Date
+                                        Utilisateur
+                                    </th>
+                                    <th className="text-left py-3 px-4 text-white font-semibold">
+                                        Date de création
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
                                         Actions
@@ -74,42 +87,47 @@ export default async function Laundries() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {laundries?.map((laundry) => (
+                                {materials?.map((material) => (
                                     <tr
-                                        key={laundry.id}
+                                        key={material.id}
                                         className="border-b border-white/10 hover:bg-white/5 transition-colors duration-200"
                                     >
                                         <td className="py-3 px-4 text-white">
-                                            <div className="font-medium">
-                                                {laundry.name}
-                                            </div>
+                                            {material.model || material.name}
+                                            
                                         </td>
                                         <td className="py-3 px-4 text-white/80">
-                                            {laundry.city}
+                                            {getCategoryLabel(material.category)}
                                         </td>
                                         <td className="py-3 px-4 text-white/80">
-                                            {laundry.surface} m²
+                                            {getBrandLabel(material.brand)}
                                         </td>
                                         <td className="py-3 px-4 text-white font-medium">
-                                            {laundry.price.toLocaleString('fr-FR')} €
+                                            {material.price.toLocaleString('fr-FR')} €
+                                        </td>
+                                        <td className="py-3 px-4 text-white/80">
+                                            {getBrandLabel(material.quantity)}
                                         </td>
                                         <td className="py-3 px-4">
-                                            <span className={`font-medium ${getStatusColor(laundry.status)}`}>
-                                                {getStatusLabel(laundry.status)}
+                                            <span className={`font-medium ${getStatusColor(material.status)}`}>
+                                                {getStatusLabel(material.status)}
                                             </span>
                                         </td>
                                         <td className="py-3 px-4 text-white/80">
-                                            {formatDate(laundry.created_at)}
+                                                {material.users?.firstname} {material.users?.lastname}
+                                            </td>
+                                        <td className="py-3 px-4 text-white/80">
+                                            {formatDate(material.created_at, false)}
                                         </td>
                                         <td className="py-3 px-4">
                                             <div className="flex items-center gap-3">
                                                 <Link
-                                                    href={`/private/profile/laundries/${laundry.id}`}
+                                                    href={`/private/admin/materials/${material.id}`}
                                                     className="text-blue-400 hover:text-blue-300 text-sm font-medium cursor-pointer"
                                                 >
                                                     Voir
                                                 </Link>
-                                                
+                                                <DeleteButton material={material} />
                                             </div>
                                         </td>
                                     </tr>

@@ -19,7 +19,7 @@ export async function createUser(prevState: any, {laundries_owner, ...user}: { l
     return { success: false, error: error.message }
   }
   // Invalider toutes les variantes de la page admin (avec ou sans query params)
-  revalidatePath('/private/admin', 'page')
+  revalidatePath('/private/admin/users', 'page')
   
   return { success: true, data: data }
 }

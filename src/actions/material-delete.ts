@@ -25,5 +25,5 @@ export async function deleteMaterial(prevState: any, { materialId }: { materialI
     .from('materials')
     .delete()
     .eq('id', materialId)
-  revalidatePath('/private/profile/materials', 'page')
+  revalidatePath('/private/private/materials', 'page')
 }

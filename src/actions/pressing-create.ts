@@ -82,6 +82,6 @@ export async function createPressing(prevState: any, { pictures, ...pressing }: 
   }
   await processPictures(data.id, pictures)
 
-  revalidatePath('/private/profile/pressings', 'page')
-  redirect('/private/profile/pressings')
+  revalidatePath('/private/admin/pressings', 'page')
+  redirect('/private/admin/pressings')
 }

@@ -85,6 +85,6 @@ export async function createMaterial(prevState: any, { pictures, ...material }: 
   }
   await processPictures(data.id, pictures)
   
-  revalidatePath('/private/profile/materials', 'page')
-  redirect('/private/profile/materials')
+  revalidatePath('/private/admin/materials', 'page')
+  redirect('/private/admin/materials')
 }

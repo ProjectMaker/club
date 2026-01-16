@@ -84,7 +84,7 @@ export async function createLaundry(prevState: any, { pictures, ...laundry }: { 
   }
   await processPictures(data.id, pictures)
 
-  revalidatePath('/private/profile/laundries', 'page')
+  revalidatePath('/private/admin/laundries', 'page')
   // Traitement des images
-  redirect('/private/profile/laundries')
+  redirect('/private/admin/laundries')
 }

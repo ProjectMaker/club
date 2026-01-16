@@ -8,10 +8,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 
-import LaundryInfos from './_Infos';
-import LaundryMaterials from './_Materials';
-import LaundryPictures from './_Pictures';
-import { createLaundry } from '@/actions/laundry-create';
+import PressingInfos from './_Infos';
+import PressingMaterials from './_Materials';
+import PressingPictures from './_Pictures';
+import { createPressing } from '@/actions/pressing-create';
+
 
 const schema = yup.object().shape({
   name: yup.string().required('Le nom est requis'),
@@ -47,16 +48,15 @@ interface Props {
 export default function LaundryForm({ defaultValues }: Props) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [state, formAction, isPending] = useActionState(createLaundry, null);
+  const [state, formAction] = useActionState(createPressing, null);
   const [isTransitioning, startTransition] = useTransition();
   const methods = useForm({
     resolver: yupResolver(schema),
     defaultValues,
     mode: 'onChange'
   });
-
+  
   const { handleSubmit, formState: { errors }, reset } = methods;
-
   // Réinitialiser le formulaire quand les defaultValues changent
   useEffect(() => {
     reset(defaultValues);
@@ -102,33 +102,33 @@ export default function LaundryForm({ defaultValues }: Props) {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return <LaundryInfos />;
+        return <PressingInfos />;
       case 1:
-        return <LaundryMaterials />;
+        return <PressingMaterials />;
       case 2:
-        return <LaundryPictures />;
+        return <PressingPictures />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
       {/* Bouton retour */}
       <Link
-        href={'/private/profile/laundries'}
+        href={'/private/admin/pressings'}
         className="mb-6 flex items-center cursor-pointer text-white/80 hover:text-white transition-colors duration-200"
       >
         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Retour aux laveries
+        Retour aux pressings
       </Link>
 
       <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 p-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-white">
-            {defaultValues.id ? 'Modifier la laverie' : 'Nouvelle laverie'}
+            {defaultValues.id ? 'Modifier le pressing' : 'Nouveau pressing'}
           </h1>
           {(Object.keys(errors).length > 0 || state?.error) && (
             <div className="flex items-center bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2">
@@ -176,7 +176,7 @@ export default function LaundryForm({ defaultValues }: Props) {
           {currentStep === 0 ? (
             <button
               type="button"
-              onClick={() => router.push('/profile/laundries')}
+              onClick={() => router.push('/admin/laundries')}
               className="py-2 px-4 cursor-pointer rounded-lg font-medium bg-white/20 text-white hover:bg-white/30 transition-colors duration-200"
             >
               Annuler

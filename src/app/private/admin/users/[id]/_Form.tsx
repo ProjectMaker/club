@@ -68,7 +68,6 @@ type UserFormData = {
 };
 
 const UserForm = ({ defaultValues }: { defaultValues: User }) => {
-	console.log(defaultValues);
 	const [isTransitioning, startTransition] = useTransition();
 	const queryClient = useQueryClient();
 	const { register, handleSubmit, watch, formState: { errors }, control } = useForm<UserFormData>({
@@ -270,7 +269,7 @@ const UserForm = ({ defaultValues }: { defaultValues: User }) => {
 				)}
 
 				<div className="flex justify-end pt-4 space-x-3">
-					<Link href="/private/admin" className="px-6 py-2 rounded-lg text-sm font-medium text-white/80 bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-colors">
+					<Link href="/private/admin/users" className="px-6 py-2 rounded-lg text-sm font-medium text-white/80 bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-colors">
 						Annuler
 					</Link>
 					<button type="submit" disabled={isTransitioning} className="px-6 py-2 cursor-pointer rounded-lg text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed">

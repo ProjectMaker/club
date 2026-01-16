@@ -251,7 +251,7 @@ export default function Admin() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <Link
-                          href={`/private/admin/${user.id}?approved=${user.is_approved}`}
+                          href={`/private/admin/users/${user.id}?approved=${user.is_approved}`}
                           className="text-blue-400 hover:text-blue-300 text-sm font-medium cursor-pointer"
                         >
                           Voir
