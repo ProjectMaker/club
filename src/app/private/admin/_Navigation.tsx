@@ -62,12 +62,13 @@ const SalesNavigation = ({ user }: { user: User | null }) => {
       {salesItem.map((item) => {
         let isActive = false
         let show = true
+        if (item.href.startsWith('/private/admin/laundries') || item.href.startsWith('/private/admin/pressings') && !user?.is_admin) {
+          show = false
+        }
         if (pathname === '/private/admin/laundries') {
           isActive = item.href.indexOf('/private/admin/laundries') === 0 ? true : false;
-          show = user?.is_admin ? true : false;
         } else if (pathname === '/private/admin/pressings') {
           isActive = item.href.indexOf('/private/admin/pressings') === 0 ? true : false;
-          show = user?.is_admin ? true : false;
         } else if (pathname === '/private/admin/materials') {
           isActive = item.href.indexOf('/private/admin/materials') === 0 ? true : false;
         }

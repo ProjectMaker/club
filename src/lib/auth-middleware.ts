@@ -3,8 +3,12 @@ import { createClient, User } from '@supabase/supabase-js'
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { createServiceClient } from './supabase-service'
+import { getUser } from '@/utils/auth'
 
-async function addAnalytics({ user, request }: { user: User, request: NextRequest }) {
+async function addAnalytics({ user, request }: { user: User | null, request: NextRequest }) {
+  if (!user) {
+    return
+  }
   if (process.env.NODE_ENV === 'development') {
     return
   }
@@ -58,16 +62,15 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: DO NOT REMOVE auth.getUser()
-  const {
-    data: { user },
-    error
-  } = await supabase.auth.getUser()
-  
+
+  const user = await getUser()
+
   // Vérifier si c'est une requête vers une page privée
   const isPrivatePage = request.nextUrl.pathname.startsWith('/private')
+  const isAdminPage = request.nextUrl.pathname.startsWith('/private/admin') 
+    && !request.nextUrl.pathname.startsWith('/private/admin/materials')
   
-  if (!user && isPrivatePage) {
+  if ((!user && isPrivatePage) || (!user?.is_admin && isAdminPage)) {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)
