@@ -187,7 +187,7 @@ export default function Header({ user }: { user: User | null }) {
           </nav>
 
           {/* Menu mobile */}
-          <MobileMenu />
+          {user && <MobileMenu />}
         </div>
       </div>
     </header>
