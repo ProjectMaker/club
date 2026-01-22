@@ -62,7 +62,9 @@ const SalesNavigation = ({ user }: { user: User | null }) => {
       {salesItem.map((item) => {
         let isActive = false
         let show = true
-        if (item.href.startsWith('/private/admin/laundries') || item.href.startsWith('/private/admin/pressings') && !user?.is_admin) {
+        if (
+          (item.href.startsWith('/private/admin/laundries') || item.href.startsWith('/private/admin/pressings')) 
+            && !user?.is_admin) {
           show = false
         }
         if (pathname === '/private/admin/laundries') {
