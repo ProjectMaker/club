@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase-server";
 
 import LoginForm from "@/components/pages/LoginForm";
 import InfosSummary from "@/components/pages/InfosSummary";
+import WhoIAmSummary from "@/components/pages/WhoIAmSummary";
 import { User } from "@/models";
 
 export const metadata: Metadata = {
@@ -85,6 +86,7 @@ export default async function Home() {
           )
         }
       </div>
+      <WhoIAmSummary />
       <InfosSummary />
       <Suspense fallback={<SalesLoading />}>
         <Sales user={user as unknown as User} />
