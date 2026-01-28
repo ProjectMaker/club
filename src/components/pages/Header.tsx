@@ -145,6 +145,15 @@ export default function Header({ user }: { user: User | null }) {
                     Matériel
                   </Link>
                   <Link
+                    href={'/calendly'}
+                    className={`px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${pathname.indexOf('/calendly') === 0
+                      ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      }`}
+                  >
+                    Consultation
+                  </Link>
+                  <Link
                     href={user?.is_admin ? '/private/admin/users?approved=true' : '/private/admin/materials'}
                     className={`px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${pathname.indexOf('/private/admin') === 0
                       ? 'text-white bg-blue-500/50 backdrop-blur-sm'
@@ -165,7 +174,7 @@ export default function Header({ user }: { user: User | null }) {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
-                
+
 
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
@@ -177,9 +186,9 @@ export default function Header({ user }: { user: User | null }) {
                                 before:content-[''] before:absolute before:-top-2 before:left-6 
                                 before:w-0 before:h-0 before:border-l-8 before:border-r-8 before:border-b-8
                                 before:border-l-transparent before:border-r-transparent before:border-b-slate-800/95">
-                    
+
                     <div className="border-t border-white/10 mx-2 my-2" />
-                    
+
                   </div>
                 )}
               </div>
