@@ -8,6 +8,8 @@ interface TransactionalEmailRequest {
   params: TransactionalEmailParams;
 }
 
+// 404 - Template confirmation
+
 export const sendTransactionnal = async ({ templateId, params }: TransactionalEmailRequest) => { 
     const body = {
       templateId,
