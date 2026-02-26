@@ -6,6 +6,7 @@ export const MATERIAL_CATEGORIES = [
   { name: 'coin_changer', label: 'Monnayeur' },
   { name: 'beverage_distributor', label: 'Distributeur de boissons' },
   { name: 'food_distributor', label: 'Distributeur alimentaire' },
+  { name: 'other', label: 'Autre' },
 ]
 
 export const MATERIAL_SUBCATEGORIES = [
@@ -29,6 +30,7 @@ export const MATERIAL_SUBCATEGORIES = [
   { name: 'powder', label: 'Poudre', category: 'detergent_distributor' },
   { name: 'tablet', label: 'Tablette', category: 'detergent_distributor' },
   { name: 'multi_product', label: 'Multi produits', category: 'detergent_distributor' },
+  { name: 'other', label: 'Autre', category: 'other' },
 ]
 
 export const MATERIAL_BRANDS = [

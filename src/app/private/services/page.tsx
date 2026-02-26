@@ -93,10 +93,57 @@ const Consultation = () => {
   )
 }
 
+const Webinar = () => {
+  return (
+    <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden h-full flex flex-col">
+      <div className="flex flex-col gap-1 flex-1">
+        <div>
+          <h2 className="text-xl font-bold text-white mb-4">
+            Webinaire Laverie en vue
+          </h2>
+        </div>
+        <div className="relative w-full h-48 rounded-xl overflow-hidden mb-2">
+          <img
+            src="/webinar.jpeg"
+            alt="Webinaire Laverie en vue"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+      <a
+        href="https://www.helloasso.com/associations/association-francaise-des-laveries/evenements/laverie-en-vue-1"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400/50 w-fit mt-auto"
+        tabIndex={0}
+        aria-label="S'inscrire au webinaire Laverie en vue"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+          />
+        </svg>
+        S&apos;inscrire
+      </a>
+    </div>
+  )
+}
+
 export default function Services() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
       <Consultation />
+      <Webinar />
     </div>
   )
 }
