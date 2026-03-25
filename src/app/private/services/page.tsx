@@ -1,4 +1,4 @@
-import { Consultation, Webinar, WebinarOzone } from "./_Cards";
+import { Consultation, Webinar, WebinarOzone, Ebooks } from "./_Cards";
 
 export default function Services() {
   return (
@@ -6,6 +6,7 @@ export default function Services() {
       <Consultation />
       <Webinar />
       <WebinarOzone />
+      <Ebooks />
     </div>
   )
 }

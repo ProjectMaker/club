@@ -228,3 +228,95 @@ export const WebinarOzone = () => {
     </div>
   )
 }
+
+export const Ebooks = () => {
+  return (
+    <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden h-full flex flex-col">
+      <div className="flex flex-col gap-4 flex-1">
+        <div>
+          <h2 className="text-xl font-bold text-white mb-2">Ebooks</h2>
+          <p className="text-white/80 text-sm mb-2">
+            Guides pratiques pour réussir votre projet de laverie
+          </p>
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-lg px-3 py-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-green-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+              />
+            </svg>
+            <span className="text-green-400 font-semibold text-sm">
+              Code promo : <span className="text-white font-bold">CLUBLAV26</span>
+            </span>
+          </div>
+        </div>
+        <div className="relative w-full h-48 rounded-xl overflow-hidden bg-gradient-to-br from-amber-500/10 to-orange-600/20 flex items-center justify-center mb-4">
+          <svg
+            viewBox="0 0 120 140"
+            className="w-28 h-32 drop-shadow-lg"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="bookCover" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f97316" />
+                <stop offset="100%" stopColor="#ea580c" />
+              </linearGradient>
+              <linearGradient id="bookSpine" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#c2410c" />
+                <stop offset="100%" stopColor="#ea580c" />
+              </linearGradient>
+              <linearGradient id="pages" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#fafafa" />
+                <stop offset="100%" stopColor="#e5e5e5" />
+              </linearGradient>
+            </defs>
+            <rect x="15" y="10" width="8" height="120" rx="1" fill="url(#bookSpine)" />
+            <rect x="23" y="10" width="82" height="120" rx="2" fill="url(#bookCover)" />
+            <rect x="20" y="13" width="3" height="114" fill="url(#pages)" />
+            <rect x="33" y="25" width="60" height="8" rx="1" fill="rgba(255,255,255,0.9)" />
+            <rect x="33" y="40" width="55" height="3" rx="1" fill="rgba(255,255,255,0.4)" />
+            <rect x="33" y="48" width="50" height="3" rx="1" fill="rgba(255,255,255,0.4)" />
+            <rect x="33" y="56" width="58" height="3" rx="1" fill="rgba(255,255,255,0.4)" />
+            <rect x="40" y="80" width="46" height="30" rx="3" fill="rgba(255,255,255,0.95)" />
+            <text x="63" y="98" fontSize="12" fill="#dc2626" fontWeight="bold" textAnchor="middle">PDF</text>
+            <path d="M55 102 L63 108 L71 102" stroke="#dc2626" strokeWidth="2" fill="none" strokeLinecap="round" />
+          </svg>
+        </div>
+      </div>
+      <a
+        href="https://lavcom.fr/nos-ebooks-2/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400/50 w-fit mt-auto"
+        tabIndex={0}
+        aria-label="Découvrir les ebooks Lavcom"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+          />
+        </svg>
+        Découvrir les ebooks
+      </a>
+    </div>
+  )
+}
