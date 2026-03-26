@@ -259,37 +259,12 @@ export const Ebooks = () => {
             </span>
           </div>
         </div>
-        <div className="relative w-full h-48 rounded-xl overflow-hidden bg-gradient-to-br from-amber-500/10 to-orange-600/20 flex items-center justify-center mb-4">
-          <svg
-            viewBox="0 0 120 140"
-            className="w-28 h-32 drop-shadow-lg"
-            aria-hidden="true"
-          >
-            <defs>
-              <linearGradient id="bookCover" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#f97316" />
-                <stop offset="100%" stopColor="#ea580c" />
-              </linearGradient>
-              <linearGradient id="bookSpine" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#c2410c" />
-                <stop offset="100%" stopColor="#ea580c" />
-              </linearGradient>
-              <linearGradient id="pages" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#fafafa" />
-                <stop offset="100%" stopColor="#e5e5e5" />
-              </linearGradient>
-            </defs>
-            <rect x="15" y="10" width="8" height="120" rx="1" fill="url(#bookSpine)" />
-            <rect x="23" y="10" width="82" height="120" rx="2" fill="url(#bookCover)" />
-            <rect x="20" y="13" width="3" height="114" fill="url(#pages)" />
-            <rect x="33" y="25" width="60" height="8" rx="1" fill="rgba(255,255,255,0.9)" />
-            <rect x="33" y="40" width="55" height="3" rx="1" fill="rgba(255,255,255,0.4)" />
-            <rect x="33" y="48" width="50" height="3" rx="1" fill="rgba(255,255,255,0.4)" />
-            <rect x="33" y="56" width="58" height="3" rx="1" fill="rgba(255,255,255,0.4)" />
-            <rect x="40" y="80" width="46" height="30" rx="3" fill="rgba(255,255,255,0.95)" />
-            <text x="63" y="98" fontSize="12" fill="#dc2626" fontWeight="bold" textAnchor="middle">PDF</text>
-            <path d="M55 102 L63 108 L71 102" stroke="#dc2626" strokeWidth="2" fill="none" strokeLinecap="round" />
-          </svg>
+        <div className="relative w-full h-52 rounded-xl overflow-hidden mb-4">
+          <img
+            src="/etude-de-case.jpeg"
+            alt="Étude de cas chiffrée - 5 ans de laverie"
+            className="w-full h-full object-contain object-center"
+          />
         </div>
       </div>
       <a
