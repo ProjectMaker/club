@@ -39,6 +39,17 @@ const NAV_ITEMS: NavItem[] = [
       </svg>
     ),
   },
+  {
+    href: '/private/services',
+    label: 'Offres et services',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="4" y="6" width="16" height="12" rx="2" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="8" y1="10" x2="16" y2="10" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="8" y1="14" x2="13" y2="14" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  }
 ]
 
 const HamburgerIcon = () => (
@@ -75,7 +86,7 @@ const MobileMenu = () => {
   return (
     <div className="md:hidden">
       {/* Bouton hamburger */}
-      <button 
+      <button
         onClick={handleToggle}
         className="text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
         aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
@@ -87,7 +98,7 @@ const MobileMenu = () => {
 
       {/* Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40"
           onClick={handleClose}
           aria-hidden="true"
@@ -95,14 +106,14 @@ const MobileMenu = () => {
       )}
 
       {/* Panel de navigation */}
-      <nav 
+      <nav
         className={`
           fixed top-20 left-0 right-0 z-50
           bg-gradient-to-br from-blue-900/98 via-blue-800/98 to-indigo-900/98 
           backdrop-blur-lg border-b border-white/20
           transform transition-all duration-300 ease-out
-          ${isOpen 
-            ? 'translate-y-0 opacity-100 pointer-events-auto' 
+          ${isOpen
+            ? 'translate-y-0 opacity-100 pointer-events-auto'
             : '-translate-y-4 opacity-0 pointer-events-none'
           }
         `}
