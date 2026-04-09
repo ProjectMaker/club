@@ -6,10 +6,9 @@ import { createClient } from "@/lib/supabase-server";
 
 import LoginForm from "@/components/pages/LoginForm";
 import InfosSummary from "@/components/pages/InfosSummary";
-import WhoIAmSummary from "@/components/pages/WhoIAmSummary";
 import { User } from "@/models";
 
-import { Consultation, WebinarOzone } from "@/app/private/services/_Cards";
+import { Consultation } from "@/app/private/services/_Cards";
 
 export const metadata: Metadata = {
   title: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
@@ -92,7 +91,6 @@ export default async function Home() {
       {/* CTA Consultation */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
         <Consultation />
-        <WebinarOzone />
       </div>
 
       <InfosSummary />
