@@ -20,6 +20,7 @@ export interface Picture {
     uuid: string;
     name: string;
     data_url: string;
+    thumbnail_url?: string;
 }
 
 export interface Laundry {

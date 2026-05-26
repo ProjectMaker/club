@@ -7,7 +7,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 30, // 30 minutes
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
       retry: (failureCount, error: any) => {
         // Ne pas retry sur les erreurs d'authentification
         if (error?.status === 401 || error?.message?.includes('Invalid login credentials')) {

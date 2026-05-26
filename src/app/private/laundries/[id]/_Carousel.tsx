@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Thumbs, FreeMode } from 'swiper/modules';
-import { Key, useState } from 'react';
+import { useState } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 
 // Import Swiper styles
@@ -42,12 +42,15 @@ export default function Carousel({ laundry }: any) {
                     modules={[FreeMode, Navigation, Thumbs, Pagination]}
                     className="rounded-lg shadow-lg h-96 md:h-[500px]"
                 >
-                    {laundry.pictures.map((picture: any, index: Key | null | undefined) => (
+                    {laundry.pictures.map((picture: any, index: number) => (
                         <SwiperSlide key={index}>
                             <div className="w-full h-full relative">
                                 <img
                                     src={picture.data_url}
+                                    alt={`${laundry.name} - photo ${index + 1}`}
                                     className="w-full h-full object-cover"
+                                    loading={index === 0 ? 'eager' : 'lazy'}
+                                    decoding="async"
                                 />
                                 {/* Overlay avec gradient pour améliorer la lisibilité */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
@@ -81,12 +84,15 @@ export default function Carousel({ laundry }: any) {
                         },
                     }}
                 >
-                    {laundry.pictures.map((picture: any, index: Key | null | undefined) => (
+                    {laundry.pictures.map((picture: any, index: number) => (
                         <SwiperSlide key={index} className="cursor-pointer">
                             <div className="w-full h-full relative overflow-hidden rounded-md border-2 border-transparent hover:border-blue-500 transition-all duration-200">
                                 <img
-                                    src={picture.data_url}
+                                    src={picture.thumbnail_url || picture.data_url}
+                                    alt={`${laundry.name} - miniature ${index + 1}`}
                                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-200"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
                         </SwiperSlide>

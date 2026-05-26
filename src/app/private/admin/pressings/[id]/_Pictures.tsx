@@ -4,6 +4,7 @@ import { PlusIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import { processImageFile } from '@/utils/image-processing';
 
 interface PictureFile {
     fileName: string;
@@ -31,22 +32,10 @@ export default function LaundryPictures() {
             return;
         }
 
-        // Ajouter les nouveaux fichiers avec conversion en base64
+        // Les images sont compressées avant upload pour réduire l'egress Supabase.
         await Promise.all(
             acceptedFiles.map(async (file) => {
-                const dataUrl = await new Promise<string>(resolve => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => {
-                        return resolve(reader.result?.toString() || '');
-                    };
-                });
-
-                const pictureFile: PictureFile = {
-                    fileName: file.name,
-                    contentType: file.type,
-                    data_url: dataUrl
-                };
+                const pictureFile: PictureFile = await processImageFile(file);
                 append(pictureFile);
             })
         );
@@ -56,7 +45,8 @@ export default function LaundryPictures() {
         onDrop,
         accept: {
             'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
-        }
+        },
+        maxSize: 10 * 1024 * 1024
     });
 
     const removeFile = (index: number) => {
@@ -108,6 +98,8 @@ export default function LaundryPictures() {
                                         src={field.data_url}
                                         alt={`Prévisualisation ${index + 1}`}
                                         className="w-full h-full object-cover"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                 </div>
 

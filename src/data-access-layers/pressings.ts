@@ -2,6 +2,7 @@
 
 import { checkIsAdmin, getSupabaseClient } from '@/utils/auth'
 import { Pressing, Picture } from '@/models'
+import { createSignedImageUrl } from '@/utils/supabase-images'
 
 export async function getFirstPicture(pressingId: number): Promise<Picture> {
   const supabase = await getSupabaseClient()
@@ -15,15 +16,12 @@ export async function getFirstPicture(pressingId: number): Promise<Picture> {
     throw picturesRecords.error
   }
   const picture = picturesRecords.data
-  const { data } = await supabase
-    .storage
-    .from('images')
-    .createSignedUrl(`pressings/${pressingId}/${picture.name}`, 24 * 60 * 60)
+  const dataUrl = await createSignedImageUrl(supabase, `pressings/${pressingId}/${picture.name}`, 'card')
   return {
     uuid: picture.id,
     id: picture.id,
     name: picture.name,
-    data_url: data?.signedUrl || ''
+    data_url: dataUrl
   }
 }
 export async function getPressings({ from = 1, to = 4 }: { from: number, to: number }): Promise<Pressing[]> {
@@ -69,15 +67,13 @@ export async function getPressing(pressingId: number) {
   }
   const pictures = await Promise.all(
     records.data[0].pressing_pictures.map(async (picture: { name: any; id: any; }) => {
-      const { data } = await supabase
-        .storage
-        .from('images')
-        .createSignedUrl(`pressings/${pressingId}/${picture.name}`, 24 * 60 * 60)
+      const path = `pressings/${pressingId}/${picture.name}`
       return {
         id: picture.id,
         uuid: picture.id,
         name: picture.name,
-        data_url: data?.signedUrl
+        data_url: await createSignedImageUrl(supabase, path, 'hero'),
+        thumbnail_url: await createSignedImageUrl(supabase, path, 'thumbnail')
       }
     })
   )

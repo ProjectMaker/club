@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 import { Picture, User } from "@/models";
 import { getSales } from "@/data-access-layers/sales-promotion";
 import { MATERIAL_CATEGORIES } from "@/utils/constants";
@@ -32,6 +30,8 @@ function Product({ product }: { product: ProductProps }) {
               width={400}
               height={200}
               className="w-full h-48 object-cover hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+              decoding="async"
             />
           )
         }

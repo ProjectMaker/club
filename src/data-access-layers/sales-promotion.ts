@@ -1,6 +1,7 @@
 'use server'
 import { Laundry, Pressing, Material } from '@/models'
 import { getSupabaseClient } from '@/utils/auth'
+import { createSignedImageUrl } from '@/utils/supabase-images'
 
 async function getLaundry(): Promise<Laundry> {
   const supabase = await getSupabaseClient()
@@ -33,17 +34,14 @@ async function getLaundry(): Promise<Laundry> {
   }
 
 
-  const { data } = await supabase
-    .storage
-    .from('images')
-    .createSignedUrl(`laundries/${laundryResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
+  const dataUrl = await createSignedImageUrl(supabase, `laundries/${laundryResult.data.id}/${pictureResult.data.name}`, 'card')
   return {
     ...laundryResult.data,
     pictures: [{
       id: pictureResult.data.id,
       uuid: pictureResult.data.id,
       name: pictureResult.data.name,
-      data_url: data?.signedUrl || ''
+      data_url: dataUrl
     }]
   }
 }
@@ -80,17 +78,14 @@ async function getMaterial(): Promise<Material | null> {
   }
 
 
-  const { data } = await supabase
-    .storage
-    .from('images')
-    .createSignedUrl(`materials/${materialResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
+  const dataUrl = await createSignedImageUrl(supabase, `materials/${materialResult.data.id}/${pictureResult.data.name}`, 'card')
   return {
     ...materialResult.data,
     pictures: [{
       id: pictureResult.data.id,
       uuid: pictureResult.data.id,
       name: pictureResult.data.name,
-      data_url: data?.signedUrl || ''
+      data_url: dataUrl
     }]
   }
 }
@@ -131,10 +126,7 @@ async function getPressing(): Promise<Pressing | null> {
       return pressingResult.data
     }
     
-    const { data } = await supabase
-      .storage
-      .from('images')
-      .createSignedUrl(`pressings/${pressingResult.data.id}/${pictureResult.data.name}`, 24 * 60 * 60)
+    const dataUrl = await createSignedImageUrl(supabase, `pressings/${pressingResult.data.id}/${pictureResult.data.name}`, 'card')
     
     return {
       ...pressingResult.data,
@@ -142,7 +134,7 @@ async function getPressing(): Promise<Pressing | null> {
         id: pictureResult.data.id,
         uuid: pictureResult.data.id,
         name: pictureResult.data.name,
-        data_url: data?.signedUrl || ''
+        data_url: dataUrl
       }]
     }
   } catch (error) {

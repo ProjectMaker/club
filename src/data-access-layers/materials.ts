@@ -1,6 +1,7 @@
 'use server'
 
 import { checkIsAdmin, getUser, getSupabaseClient } from '@/utils/auth'
+import { createSignedImageUrl } from '@/utils/supabase-images'
 
 export async function getMaterial(materialId: number) {
   const supabase = await getSupabaseClient()
@@ -20,15 +21,13 @@ export async function getMaterial(materialId: number) {
     }
     const pictures = await Promise.all(
       record.data.material_pictures.map(async (picture: { name: any; id: any; }) => {
-        const { data } = await supabase
-          .storage
-          .from('images')
-          .createSignedUrl(`materials/${materialId}/${picture.name}`, 24 * 60 * 60)
+        const path = `materials/${materialId}/${picture.name}`
         return {
           id: picture.id,
           uuid: picture.id,
           name: picture.name,
-          data_url: data?.signedUrl
+          data_url: await createSignedImageUrl(supabase, path, 'hero'),
+          thumbnail_url: await createSignedImageUrl(supabase, path, 'thumbnail')
         }
       })
     )
@@ -51,15 +50,12 @@ export async function getFirstPicture(materialId: number) {
     throw picturesRecords.error
   }
   const picture = picturesRecords.data
-  const { data } = await supabase
-    .storage
-    .from('images')
-    .createSignedUrl(`materials/${materialId}/${picture.name}`, 24 * 60 * 60)
+  const dataUrl = await createSignedImageUrl(supabase, `materials/${materialId}/${picture.name}`, 'card')
   return {
     uuid: picture.id,
     id: picture.id,
     name: picture.name,
-    data_url: data?.signedUrl || ''
+    data_url: dataUrl
   }
 }
 export async function getMaterials({ from = 1, to = 10 }: { from: number, to: number }) {

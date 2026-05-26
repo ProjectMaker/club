@@ -17,6 +17,8 @@ function LaundryPicture({ laundry }: { laundry: Laundry }) {
         src={firstPicture.data_url}
         alt={laundry.name}
         className="w-full h-64 object-cover hover:scale-110 transition-transform duration-500"
+        loading="lazy"
+        decoding="async"
       />
       <div className="absolute top-2 right-2">
         <ChipStatus status={laundry.status} />

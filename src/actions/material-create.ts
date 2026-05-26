@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { Picture } from '@/models'
 import { getUser } from '@/utils/auth'
+import { IMAGE_CACHE_CONTROL } from '@/utils/supabase-images'
 
 interface PictureWithProcessing extends Partial<Picture> {
   fileName: string;
@@ -25,7 +26,7 @@ async function createPictures(materialId: number, pictures: PictureWithProcessin
       .storage
       .from('images')
       .upload(`materials/${materialId}/${fileName}`, buffer, {
-        cacheControl: '3600',
+        cacheControl: IMAGE_CACHE_CONTROL,
         upsert: false,
         contentType: picture.contentType
       })
@@ -39,15 +40,9 @@ async function createPictures(materialId: number, pictures: PictureWithProcessin
     if (pictureResult.error) {
       throw new Error(pictureResult.error.message)
     }
-    
-    const signedUrlResult = await supabase
-      .storage
-      .from('images')
-      .createSignedUrl(`materials/${materialId}/${pictureResult.data[0].name}`, 24 * 60 * 60)
     return {
       ...pictureResult.data[0],
       uuid: pictureResult.data[0].id,
-      data_url: signedUrlResult.data?.signedUrl
     }
   })
 
