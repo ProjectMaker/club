@@ -43,12 +43,13 @@ export async function getLaundry(laundryId: number) {
     const pictures = await Promise.all(
       record.data.laundry_pictures.map(async (picture: { name: any; id: any; }) => {
         const path = `laundries/${laundryId}/${picture.name}`
+        const dataUrl = await createSignedImageUrl(supabase, path, 'hero')
         return {
           id: picture.id,
           uuid: picture.id,
           name: picture.name,
-          data_url: await createSignedImageUrl(supabase, path, 'hero'),
-          thumbnail_url: await createSignedImageUrl(supabase, path, 'thumbnail')
+          data_url: dataUrl,
+          thumbnail_url: dataUrl
         }
       })
     )
