@@ -9,6 +9,7 @@ import { formatDate } from "@/utils/functions";
 import { User } from "@/models";
 import { useDebounce } from "@/utils/hooks";
 import Search from "@/components/ui/Search";
+import DeletePendingUserButton from "./_DeletePendingUserButton";
 
 type OwnerFilter = 'laundries' | 'pressings' | 'carwashes';
 
@@ -256,6 +257,7 @@ export default function Admin() {
                         >
                           Voir
                         </Link>
+                        <DeletePendingUserButton user={user} />
 
                       </div>
                     </td>
