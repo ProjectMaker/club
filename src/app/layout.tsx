@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { QueryProvider } from "@/contexts/QueryContext";
 import Header from "@/components/pages/Header";
+import Footer from "@/components/pages/Footer";
 import { getUser } from "@/utils/auth";
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -114,11 +115,12 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <Header user={user} />
-          <div className=" flex items-start justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900  min-h-screen">
+          <main className="flex min-h-screen items-start justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 pb-36 sm:pb-24">
             <div className="w-full max-w-7xl px-4">
               {children}
             </div>
-          </div>
+          </main>
+          <Footer />
         </QueryProvider>
       </body>
     </html>
