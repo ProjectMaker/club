@@ -1,4 +1,4 @@
-import { Consultation, Ebooks, AiDryCleaning } from "./_Cards";
+import { Consultation, Ebooks, AiDryCleaning, LaundryValuation } from "./_Cards";
 
 export default function Services() {
   return (
@@ -6,6 +6,7 @@ export default function Services() {
       <Consultation />
       <Ebooks />
       <AiDryCleaning />
+      <LaundryValuation />
     </div>
   )
 }

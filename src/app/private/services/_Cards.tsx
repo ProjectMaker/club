@@ -262,3 +262,68 @@ export const AiDryCleaning = () => {
     </div>
   )
 }
+
+export const LaundryValuation = () => {
+  return (
+    <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden h-full flex flex-col">
+      <div className="flex flex-col gap-4 flex-1">
+        <div>
+          <h2 className="text-xl font-bold text-white mb-2">
+            Valorisation et cession de laveries : ce qui a changé depuis 2025
+          </h2>
+          <p className="text-white/80 text-sm mb-2">
+            Dossier AFL sur les évolutions du marché, les points de vigilance vendeur et acheteur, et la méthode de valorisation actualisée.
+          </p>
+        </div>
+        <div className="relative w-full h-48 rounded-xl overflow-hidden bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center mb-4">
+          <svg
+            viewBox="0 0 200 160"
+            className="w-full h-full p-6"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="valuationGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f59e0b" />
+                <stop offset="100%" stopColor="#f97316" />
+              </linearGradient>
+            </defs>
+            <rect x="40" y="30" width="80" height="100" rx="6" fill="white" fillOpacity="0.9" stroke="url(#valuationGradient)" strokeWidth="2" />
+            <line x1="52" y1="50" x2="108" y2="50" stroke="url(#valuationGradient)" strokeWidth="3" strokeLinecap="round" />
+            <line x1="52" y1="68" x2="100" y2="68" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+            <line x1="52" y1="84" x2="95" y2="84" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+            <line x1="52" y1="100" x2="88" y2="100" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="145" cy="70" r="28" fill="none" stroke="url(#valuationGradient)" strokeWidth="3" />
+            <text x="145" y="78" fontSize="22" fill="url(#valuationGradient)" textAnchor="middle" fontWeight="bold">€</text>
+            <path d="M125 95 L155 125" stroke="url(#valuationGradient)" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="155" cy="125" r="5" fill="url(#valuationGradient)" />
+          </svg>
+        </div>
+      </div>
+      <a
+        href="https://h91m7.r.a.d.sendibm1.com/mk/mr/sh/SMJz09SDriOHVCKyA3v1349tsgYr/8IG4hwxSY26F"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-400/50 w-fit mt-auto"
+        tabIndex={0}
+        aria-label="Lire le dossier sur la valorisation et cession de laveries"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+          />
+        </svg>
+        Lire l&apos;article
+      </a>
+    </div>
+  )
+}
