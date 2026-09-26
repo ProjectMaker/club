@@ -3,6 +3,7 @@
 import { sendTransactionnal } from '@/lib/brevo'
 
 import { createServiceClient } from '@/lib/supabase-service'
+import { captureServerEvent } from '@/lib/posthog-server'
 
 interface SignupData {
   email: string
@@ -63,5 +64,6 @@ export async function signup(prevState: any, data: SignupData) {
       firstname: data.first_name || ''
     }
   })
+  await captureServerEvent(authUser.data.user.id, 'user_signed_up')
   return { success: true}
 }

@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { createServiceClient } from "@/lib/supabase-service";
-import { checkIsAdmin } from "@/utils/auth";
+import { checkIsAdmin, getUser } from "@/utils/auth";
+import { captureServerEvent } from "@/lib/posthog-server";
 
 type DeletePendingUserInput = {
   userId: string;
@@ -74,6 +75,11 @@ export async function deletePendingUser({ userId }: DeletePendingUserInput) {
     if (deleteUserError) {
       return { success: false, error: deleteUserError.message };
     }
+  }
+
+  const actor = await getUser();
+  if (actor) {
+    await captureServerEvent(actor.id, "pending_user_deleted");
   }
 
   revalidatePath("/private/admin/users", "page");

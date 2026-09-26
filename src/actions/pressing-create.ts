@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { Picture } from '@/models'
 import { IMAGE_CACHE_CONTROL } from '@/utils/supabase-images'
+import { getUser } from '@/utils/auth'
+import { captureServerEvent } from '@/lib/posthog-server'
 
 // Type pour les pictures avec les propriétés de traitement côté client
 interface PictureWithProcessing extends Partial<Picture> {
@@ -77,6 +79,10 @@ export async function createPressing(prevState: any, { pictures, ...pressing }: 
     return { success: false, error: error.message }
   }
   await processPictures(data.id, pictures)
+  const user = await getUser()
+  if (user) {
+    await captureServerEvent(user.id, 'pressing_saved', { picture_count: pictures.length })
+  }
 
   revalidatePath('/private/admin/pressings', 'page')
   redirect('/private/admin/pressings')

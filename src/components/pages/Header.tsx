@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useRef, useActionState, useTransition } from 'react'
+import { useState, useRef, useEffect, useActionState, useTransition } from 'react'
 import { usePathname } from 'next/navigation'
 import { createPortal } from 'react-dom'
+import posthog from 'posthog-js'
 import { logout } from '@/actions/auth-logout'
 import { User } from "@/models";
 import MobileMenu from "./MobileMenu";
@@ -41,6 +42,8 @@ function Logout() {
   const [isTransitioning, startTransition] = useTransition();
 
   const handleLogout = () => {
+    posthog.reset()
+
     startTransition(() => {
       formAction(null);
     });
@@ -77,6 +80,34 @@ export default function Header({ user }: { user: User | null }) {
   const pathname = usePathname()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const identifiedUserIdRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    if (!user) {
+      if (identifiedUserIdRef.current) {
+        posthog.reset()
+        identifiedUserIdRef.current = null
+      }
+      return
+    }
+
+    if (identifiedUserIdRef.current === user.id) {
+      return
+    }
+
+    if (identifiedUserIdRef.current) {
+      posthog.reset()
+    }
+
+    const name = [user.firstname, user.lastname].filter(Boolean).join(' ')
+
+    posthog.identify(user.id, {
+      email: user.email ?? undefined,
+      name: name || undefined,
+      role: user.is_admin ? 'admin' : 'member',
+    })
+    identifiedUserIdRef.current = user.id
+  }, [user])
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) {

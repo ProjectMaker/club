@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase-server"
 import { revalidatePath } from "next/cache"
+import { captureServerEvent } from "@/lib/posthog-server"
+import { getUser } from "@/utils/auth"
 
 export async function deletePressing(prevState: any, { pressingId }: { pressingId: number }) {
   const supabase = await createClient()
@@ -21,9 +23,16 @@ export async function deletePressing(prevState: any, { pressingId }: { pressingI
       .delete()
       .eq('pressing_id', pressingId)
   }
-  await supabase
+  const { error } = await supabase
     .from('pressings')
     .delete()
     .eq('id', pressingId)
+  if (error) {
+    throw error
+  }
+  const user = await getUser()
+  if (user) {
+    await captureServerEvent(user.id, 'pressing_deleted')
+  }
   revalidatePath('/private/admin/pressings', 'page')
 }

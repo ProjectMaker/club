@@ -3,6 +3,7 @@
 import { createServiceClient } from '@/lib/supabase-service'
 import { sendTransactionnal } from '@/lib/brevo'
 import crypto from 'crypto'
+import { captureServerEvent } from '@/lib/posthog-server'
 
 interface ResetPasswordData {
   email: string
@@ -68,5 +69,6 @@ export async function resetPassword(prevState: { error?: string; success?: boole
   }
 
   // Toujours retourner success pour ne pas révéler si l'email existe
+  await captureServerEvent(user.id, 'password_reset_requested')
   return { success: true }
 }

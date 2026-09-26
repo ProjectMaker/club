@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { Picture } from '@/models'
 import { getUser } from '@/utils/auth'
+import { captureServerEvent } from '@/lib/posthog-server'
 import { IMAGE_CACHE_CONTROL } from '@/utils/supabase-images'
 
 interface PictureWithProcessing extends Partial<Picture> {
@@ -79,6 +80,9 @@ export async function createMaterial(prevState: any, { pictures, ...material }: 
     return { success: false, error: error.message }
   }
   await processPictures(data.id, pictures)
+  if (user) {
+    await captureServerEvent(user.id, 'material_saved', { picture_count: pictures.length })
+  }
   
   revalidatePath('/private/admin/materials', 'page')
   redirect('/private/admin/materials')

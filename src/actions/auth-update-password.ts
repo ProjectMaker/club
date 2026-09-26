@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase-service'
 import { getSupabaseServiceClient } from '@/utils/auth'
+import { captureServerEvent } from '@/lib/posthog-server'
 
 interface UpdatePasswordData {
   password: string
@@ -62,6 +63,8 @@ export async function updatePassword(prevState: { error?: string; success?: bool
     .from('password_reset_tokens')
     .update({ used: true })
     .eq('token', token)
+
+  await captureServerEvent(tokenData.user_id, 'password_updated')
 
   // 4. Forcer la revalidation
   revalidatePath('/', 'layout')

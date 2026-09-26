@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { Picture } from '@/models'
 import { getUser } from '@/utils/auth'
+import { captureServerEvent } from '@/lib/posthog-server'
+import { logPostHogInfo } from '@/lib/posthog-logs'
 import { IMAGE_CACHE_CONTROL } from '@/utils/supabase-images'
 
 // Type pour les pictures avec les propriétés de traitement côté client
@@ -78,6 +80,11 @@ export async function createLaundry(prevState: any, { pictures, ...laundry }: { 
     return { success: false, error: error.message }
   }
   await processPictures(data.id, pictures)
+  await logPostHogInfo('laundry_save_succeeded', { picture_count: pictures.length })
+  const user = await getUser()
+  if (user) {
+    await captureServerEvent(user.id, 'laundry_saved', { picture_count: pictures.length })
+  }
 
   revalidatePath('/private/admin/laundries', 'page')
   // Traitement des images

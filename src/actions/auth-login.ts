@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase-service'
+import { logPostHogInfo } from '@/lib/posthog-logs'
 
 export async function login(state: { error?: string; data?: any } | null, formData: FormData) {
   const supabase = await createClient()
@@ -44,6 +45,8 @@ export async function login(state: { error?: string; data?: any } | null, formDa
     await supabase.auth.signOut()
     return { error: 'Votre compte n\'a pas encore été approuvé.' }
   }
+
+  await logPostHogInfo('approved_user_login_succeeded')
 
   // Forcer la revalidation de toutes les pages et du layout
   revalidatePath('/', 'layout')

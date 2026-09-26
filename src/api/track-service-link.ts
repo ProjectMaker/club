@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { getSupabaseServiceClient, getUser } from '@/utils/auth'
+import { captureServerEvent } from '@/lib/posthog-server'
+import { logPostHogInfo } from '@/lib/posthog-logs'
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,6 +24,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (error) {
         return res.status(500).json({ error: error.message })
     }
+    if (user) {
+        await captureServerEvent(user.id, 'service_link_created')
+    }
+    await logPostHogInfo('service_link_creation_succeeded')
     return res.status(200).json(data)
 }
 
