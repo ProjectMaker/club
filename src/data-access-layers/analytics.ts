@@ -2,6 +2,8 @@
 
 import moment from "moment"
 import { createServiceClient } from "@/lib/supabase-service"
+import { queryPostHog } from "@/lib/posthog-api"
+import { checkIsAdmin } from "@/utils/auth"
 import { getStartsAt, getScale, generateRanges } from "@/utils/functions"
 
 interface StatsGlobalItem {
@@ -9,6 +11,52 @@ interface StatsGlobalItem {
     created_at: string
     count: number
   }
+}
+
+interface TrendsBreakdownResult {
+  label: string
+  aggregated_value: number
+}
+
+interface TrendsQueryResponse {
+  results: TrendsBreakdownResult[]
+}
+
+export interface PageViewsByPath {
+  path: string
+  count: number
+}
+
+const POSTHOG_BREAKDOWN_LABELS: Record<string, string> = {
+  '$$_posthog_breakdown_other_$$': 'Autres pages',
+  '$$_posthog_breakdown_null_$$': 'Page inconnue',
+}
+
+const PAGE_VIEWS_BY_PATH_QUERY = {
+  kind: 'TrendsQuery',
+  series: [
+    {
+      kind: 'EventsNode',
+      event: '$pageview',
+      math: 'total',
+    },
+  ],
+  breakdownFilter: {
+    breakdowns: [
+      {
+        property: '$pathname',
+        type: 'event',
+      },
+    ],
+    breakdown_path_cleaning: true,
+  },
+  dateRange: {
+    date_from: '-30d',
+  },
+  filterTestAccounts: true,
+  trendsFilter: {
+    display: 'ActionsBarValue',
+  },
 }
 
 export async function countLaundriesUsers() {
@@ -53,4 +101,17 @@ export async function statsGlobal(period: string) {
     })
   }
   return []
+}
+
+export async function pageViewsByPath(): Promise<PageViewsByPath[]> {
+  const isAdmin = await checkIsAdmin()
+  if (!isAdmin) return []
+
+  const data = await queryPostHog<TrendsQueryResponse>(PAGE_VIEWS_BY_PATH_QUERY)
+  if (!data) return []
+
+  return data.results.map(({ label, aggregated_value }) => ({
+    path: POSTHOG_BREAKDOWN_LABELS[label] ?? label,
+    count: aggregated_value,
+  }))
 }

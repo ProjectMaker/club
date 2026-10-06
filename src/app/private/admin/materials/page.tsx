@@ -5,7 +5,8 @@ import {
   getStatusLabel, 
   getStatusColor,
   getCategoryLabel,
-  getBrandLabel
+  getBrandLabel,
+  calculateMaterialPrices
 } from '@/utils/functions'
 
 import DeleteButton from "./_DeleteButton"
@@ -67,7 +68,7 @@ export default async function Materials() {
                                         Marque
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
-                                        Prix
+                                        Prix de vente HT
                                     </th>
                                     <th className="text-left py-3 px-4 text-white font-semibold">
                                         Qté
@@ -87,7 +88,9 @@ export default async function Materials() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {materials?.map((material) => (
+                                {materials?.map((material) => {
+                                    const salePrice = Number(calculateMaterialPrices({ price: material.price, quantity: material.quantity }).sales)
+                                    return (
                                     <tr
                                         key={material.id}
                                         className="border-b border-white/10 hover:bg-white/5 transition-colors duration-200"
@@ -103,7 +106,7 @@ export default async function Materials() {
                                             {getBrandLabel(material.brand)}
                                         </td>
                                         <td className="py-3 px-4 text-white font-medium">
-                                            {material.price.toLocaleString('fr-FR')} €
+                                            {salePrice.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                                         </td>
                                         <td className="py-3 px-4 text-white/80">
                                             {getBrandLabel(material.quantity)}
@@ -131,7 +134,8 @@ export default async function Materials() {
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                    )
+                                })}
                             </tbody>
                         </table>
                     </div>

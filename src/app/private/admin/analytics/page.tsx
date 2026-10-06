@@ -9,6 +9,7 @@ import {
 import { UsersIcon, UserPlusIcon, UserMinusIcon } from "@heroicons/react/24/outline"
 
 import Activity from "./_Activity"
+import PageViews from "./_PageViews"
 
 function Kpis() {
   const { data: laundriesUsersCount, isLoading: isLoadingLaundries } = useQuery({
@@ -100,6 +101,7 @@ export default function AnalyticsPage() {
     <>
       <Kpis />
       <Activity />
+      <PageViews />
     </>
   )
 }
