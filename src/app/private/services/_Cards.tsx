@@ -1,3 +1,86 @@
+export const RoundTable = () => {
+  return (
+    <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden h-full flex flex-col">
+      <div className="flex flex-col gap-4 flex-1">
+        <div>
+          <h2 className="text-xl font-bold text-white mb-2">Table ronde 2026</h2>
+          <p className="text-white/80 text-sm">
+            Une journée d&apos;échanges entre exploitants et professionnels du secteur.
+          </p>
+        </div>
+        <div className="relative w-full h-44 rounded-xl overflow-hidden bg-white/5">
+          <img
+            src="/table_ronde.jpg"
+            alt="Affiche de la table ronde 2026, le 9 novembre au Centre Kellermann à Paris"
+            className="w-full h-full object-contain object-center"
+          />
+        </div>
+        <ul className="space-y-2">
+          <li className="flex items-start gap-2 text-white/80 text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-yellow-300 mt-0.5 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span>9 novembre 2026</span>
+          </li>
+          <li className="flex items-start gap-2 text-white/80 text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-yellow-300 mt-0.5 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>9h30 à 16h30</span>
+          </li>
+          <li className="flex items-start gap-2 text-white/80 text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-yellow-300 mt-0.5 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span>Centre Kellermann, Paris</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
 export const Consultation = () => {
   return (
     <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 h-full flex flex-col">
