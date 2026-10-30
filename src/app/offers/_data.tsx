@@ -16,7 +16,8 @@ export interface OfferPrestation {
 // Champ du formulaire de demande d'une offre
 export interface FormField {
   name: string
-  type: 'text' | 'email' | 'tel' | 'number' | 'textarea' | 'select' | 'department' | 'choices' | 'multiple'
+  // files : photos ou documents joints (formats et limites dans OFFER_UPLOAD)
+  type: 'text' | 'email' | 'tel' | 'number' | 'textarea' | 'select' | 'department' | 'choices' | 'multiple' | 'files'
   label: string
   required?: boolean
   placeholder?: string
@@ -49,7 +50,7 @@ export interface Offer {
   summary: string
   description: string
   image?: string
-  steps: OfferStep[]
+  steps?: OfferStep[]
   prestations: OfferPrestation[]
   benefits: string[]
   model: string[]
@@ -196,6 +197,91 @@ export const OFFERS: Offer[] = [
               options: ['Dès que possible', 'Dans moins de 3 mois', 'Dans 3 à 6 mois', 'Dans plus de 6 mois'],
             },
             { name: 'description', type: 'textarea', label: 'Votre projet en quelques mots', placeholder: 'Décrivez votre projet, vos objectifs et vos attentes...' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: 'acheter-ou-financer-du-materiel',
+    title: 'Acheter ou financer du matériel',
+    summary: 'Matériel neuf ou d’occasion, location longue durée, centrales de paiement et pièces détachées : trouvez la bonne solution pour votre laverie.',
+    image: '/images/offers/acheter-ou-financer-du-materiel/hero.jpg',
+    description: 'Équipez votre laverie avec du matériel professionnel adapté à votre projet. Décrivez vos besoins pour être orienté vers les solutions disponibles auprès du réseau Club Laverie.',
+    prestations: [
+      {
+        title: 'Matériel neuf',
+        image: '/images/offers/acheter-ou-financer-du-materiel/materiel-neuf.jpg',
+        description: 'Machines à laver, sèche-linge et équipements professionnels toutes marques.',
+        icon: <StoreIcon />,
+      },
+      {
+        title: 'Matériel d’occasion',
+        image: '/images/offers/acheter-ou-financer-du-materiel/materiel-occasion.jpg',
+        description: 'Acheter ou vendre des équipements professionnels d’occasion.',
+        icon: <GearIcon />,
+      },
+      {
+        title: 'Location longue durée',
+        image: '/images/offers/acheter-ou-financer-du-materiel/location-longue-duree.jpg',
+        description: 'Étudier les solutions de financement de vos équipements.',
+        icon: <DocumentIcon />,
+      },
+      {
+        title: 'Centrales de paiement',
+        image: '/images/offers/acheter-ou-financer-du-materiel/centrales-paiement.jpg',
+        description: 'Monétique, sans-contact, applications et systèmes de gestion.',
+        icon: <DocumentIcon />,
+      },
+      {
+        title: 'Pièces détachées et accessoires',
+        image: '/images/offers/acheter-ou-financer-du-materiel/pieces-detachees.jpg',
+        description: 'Pièces de rechange, équipements complémentaires et consommables.',
+        icon: <WrenchIcon />,
+      },
+    ],
+    benefits: [
+      'Des fournisseurs et techniciens spécialisés',
+      'Un gain de temps dans la recherche de matériel',
+      'Toutes marques, neuf ou d’occasion',
+      'Des solutions de financement adaptées',
+      'Des retours d’expérience de professionnels',
+      'Un interlocuteur unique : Club Laverie',
+    ],
+    model: [
+      'La demande est gratuite et sans engagement.',
+      'Club Laverie perçoit une commission sur les prestations facturées par ses partenaires.',
+    ],
+    form: {
+      title: 'Décrivez votre besoin',
+      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous orienter vers les solutions les plus adaptées.',
+      success: 'Merci ! Votre demande a bien été reçue. Club Laverie revient vers vous rapidement, sur le créneau que vous avez indiqué.',
+      steps: [
+        {
+          label: 'Votre demande',
+          fields: [
+            {
+              name: 'request_type', type: 'choices', label: 'Type de demande', required: true,
+              options: ['Dépannage', 'Entretien', 'Pièces', 'Optimisation'],
+            },
+            {
+              name: 'urgency', type: 'choices', label: 'Urgence', required: true,
+              options: ['Immédiate', 'Sous 7 jours', 'Non urgente'],
+            },
+            { name: 'department', type: 'department', label: 'Département de la laverie', required: true, half: true, placeholder: 'Sélectionnez votre département' },
+            { name: 'city', type: 'text', label: 'Ville de la laverie', half: true, placeholder: 'Votre ville' },
+            { name: 'equipment', type: 'text', label: 'Marque et référence du matériel', placeholder: 'Si connues, ex : Electrolux W5130H' },
+          ],
+        },
+        {
+          label: 'Détails',
+          fields: [
+            { name: 'description', type: 'textarea', label: 'Description du problème ou objectif', required: true, placeholder: 'Décrivez la panne, le besoin ou ce que vous souhaitez améliorer...' },
+            { name: 'attachments', type: 'files', label: 'Photos ou documents' },
+            {
+              name: 'contact_slot', type: 'choices', label: 'Créneau de contact souhaité', required: true,
+              options: ['Matin (9h - 12h)', 'Midi (12h - 14h)', 'Après-midi (14h - 18h)', 'Indifférent'],
+            },
           ],
         },
       ],

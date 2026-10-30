@@ -61,21 +61,23 @@ export default async function OfferPage({ params }: Params) {
 
           <div className="h-56 rounded-2xl overflow-hidden lg:hidden">{heroVisual}</div>
 
-          <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {offer.steps.map(step => (
-              <li key={step.label} className="flex flex-col items-center text-center gap-2">
-                <span className="w-12 h-12 rounded-full border-2 border-white/60 flex items-center justify-center text-white">
-                  {step.icon}
-                </span>
-                <span className="text-white text-sm font-medium">{step.label}</span>
-              </li>
-            ))}
-          </ul>
+          {offer.steps && (
+            <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {offer.steps.map(step => (
+                <li key={step.label} className="flex flex-col items-center text-center gap-2">
+                  <span className="w-12 h-12 rounded-full border-2 border-white/60 flex items-center justify-center text-white">
+                    {step.icon}
+                  </span>
+                  <span className="text-white text-sm font-medium">{step.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
 
           <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
             <h2 className="text-2xl font-bold text-white mb-1">Nos prestations</h2>
             <p className="text-white/80 text-sm mb-5">Des solutions adaptées à chaque étape de votre projet.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${offer.prestations.length % 3 === 0 || offer.prestations.length === 5 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
               {offer.prestations.map(prestation => (
                 <article key={prestation.title} className="bg-white/5 rounded-xl border border-white/15 overflow-hidden">
                   <div className="h-28">

@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { useActionState, useMemo, useRef, useState, useTransition } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDropzone } from 'react-dropzone';
 import * as yup from 'yup';
 
 import { createOfferRequest } from '@/actions/offer-request-create';
-import { DEPARTMENTS } from '@/utils/constants';
+import { createOfferUploads } from '@/actions/offer-uploads-create';
+import { createClient } from '@/lib/supabase-client';
+import { DEPARTMENTS, OFFER_UPLOAD } from '@/utils/constants';
 import type { FormField, OfferForm as OfferFormConfig } from '../_data';
 
 // Coordonnées communes à toutes les offres, demandées à la dernière étape.
@@ -26,6 +29,10 @@ const fieldSchema = (field: FormField) => {
   if (field.type === 'multiple') {
     const schema = yup.array(yup.string().required()).default([])
     return field.required ? schema.min(1, 'Choisissez au moins une option') : schema
+  }
+  if (field.type === 'files') {
+    const schema = yup.array(yup.mixed<File>().required()).default([])
+    return field.required ? schema.min(1, 'Ajoutez au moins un fichier') : schema
   }
   let schema = yup.string().trim().default('')
   if (field.type === 'email') {
@@ -46,7 +53,7 @@ const buildSchema = (fields: FormField[]): yup.ObjectSchema<Record<string, any>>
 
 const formatValue = (field: FormField, value: any) => {
   if (Array.isArray(value)) {
-    return value.join(', ')
+    return value.map(item => typeof item === 'string' ? item : item.name).join(', ')
   }
   return value && field.unit ? `${value} ${field.unit}` : value
 }
@@ -110,6 +117,72 @@ const Choices = ({ options, value, onChange, multiple = false, label }: {
   )
 }
 
+const formatSize = (size: number) => size < 1024 * 1024
+  ? `${Math.max(1, Math.round(size / 1024))} Ko`
+  : `${Number((size / 1024 / 1024).toFixed(1)).toLocaleString('fr-FR')} Mo`
+
+// Zone de dépôt de photos ou documents ; les fichiers ne sont envoyés qu'à la validation de la demande
+const FilesInput = ({ value, onChange, label }: { value: File[], onChange: (files: File[]) => void, label: string }) => {
+  const [rejection, setRejection] = useState('')
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      'image/*': ['.jpg', '.jpeg', '.png', '.webp', '.heic'],
+      'application/pdf': ['.pdf'],
+    },
+    maxSize: OFFER_UPLOAD.maxSize,
+    onDrop: (accepted, rejected) => {
+      const files = [...value, ...accepted].slice(0, OFFER_UPLOAD.maxFiles)
+      onChange(files)
+      if (rejected.length) {
+        setRejection(`${rejected.map(({ file }) => file.name).join(', ')} : format non accepté ou fichier de plus de ${formatSize(OFFER_UPLOAD.maxSize)}`)
+      } else if (value.length + accepted.length > OFFER_UPLOAD.maxFiles) {
+        setRejection(`${OFFER_UPLOAD.maxFiles} fichiers maximum`)
+      } else {
+        setRejection('')
+      }
+    },
+  })
+  return (
+    <div>
+      <div
+        {...getRootProps({ 'aria-label': label })}
+        className={`rounded-lg border-2 border-dashed px-4 py-5 text-center cursor-pointer transition-colors ${isDragActive ? 'border-blue-300 bg-blue-500/20' : 'border-white/30 hover:border-white/60 hover:bg-white/5'}`}
+      >
+        <input {...getInputProps()} />
+        <svg className="mx-auto w-8 h-8 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+        </svg>
+        <p className="mt-2 text-sm text-white">
+          {isDragActive ? 'Déposez vos fichiers ici' : 'Glissez vos photos ou documents ici, ou cliquez pour les choisir'}
+        </p>
+        <p className="mt-1 text-xs text-white/60">
+          JPG, PNG, WEBP, HEIC ou PDF · {formatSize(OFFER_UPLOAD.maxSize)} max · {OFFER_UPLOAD.maxFiles} fichiers max
+        </p>
+      </div>
+      {value.length > 0 && (
+        <ul className="mt-3 space-y-2">
+          {value.map((file, index) => (
+            <li key={`${file.name}-${index}`} className="flex items-center justify-between gap-3 rounded-lg bg-white/10 px-3 py-2 text-sm text-white">
+              <span className="truncate">{file.name} <span className="text-white/60">({formatSize(file.size)})</span></span>
+              <button
+                type="button"
+                onClick={() => onChange(value.filter((_, i) => i !== index))}
+                className="cursor-pointer text-white/70 hover:text-red-300"
+                aria-label={`Retirer ${file.name}`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <FieldError message={rejection} />
+    </div>
+  )
+}
+
 const Field = ({ field, control, register, error }: {
   field: FormField
   control: any
@@ -117,7 +190,7 @@ const Field = ({ field, control, register, error }: {
   error?: string
 }) => {
   const id = `field-${field.name}`
-  const isGroup = ['choices', 'multiple'].includes(field.type)
+  const isGroup = ['choices', 'multiple', 'files'].includes(field.type)
   let input: React.ReactNode
   switch (field.type) {
     case 'choices':
@@ -125,6 +198,13 @@ const Field = ({ field, control, register, error }: {
       input = (
         <Controller name={field.name} control={control} render={({ field: { value, onChange } }) => (
           <Choices label={field.label} options={field.options || []} multiple={field.type === 'multiple'} value={value} onChange={onChange} />
+        )} />
+      )
+      break
+    case 'files':
+      input = (
+        <Controller name={field.name} control={control} render={({ field: { value, onChange } }) => (
+          <FilesInput label={field.label} value={value} onChange={onChange} />
         )} />
       )
       break
@@ -182,6 +262,8 @@ export default function OfferForm({ offer, form, contact }: Props) {
   const fields = useMemo(() => [...steps.flatMap(step => step.fields), ...contactFields], [steps, contactFields])
   const schema = useMemo(() => buildSchema(fields), [fields])
   const honeypot = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   const [currentStep, setCurrentStep] = useState(0)
   const [state, formAction] = useActionState(createOfferRequest, null)
@@ -189,7 +271,7 @@ export default function OfferForm({ offer, form, contact }: Props) {
   const { register, control, trigger, handleSubmit, getValues, formState: { errors } } = useForm<Record<string, any>>({
     resolver: yupResolver(schema),
     defaultValues: {
-      ...Object.fromEntries(fields.map(field => [field.name, field.type === 'multiple' ? [] : field.defaultValue || ''])),
+      ...Object.fromEntries(fields.map(field => [field.name, ['multiple', 'files'].includes(field.type) ? [] : field.defaultValue || ''])),
       consent: false,
     },
   })
@@ -209,11 +291,39 @@ export default function OfferForm({ offer, form, contact }: Props) {
     ...knownFields.map(field => ({ field, value: contact?.[field.name as keyof Contact] })),
   ]
 
-  const onSubmit = (values: Record<string, any>) => {
-    const answers = toAnswers(values).map(({ field, value }) => ({ name: field.name, label: field.label, value }))
-    startTransition(() => {
-      formAction({ offer, answers, website: honeypot.current?.value })
-    })
+  // Envoie les pièces jointes dans le stockage et renvoie leurs chemins à la place des fichiers
+  const uploadFiles = async (files: File[]) => {
+    const { uploads, error } = await createOfferUploads(files.map(({ name, type, size }) => ({ name, type, size })))
+    if (error || !uploads) {
+      throw new Error(error)
+    }
+    const supabase = createClient()
+    await Promise.all(uploads.map(async ({ path, token }, index) => {
+      const { error } = await supabase.storage.from('images').uploadToSignedUrl(path, token, files[index])
+      if (error) {
+        throw error
+      }
+    }))
+    return uploads.map(({ name, path }) => ({ name, path }))
+  }
+
+  const onSubmit = async (values: Record<string, any>) => {
+    setUploadError('')
+    setUploading(true)
+    try {
+      const answers = await Promise.all(toAnswers(values).map(async ({ field, value }) => ({
+        name: field.name,
+        label: field.label,
+        value: field.type === 'files' && value.length ? await uploadFiles(value) : value,
+      })))
+      startTransition(() => {
+        formAction({ offer, answers, website: honeypot.current?.value })
+      })
+    } catch (error: any) {
+      setUploadError(`L'envoi des fichiers a échoué${error?.message ? ` : ${error.message}` : ''}`)
+    } finally {
+      setUploading(false)
+    }
   }
 
   if (state?.success) {
@@ -326,9 +436,9 @@ export default function OfferForm({ offer, form, contact }: Props) {
               </label>
               <FieldError message={errors.consent?.message?.toString()} />
             </div>
-            {state?.error && (
+            {(uploadError || state?.error) && (
               <p role="alert" className="bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2 text-red-200 text-sm">
-                {state.error}
+                {uploadError || state?.error}
               </p>
             )}
           </>
@@ -361,10 +471,10 @@ export default function OfferForm({ offer, form, contact }: Props) {
             <button
               key="submit"
               type="submit"
-              disabled={isPending}
+              disabled={isPending || uploading}
               className="py-2.5 px-5 cursor-pointer rounded-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-60 disabled:cursor-wait transition-colors duration-200"
             >
-              {isPending ? 'Envoi en cours...' : 'Envoyer ma demande'}
+              {uploading ? 'Envoi des fichiers...' : isPending ? 'Envoi en cours...' : 'Envoyer ma demande'}
             </button>
           )}
         </div>

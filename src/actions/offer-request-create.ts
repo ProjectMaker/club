@@ -8,7 +8,8 @@ import { logPostHogInfo } from '@/lib/posthog-logs'
 interface OfferRequestAnswer {
   name: string
   label: string
-  value: string | string[]
+  // Pièces jointes : nom du fichier et chemin dans le stockage
+  value: string | string[] | { name: string, path: string }[]
 }
 
 interface OfferRequestData {
@@ -31,6 +32,12 @@ export async function createOfferRequest(prevState: any, { offer, answers, websi
   const missingContact = REQUIRED_CONTACT.some(name => !answers.find(answer => answer.name === name)?.value)
   if (missingContact) {
     return { success: false, error: 'Vos coordonnées sont incomplètes' }
+  }
+  const invalidFile = answers.some(({ value }) => Array.isArray(value) && value.some(item => (
+    typeof item !== 'string' && !item?.path?.startsWith('offer-requests/')
+  )))
+  if (invalidFile) {
+    return { success: false, error: 'Pièce jointe invalide' }
   }
 
   const user = await getUser()

@@ -74,3 +74,10 @@ export const DEPARTMENTS = [
   '95 - Val-d\'Oise', '971 - Guadeloupe', '972 - Martinique', '973 - Guyane', '974 - La Réunion',
   '976 - Mayotte',
 ]
+
+// Pièces jointes des demandes d'offres et services (bucket privé « images »)
+export const OFFER_UPLOAD = {
+  maxFiles: 5,
+  maxSize: 10 * 1024 * 1024,
+  types: ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf'],
+}
