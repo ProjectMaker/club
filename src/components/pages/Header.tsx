@@ -182,7 +182,7 @@ export default function Header({ user }: { user: User | null }) {
                       : 'text-white/80 hover:text-white hover:bg-white/10'
                       }`}
                   >
-                    Offres et services
+                    Ressources &amp; conseils
                   </Link>
                   <Link
                     href={user?.is_admin ? '/private/admin/users?approved=true' : '/private/admin/materials'}

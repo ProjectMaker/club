@@ -41,7 +41,7 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: '/private/services',
-    label: 'Offres et services',
+    label: 'Ressources & conseils',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <rect x="4" y="6" width="16" height="12" rx="2" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
