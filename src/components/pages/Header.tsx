@@ -143,6 +143,25 @@ export default function Header({ user }: { user: User | null }) {
           </div>
 
 
+          {/* Navigation visiteur : seules les offres et services sont publiques */}
+          {!user && (
+            <nav className="flex items-center pr-4">
+              {/* Sur mobile, le libellé passe sur deux lignes pour tenir à côté du logo */}
+              <Link
+                href="/offers"
+                className={`relative px-3 py-2 rounded-lg text-sm leading-tight text-center md:text-base md:leading-normal md:whitespace-nowrap transition-all duration-200 ${pathname.indexOf('/offers') === 0
+                  ? 'text-white bg-blue-500/50 backdrop-blur-sm'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+              >
+                Offres et<br className="md:hidden" /> services
+                <span className="absolute -top-2.5 -right-1 md:-right-3 rounded-full bg-yellow-300 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-blue-950 shadow-md">
+                  Nouveau
+                </span>
+              </Link>
+            </nav>
+          )}
+
           {/* Navigation */}
           <nav className="hidden md:flex space-x-6">
             {
