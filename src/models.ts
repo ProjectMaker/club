@@ -80,3 +80,41 @@ export interface Material {
     pictures: Picture[];
     user: User;
 }
+export interface OfferRequestFile {
+    name: string;
+    path: string;
+    // Lien de téléchargement temporaire, ajouté pour l'admin
+    url?: string;
+}
+
+export interface OfferRequestAnswer {
+    name: string;
+    label: string;
+    value: string | string[] | OfferRequestFile[] | null;
+}
+
+export interface OfferRequestNote {
+    id: number;
+    created_at: string;
+    content: string;
+    author: { firstname: string | null; lastname: string | null } | null;
+}
+
+export interface OfferRequest {
+    id: number;
+    reference: string;
+    created_at: string;
+    updated_at: string;
+    user_id: string | null;
+    offer: string;
+    status: 'new' | 'follow_up' | 'done' | 'archived';
+    firstname: string | null;
+    lastname: string | null;
+    email: string | null;
+    phone_number: string | null;
+    data: {
+        answers: OfferRequestAnswer[];
+        user_match: 'session' | 'email' | null;
+    };
+    notes?: OfferRequestNote[];
+}

@@ -55,12 +55,12 @@ export async function createOfferRequest(prevState: any, { offer, answers, websi
   const supabase = createServiceClient()
   // Un visiteur non connecté est rattaché au membre de même email. user_match garde la trace
   // du rattachement : une demande rattachée par email n'a pas forcément été faite par le membre.
-  const email = answers.find(answer => answer.name === 'email')?.value
-  const userId = user?.id || await findUserIdByEmail(supabase, email)
+  const contact = Object.fromEntries(REQUIRED_CONTACT.map(name => [name, answers.find(answer => answer.name === name)?.value]))
+  const userId = user?.id || await findUserIdByEmail(supabase, contact.email)
   const userMatch = user ? 'session' : userId ? 'email' : null
   const { error } = await supabase
     .from('offer_requests')
-    .insert({ user_id: userId, offer, data: { answers, user_match: userMatch } })
+    .insert({ user_id: userId, offer, ...contact, data: { answers, user_match: userMatch } })
   if (error) {
     return { success: false, error: error.message }
   }

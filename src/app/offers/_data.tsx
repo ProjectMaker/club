@@ -290,3 +290,5 @@ export const OFFERS: Offer[] = [
 ]
 
 export const getOffer = (slug: string) => OFFERS.find(offer => offer.slug === slug)
+
+export const getOfferTitle = (slug: string) => getOffer(slug)?.title || slug

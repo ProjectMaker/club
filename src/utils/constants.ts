@@ -81,3 +81,13 @@ export const OFFER_UPLOAD = {
   maxSize: 10 * 1024 * 1024,
   types: ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf'],
 }
+
+// Statuts de suivi des demandes d'offres et services
+export const OFFER_REQUEST_STATUSES = [
+  { value: 'new', label: 'Nouvelle', className: 'bg-blue-500/30 text-blue-100 border-blue-300/50' },
+  { value: 'follow_up', label: 'À relancer', className: 'bg-amber-500/30 text-amber-100 border-amber-300/50' },
+  { value: 'done', label: 'Traitée', className: 'bg-green-500/30 text-green-100 border-green-300/50' },
+  { value: 'archived', label: 'Archivée', className: 'bg-white/10 text-white/60 border-white/20' },
+] as const
+
+export type OfferRequestStatus = typeof OFFER_REQUEST_STATUSES[number]['value']
