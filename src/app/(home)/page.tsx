@@ -9,6 +9,7 @@ import InfosSummary from "@/components/pages/InfosSummary";
 import { User } from "@/models";
 
 import { Consultation } from "@/app/private/services/_Cards";
+import OfferHighlight from "@/app/offers/_OfferHighlight";
 
 export const metadata: Metadata = {
   title: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
@@ -88,9 +89,10 @@ export default async function Home() {
         }
       </div>
 
-      {/* CTA Consultation */}
+      {/* CTA Consultation et offre mise en avant */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
         <Consultation />
+        <OfferHighlight slug="creer-ou-renover-ma-laverie" />
       </div>
 
       <InfosSummary />
