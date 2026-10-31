@@ -29,6 +29,9 @@ export interface FormField {
   half?: boolean
   autoComplete?: string
   defaultValue?: string
+  // Affiché seulement si le champ « name » vaut (ou contient, pour un choix multiple) « value ».
+  // Un champ conditionnel est toujours facultatif.
+  showIf?: { name: string, value: string }
 }
 
 export interface FormStep {
@@ -132,6 +135,31 @@ export const CoinsIcon = ({ className = 'w-6 h-6' }: IconProps) => (
 export const UsersIcon = ({ className = 'w-6 h-6' }: IconProps) => (
   <svg {...iconProps} className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M17 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M10 11a4 4 0 100-8 4 4 0 000 8zM21 20v-1a4 4 0 00-3-3.87M15 3.13a4 4 0 010 7.75" />
+  </svg>
+)
+
+export const HeadsetIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 14v-2a8 8 0 0116 0v2M4 14a2 2 0 002 2h1v-5H6a2 2 0 00-2 2v1zm16 0a2 2 0 01-2 2h-1v-5h1a2 2 0 012 2v1zm-3 2v1a3 3 0 01-3 3h-2" />
+  </svg>
+)
+
+export const CameraIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7l13 4-1.5 4.5L2 11.5 3 7zm13 4l4-1v6l-5.5-.5M6 13l-1 6H3" />
+  </svg>
+)
+
+export const WifiIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2 9a15 15 0 0120 0M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0M12 19.5h.01" />
+  </svg>
+)
+
+export const CardIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h4" />
   </svg>
 )
 
@@ -465,6 +493,102 @@ export const OFFERS: Offer[] = [
             },
             {
               name: 'timeline', type: 'choices', label: 'Délai envisagé', required: true,
+              options: ['Dès que possible', 'Sous 3 mois', 'Sous 6 mois', 'Plus de 6 mois'],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: 'digitaliser-et-securiser-mon-activite',
+    title: 'Digitaliser et sécuriser mon activité',
+    summary: 'Centre d’appel, vidéosurveillance, gestion à distance, paiement connecté et suivi de performance pour piloter votre laverie sereinement.',
+    image: '/images/offers/digitaliser-et-securiser-mon-activite/hero.jpg',
+    description: 'Simplifiez la gestion de votre laverie et sécurisez votre exploitation grâce à des solutions digitales et connectées, adaptées aux professionnels.',
+    steps: [
+      { label: 'Support à distance', icon: <HeadsetIcon /> },
+      { label: 'Sécurité renforcée de vos locaux', icon: <CameraIcon /> },
+      { label: 'Gestion connectée de votre parc machines', icon: <WifiIcon /> },
+      { label: 'Solutions de paiement modernes', icon: <CardIcon /> },
+      { label: 'Suivi de performance en temps réel', icon: <ChartIcon /> },
+    ],
+    prestationsTitle: 'Nos solutions pour digitaliser et sécuriser votre activité',
+    prestationsIntro: 'Des outils simples et efficaces pour gagner en sérénité et améliorer la performance de votre laverie.',
+    prestations: [
+      {
+        title: 'Centre d’appel (humain ou IA)',
+        image: '/images/offers/digitaliser-et-securiser-mon-activite/centre-appel.jpg',
+        description: 'Assistance client, gestion des incidents et réponses aux utilisateurs.',
+        icon: <HeadsetIcon />,
+      },
+      {
+        title: 'Vidéosurveillance',
+        image: '/images/offers/digitaliser-et-securiser-mon-activite/videosurveillance.jpg',
+        description: 'Installation, maintenance et accès à distance pour sécuriser vos locaux.',
+        icon: <CameraIcon />,
+      },
+      {
+        title: 'Gestion à distance',
+        image: '/images/offers/digitaliser-et-securiser-mon-activite/gestion-distance.jpg',
+        description: 'Suivi de vos machines, alertes, encaissements et reporting.',
+        icon: <WifiIcon />,
+      },
+      {
+        title: 'Systèmes de paiement connectés',
+        image: '/images/offers/digitaliser-et-securiser-mon-activite/paiement-connecte.jpg',
+        description: 'Centrales de paiement, sans-contact, applications mobiles et fidélisation.',
+        icon: <CardIcon />,
+      },
+      {
+        title: 'Suivi de performance',
+        image: '/images/offers/digitaliser-et-securiser-mon-activite/suivi-performance.jpg',
+        description: 'Analyse de la fréquentation, du chiffre d’affaires et de la consommation énergétique.',
+        icon: <ChartIcon />,
+      },
+    ],
+    contact: {
+      title: 'Un projet spécifique ? Parlez-nous de votre besoin.',
+      text: 'Notre équipe vous conseille et vous oriente vers les partenaires les plus adaptés.',
+      label: 'Nous contacter',
+    },
+    form: {
+      title: 'Décrivez votre besoin',
+      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous orienter vers les solutions les plus adaptées.',
+      success: 'Merci ! Votre demande a bien été reçue. Club Laverie revient vers vous rapidement pour vous orienter vers les solutions les plus adaptées.',
+      steps: [
+        {
+          label: 'Votre besoin',
+          fields: [
+            {
+              name: 'solutions', type: 'multiple', label: 'Solution(s) visée(s)', required: true,
+              options: [
+                { value: 'Centre d’appel (humain ou IA)', icon: <HeadsetIcon className="w-5 h-5" /> },
+                { value: 'Vidéosurveillance', icon: <CameraIcon className="w-5 h-5" /> },
+                { value: 'Gestion à distance', icon: <WifiIcon className="w-5 h-5" /> },
+                { value: 'Systèmes de paiement connectés', icon: <CardIcon className="w-5 h-5" /> },
+                { value: 'Suivi de performance', icon: <ChartIcon className="w-5 h-5" /> },
+              ],
+            },
+            { name: 'laundries_count', type: 'number', label: 'Nombre de laveries concernées', required: true, half: true, placeholder: 'Ex : 2' },
+            { name: 'current_setup', type: 'textarea', label: 'Équipement ou logiciel déjà en place', placeholder: 'Centrale de paiement, caméras, logiciel de gestion... ou « aucun »' },
+          ],
+        },
+        {
+          label: 'Détails',
+          fields: [
+            { name: 'goal', type: 'textarea', label: 'Difficulté actuelle ou objectif recherché', required: true, placeholder: 'Ce qui vous pose problème aujourd’hui ou ce que vous voulez améliorer...' },
+            {
+              name: 'call_center_hours', type: 'choices', label: 'Horaires de couverture souhaités pour le centre d’appel',
+              options: ['Heures d’ouverture', 'Soirs et week-ends', '24h/24, 7j/7'],
+              showIf: { name: 'solutions', value: 'Centre d’appel (humain ou IA)' },
+            },
+            {
+              name: 'monthly_budget', type: 'select', label: 'Budget mensuel indicatif', placeholder: 'Sélectionnez une fourchette (facultatif)',
+              options: ['Moins de 100 € / mois', '100 € à 300 € / mois', '300 € à 1 000 € / mois', 'Plus de 1 000 € / mois'],
+            },
+            {
+              name: 'deployment', type: 'choices', label: 'Échéance de déploiement', required: true,
               options: ['Dès que possible', 'Sous 3 mois', 'Sous 6 mois', 'Plus de 6 mois'],
             },
           ],

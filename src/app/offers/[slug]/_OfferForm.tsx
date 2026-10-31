@@ -40,7 +40,7 @@ const fieldSchema = (field: FormField) => {
   if (field.type === 'email') {
     schema = schema.email('Email invalide')
   }
-  if (field.required) {
+  if (field.required && !field.showIf) {
     const isChoice = ['select', 'department', 'choices'].includes(field.type)
     schema = schema.required(isChoice ? 'Choisissez une option' : 'Ce champ est requis')
   }
@@ -48,6 +48,14 @@ const fieldSchema = (field: FormField) => {
 }
 
 // Le schéma dépend de l'offre : son type est donc générique
+const isVisible = (field: FormField, values: Record<string, any>) => {
+  if (!field.showIf) {
+    return true
+  }
+  const value = values[field.showIf.name]
+  return Array.isArray(value) ? value.includes(field.showIf.value) : value === field.showIf.value
+}
+
 const buildSchema = (fields: FormField[]): yup.ObjectSchema<Record<string, any>> => yup.object({
   ...Object.fromEntries(fields.map(field => [field.name, fieldSchema(field)])),
   consent: yup.boolean().oneOf([true], 'Votre accord est nécessaire pour être mis en relation').required(),
@@ -289,7 +297,7 @@ export default function OfferForm({ offer, form, contact }: Props) {
   const [currentStep, setCurrentStep] = useState(0)
   const [state, formAction] = useActionState(createOfferRequest, null)
   const [isPending, startTransition] = useTransition()
-  const { register, control, trigger, handleSubmit, getValues, formState: { errors } } = useForm<Record<string, any>>({
+  const { register, control, trigger, handleSubmit, getValues, watch, formState: { errors } } = useForm<Record<string, any>>({
     resolver: yupResolver(schema),
     defaultValues: {
       ...Object.fromEntries(fields.map(field => [field.name, ['multiple', 'files'].includes(field.type) ? [] : field.defaultValue || ''])),
@@ -301,14 +309,14 @@ export default function OfferForm({ offer, form, contact }: Props) {
   const isValidationStep = currentStep === steps.length
 
   const nextStep = async () => {
-    if (await trigger(stepFields(currentStep).map(field => field.name))) {
+    if (await trigger(stepFields(currentStep).filter(field => isVisible(field, getValues())).map(field => field.name))) {
       setCurrentStep(step => step + 1)
     }
   }
 
   // Chaque réponse est enregistrée avec l'intitulé de sa question, pour rester lisible si le formulaire évolue
   const toAnswers = (values: Record<string, any>) => [
-    ...fields.map(field => ({ field, value: values[field.name] })),
+    ...fields.filter(field => isVisible(field, values)).map(field => ({ field, value: values[field.name] })),
     ...knownFields.map(field => ({ field, value: contact?.[field.name as keyof Contact] })),
   ]
 
@@ -362,6 +370,8 @@ export default function OfferForm({ offer, form, contact }: Props) {
   }
 
   const values = getValues()
+  // Valeurs suivies en direct, pour afficher ou masquer les champs conditionnels
+  const watched = watch()
 
   return (
     <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
@@ -395,7 +405,7 @@ export default function OfferForm({ offer, form, contact }: Props) {
 
         {!isValidationStep && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-5">
-            {steps[currentStep].fields.map(field => (
+            {steps[currentStep].fields.filter(field => isVisible(field, watched)).map(field => (
               <Field
                 key={field.name}
                 field={field}

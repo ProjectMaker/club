@@ -65,7 +65,7 @@ export default async function OfferPage({ params }: Params) {
           {offer.steps && (
             <ul className="flex flex-wrap justify-center gap-x-2 gap-y-5 sm:gap-x-4">
               {offer.steps.map(step => (
-                <li key={step.label} className="w-24 sm:w-26 flex flex-col items-center text-center gap-2">
+                <li key={step.label} className="flex-1 min-w-22 max-w-26 flex flex-col items-center text-center gap-2">
                   <span className="w-12 h-12 rounded-full border-2 border-white/60 flex items-center justify-center text-white">
                     {step.icon}
                   </span>
