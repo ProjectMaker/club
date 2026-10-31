@@ -21,6 +21,17 @@ interface OfferRequestData {
 
 const REQUIRED_CONTACT = ['firstname', 'lastname', 'email', 'phone_number']
 
+// Membre dont l'email correspond à celui saisi par un visiteur (sans tenir compte de la casse)
+async function findUserIdByEmail(supabase: ReturnType<typeof createServiceClient>, email: unknown) {
+  if (typeof email !== 'string' || !email.trim()) {
+    return null
+  }
+  // % et _ sont des jokers pour ilike : on les échappe pour une correspondance exacte
+  const pattern = email.trim().replace(/[\\%_]/g, '\\$&')
+  const { data } = await supabase.from('users').select('id').ilike('email', pattern).limit(1).maybeSingle()
+  return (data?.id as string | undefined) || null
+}
+
 // Ouvert aux visiteurs : la demande est rattachée au membre s'il est connecté
 export async function createOfferRequest(prevState: any, { offer, answers, website }: OfferRequestData) {
   if (website) {
@@ -42,15 +53,20 @@ export async function createOfferRequest(prevState: any, { offer, answers, websi
 
   const user = await getUser()
   const supabase = createServiceClient()
+  // Un visiteur non connecté est rattaché au membre de même email. user_match garde la trace
+  // du rattachement : une demande rattachée par email n'a pas forcément été faite par le membre.
+  const email = answers.find(answer => answer.name === 'email')?.value
+  const userId = user?.id || await findUserIdByEmail(supabase, email)
+  const userMatch = user ? 'session' : userId ? 'email' : null
   const { error } = await supabase
     .from('offer_requests')
-    .insert({ user_id: user?.id || null, offer, data: { answers } })
+    .insert({ user_id: userId, offer, data: { answers, user_match: userMatch } })
   if (error) {
     return { success: false, error: error.message }
   }
 
-  if (user) {
-    await captureServerEvent(user.id, 'offer_request_created', { offer })
+  if (userId) {
+    await captureServerEvent(userId, 'offer_request_created', { offer, user_match: userMatch })
   }
   await logPostHogInfo('offer_request_creation_succeeded')
   return { success: true }
