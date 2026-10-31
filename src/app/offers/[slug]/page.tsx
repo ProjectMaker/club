@@ -7,6 +7,8 @@ import { getUser as getUserProfile } from "@/data-access-layers/users";
 import { OFFERS, StoreIcon, getOffer } from "../_data";
 import Visual from "../_Visual";
 import OfferForm from "./_OfferForm";
+import JsonLd from "@/components/JsonLd";
+import { SITE_NAME, SITE_URL, absoluteUrl, breadcrumbJsonLd } from "@/utils/seo";
 
 type Params = { params: Promise<{ slug: string }> }
 
@@ -17,7 +19,23 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
   const offer = getOffer(slug)
-  return { title: offer?.title, description: offer?.summary }
+  if (!offer) {
+    return {}
+  }
+  return {
+    title: offer.title,
+    description: offer.summary,
+    alternates: { canonical: `/offers/${offer.slug}` },
+    openGraph: {
+      type: 'website',
+      locale: 'fr_FR',
+      siteName: SITE_NAME,
+      url: `/offers/${offer.slug}`,
+      title: offer.title,
+      description: offer.summary,
+      ...(offer.image && { images: [{ url: offer.image, alt: offer.title }] }),
+    },
+  }
 }
 
 const CheckIcon = () => (
@@ -42,6 +60,29 @@ export default async function OfferPage({ params }: Params) {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <JsonLd data={{
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: offer.title,
+        description: offer.description,
+        url: absoluteUrl(`/offers/${offer.slug}`),
+        ...(offer.image && { image: absoluteUrl(offer.image) }),
+        provider: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+        areaServed: { '@type': 'Country', name: 'France' },
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: offer.prestationsTitle || 'Nos prestations',
+          itemListElement: offer.prestations.map(prestation => ({
+            '@type': 'Offer',
+            itemOffered: { '@type': 'Service', name: prestation.title, description: prestation.description },
+          })),
+        },
+      }} />
+      <JsonLd data={breadcrumbJsonLd([
+        { name: 'Accueil', path: '/' },
+        { name: 'Offres et services', path: '/offers' },
+        { name: offer.title, path: `/offers/${offer.slug}` },
+      ])} />
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Colonne principale */}
         <div className="lg:col-span-7 flex flex-col gap-6">

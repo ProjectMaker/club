@@ -2,6 +2,8 @@
 
 import { use } from 'react'
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { DEFAULT_OG_IMAGE, DISCLAIMER_SLUGS } from "@/utils/seo";
 import LaundriesSummary from "@/components/pages/LaundriesSummary"
 import PressingsSummary from "@/components/pages/PressingsSummary"
 import MaterialsSummary from "@/components/pages/MaterialsSummary"
@@ -13,7 +15,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
   
   const metadataMap: Record<string, Metadata> = {
     laundries: {
-      title: "Laveries - Club Laverie",
+      title: "Laveries à vendre",
       description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Trouvez la laverie qui correspond à votre profil et commencez votre aventure entrepreneuriale avec Club Laverie.",
       keywords: [
         "laverie automatique",
@@ -43,6 +45,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
         },
       },
       openGraph: {
+        images: [DEFAULT_OG_IMAGE],
         type: "website",
         locale: "fr_FR",
         url: `${baseUrl}/disclaimers/laundries`,
@@ -51,6 +54,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
         siteName: "Club Laverie",
       },
       twitter: {
+        images: [DEFAULT_OG_IMAGE],
         card: "summary_large_image",
         title: "Laveries - Club Laverie",
         description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Trouvez la laverie qui correspond à votre profil.",
@@ -61,7 +65,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
       category: "Business",
     },
     pressings: {
-      title: "Pressings - Club Laverie",
+      title: "Pressings à vendre",
       description: "Découvrez les meilleures opportunités d'investissement dans les pressings. Trouvez le pressing qui correspond à votre profil et commencez votre aventure entrepreneuriale avec Club Laverie.",
       keywords: [
         "pressing",
@@ -91,6 +95,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
         },
       },
       openGraph: {
+        images: [DEFAULT_OG_IMAGE],
         type: "website",
         locale: "fr_FR",
         url: `${baseUrl}/disclaimers/pressings`,
@@ -99,6 +104,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
         siteName: "Club Laverie",
       },
       twitter: {
+        images: [DEFAULT_OG_IMAGE],
         card: "summary_large_image",
         title: "Pressings - Club Laverie",
         description: "Découvrez les meilleures opportunités d'investissement dans les pressings. Trouvez le pressing qui correspond à votre profil.",
@@ -109,7 +115,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
       category: "Business",
     },
     materials: {
-      title: "Matériel Laverie - Club Laverie",
+      title: "Matériel de laverie",
       description: "Découvrez une large sélection de matériel professionnel pour laverie : lave-linges, séchoirs, monnayeurs et bien plus encore. Trouvez l'équipement idéal pour votre projet avec Club Laverie.",
       keywords: [
         "matériel laverie",
@@ -139,6 +145,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
         },
       },
       openGraph: {
+        images: [DEFAULT_OG_IMAGE],
         type: "website",
         locale: "fr_FR",
         url: `${baseUrl}/disclaimers/materials`,
@@ -147,6 +154,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
         siteName: "Club Laverie",
       },
       twitter: {
+        images: [DEFAULT_OG_IMAGE],
         card: "summary_large_image",
         title: "Matériel Laverie - Club Laverie",
         description: "Découvrez une large sélection de matériel professionnel pour laverie : lave-linges, séchoirs, monnayeurs et bien plus encore.",
@@ -158,14 +166,7 @@ const getMetadataBySlug = (slug: string): Metadata => {
     },
   };
 
-  return metadataMap[slug] || {
-    title: "Club Laverie",
-    description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques, pressings et matériel professionnel.",
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return metadataMap[slug] || {};
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -175,6 +176,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default function Disclaimer({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
+  // Un slug inconnu affichait une page vide indexable
+  if (!DISCLAIMER_SLUGS.includes(slug)) {
+    notFound()
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       {

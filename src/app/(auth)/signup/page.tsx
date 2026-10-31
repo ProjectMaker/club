@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/utils/seo";
 import SignUpForm from "@/components/pages/SignUpForm";
 
 export const metadata: Metadata = {
-	title: "Inscription - Club Laverie",
+	title: "Inscription",
 	description: "Créez votre compte Club Laverie et rejoignez notre plateforme pour accéder aux meilleures opportunités d'investissement dans les laveries automatiques, pressings et matériel professionnel. Trouvez votre projet idéal.",
 	keywords: [
 		"inscription club laverie",
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
 		},
 	},
 	openGraph: {
+		images: [DEFAULT_OG_IMAGE],
 		type: "website",
 		locale: "fr_FR",
 		url: "/signup",
@@ -41,6 +43,7 @@ export const metadata: Metadata = {
 		siteName: "Club Laverie",
 	},
 	twitter: {
+		images: [DEFAULT_OG_IMAGE],
 		card: "summary_large_image",
 		title: "Inscription - Club Laverie",
 		description: "Rejoignez notre plateforme pour accéder aux meilleures opportunités d'investissement dans les laveries automatiques et trouvez votre projet idéal.",

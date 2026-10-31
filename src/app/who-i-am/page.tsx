@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/utils/seo";
 
 export const metadata: Metadata = {
-  title: "Qui sommes-nous ? - Le Club Laverie | Votre communauté de professionnels du lavage",
+  title: { absolute: "Qui sommes-nous ? - Le Club Laverie | Votre communauté de professionnels du lavage" },
   description: "Découvrez le Club Laverie, une communauté de plus de 1500 membres spécialisés dans les laveries automatiques, pressings et lavages autos. Accompagnement personnalisé, tarifs exclusifs et réseau de spécialistes.",
   keywords: [
     "club laverie",
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     type: "website",
     locale: "fr_FR",
     url: "/who-i-am",
@@ -43,6 +45,7 @@ export const metadata: Metadata = {
     siteName: "Club Laverie",
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE],
     card: "summary_large_image",
     title: "Qui sommes-nous ? - Le Club Laverie | Votre communauté de professionnels du lavage",
     description: "Découvrez le Club Laverie, une communauté de plus de 1500 membres spécialisés dans les laveries automatiques, pressings et lavages autos.",

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/utils/seo";
 import { Suspense } from "react";
 import LoginForm from "@/components/pages/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Connexion - Club Laverie",
+  title: "Connexion",
   description: "Connectez-vous à votre compte Club Laverie pour accéder à toutes nos fonctionnalités. Découvrez les meilleures opportunités d'investissement dans les laveries automatiques, pressings et matériel professionnel.",
   keywords: [
     "connexion club laverie",
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     type: "website",
     locale: "fr_FR",
     url: "/login",
@@ -39,6 +41,7 @@ export const metadata: Metadata = {
     siteName: "Club Laverie",
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE],
     card: "summary_large_image",
     title: "Connexion - Club Laverie",
     description: "Connectez-vous à votre compte Club Laverie pour accéder à toutes nos fonctionnalités et découvrir les meilleures opportunités d'investissement.",

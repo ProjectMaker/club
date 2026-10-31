@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Consultation - Clarifier votre projet de laverie | Club Laverie",
+  title: { absolute: "Consultation - Clarifier votre projet de laverie | Club Laverie" },
   description:
     "Consultation individuelle de 45 minutes pour clarifier votre projet de laverie. Bénéficiez de plus de 20 ans d'expérience terrain pour structurer vos options et prendre les bonnes décisions.",
+  alternates: {
+    canonical: "/calendly",
+  },
 };
 
 const OBJECTIVES = [

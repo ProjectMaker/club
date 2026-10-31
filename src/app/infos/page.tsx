@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/utils/seo";
 
 export const metadata: Metadata = {
-  title: "Valorisation d'un fonds de commerce de laverie - Guide complet | Club Laverie",
+  title: { absolute: "Valorisation d'un fonds de commerce de laverie - Guide complet | Club Laverie" },
   description: "Découvrez les méthodes d'évaluation et spécificités du marché des laveries automatiques et avec services en France. Guide complet sur la valorisation d'un fonds de commerce de laverie : barèmes fiscaux, méthodes de comparaison, disparités géographiques et état du marché 2024.",
   keywords: [
     "valorisation laverie",
@@ -40,6 +41,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     type: "article",
     locale: "fr_FR",
     url: "/infos",
@@ -48,6 +50,7 @@ export const metadata: Metadata = {
     siteName: "Club Laverie",
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE],
     card: "summary_large_image",
     title: "Valorisation d'un fonds de commerce de laverie - Guide complet | Club Laverie",
     description: "Découvrez les méthodes d'évaluation et spécificités du marché des laveries automatiques et avec services en France.",

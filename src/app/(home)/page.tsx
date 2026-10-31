@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/utils/seo";
 import Sales from "./_Sales";
 import SalesLoading from "./_SalesLoading";
 import { createClient } from "@/lib/supabase-server";
@@ -12,7 +13,7 @@ import { Consultation } from "@/app/private/services/_Cards";
 import OfferHighlight from "@/app/offers/_OfferHighlight";
 
 export const metadata: Metadata = {
-  title: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
+  title: { absolute: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal" },
   description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Des emplacements premium, des rendements attractifs. Recherchez et trouvez votre laverie, pressing ou matériel professionnel idéal.",
   keywords: [
     "laverie automatique",
@@ -43,6 +44,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     type: "website",
     locale: "fr_FR",
     url: "/",
@@ -51,6 +53,7 @@ export const metadata: Metadata = {
     siteName: "Club Laverie",
   },
   twitter: {
+    images: [DEFAULT_OG_IMAGE],
     card: "summary_large_image",
     title: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
     description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Des emplacements premium, des rendements attractifs.",

@@ -6,6 +6,10 @@ import Visual from "./_Visual";
 
 export const metadata: Metadata = {
   title: 'Offres et services',
+  description: 'Création, rénovation, matériel, maintenance, financement : les solutions de Club Laverie et de ses partenaires pour faire avancer votre projet de laverie.',
+  alternates: {
+    canonical: '/offers',
+  },
 }
 
 export default function Offers() {

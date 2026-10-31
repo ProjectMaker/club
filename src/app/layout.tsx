@@ -6,6 +6,8 @@ import { QueryProvider } from "@/contexts/QueryContext";
 import Header from "@/components/pages/Header";
 import Footer from "@/components/pages/Footer";
 import { getUser } from "@/utils/auth";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, organizationJsonLd, websiteJsonLd } from "@/utils/seo";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -17,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
     template: "%s | Club Laverie",
@@ -53,7 +55,6 @@ export const metadata: Metadata = {
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
-  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true,
@@ -68,29 +69,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "/",
     siteName: "Club Laverie",
     title: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
     description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Des emplacements premium, des rendements attractifs.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Club Laverie - Plateforme d'investissement en laveries automatiques",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Club Laverie - Trouvez votre laverie, pressing ou matériel idéal",
     description: "Découvrez les meilleures opportunités d'investissement dans les laveries automatiques. Des emplacements premium, des rendements attractifs.",
-    images: ["/og-image.png"],
     creator: "@clublaverie",
   },
-  alternates: {
-    canonical: "/",
-  },
+  // Pas de canonical ici : il serait hérité par toutes les pages qui n'en définissent pas
   category: "Business",
   classification: "Business Directory",
   other: {
@@ -113,6 +102,8 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <JsonLd data={organizationJsonLd} />
+        <JsonLd data={websiteJsonLd} />
         <QueryProvider>
           <Header user={user} />
           <main className="flex min-h-screen items-start justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 pb-36 sm:pb-24">
