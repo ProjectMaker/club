@@ -163,6 +163,24 @@ export const CardIcon = ({ className = 'w-6 h-6' }: IconProps) => (
   </svg>
 )
 
+export const BankIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 10l9-6 9 6M5 10v8m4-8v8m6-8v8m4-8v8M3 20h18" />
+  </svg>
+)
+
+export const ShieldIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3zm-3 9l2 2 4-4" />
+  </svg>
+)
+
+export const ScaleIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16M8 20h8M5 7h14M5 7l-3 6a3 3 0 006 0L5 7zm14 0l-3 6a3 3 0 006 0l-3-6z" />
+  </svg>
+)
+
 // Formulaire de demande de service, commun à plusieurs offres
 const SERVICE_REQUEST_FORM: OfferForm = {
   title: 'Décrivez votre besoin',
@@ -590,6 +608,103 @@ export const OFFERS: Offer[] = [
             {
               name: 'deployment', type: 'choices', label: 'Échéance de déploiement', required: true,
               options: ['Dès que possible', 'Sous 3 mois', 'Sous 6 mois', 'Plus de 6 mois'],
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: 'financer-et-securiser-mon-projet',
+    title: 'Financer et sécuriser mon projet',
+    summary: 'Experts-comptables, avocats, assurances et financements pour sécuriser votre laverie, de la création à l’exploitation.',
+    image: '/images/offers/financer-et-securiser-mon-projet/hero.jpg',
+    description: 'Bénéficiez de l’accompagnement de professionnels spécialisés pour financer, assurer et sécuriser votre laverie, de la création à l’exploitation.',
+    steps: [
+      { label: 'Des experts spécialisés', icon: <BankIcon /> },
+      { label: 'Une meilleure protection', icon: <ShieldIcon /> },
+      { label: 'Des solutions de financement', icon: <CoinsIcon /> },
+      { label: 'Un accompagnement sur mesure', icon: <DocumentIcon /> },
+      { label: 'La sécurisation de votre investissement', icon: <ChartIcon /> },
+    ],
+    prestationsTitle: 'Nos solutions pour financer et sécuriser votre projet',
+    prestationsIntro: 'Des partenaires spécialisés pour vous accompagner à chaque étape.',
+    prestations: [
+      {
+        title: 'Experts-comptables',
+        image: '/images/offers/financer-et-securiser-mon-projet/experts-comptables.jpg',
+        description: 'Conseil comptable, business plan, optimisation fiscale et suivi de gestion.',
+        icon: <DocumentIcon />,
+      },
+      {
+        title: 'Avocats spécialisés',
+        image: '/images/offers/financer-et-securiser-mon-projet/avocats.jpg',
+        description: 'Droit des baux, création d’entreprise, contrats et sécurisation juridique.',
+        icon: <ScaleIcon />,
+      },
+      {
+        title: 'Assurances',
+        image: '/images/offers/financer-et-securiser-mon-projet/assurances.jpg',
+        description: 'Assurances multi-risques, perte d’exploitation et garanties spécifiques.',
+        icon: <ShieldIcon />,
+      },
+      {
+        title: 'Financement bancaire',
+        image: '/images/offers/financer-et-securiser-mon-projet/financement-bancaire.jpg',
+        description: 'Recherche de financements, prêts professionnels et montage de dossiers.',
+        icon: <BankIcon />,
+      },
+      {
+        title: 'Financement d’équipements',
+        image: '/images/offers/financer-et-securiser-mon-projet/financement-equipements.jpg',
+        description: 'Solutions de crédit, location longue durée et contrats de financement adaptés.',
+        icon: <CoinsIcon />,
+      },
+    ],
+    contact: {
+      title: 'Un besoin spécifique ? Parlez-nous de votre projet.',
+      text: 'Notre équipe vous conseille et vous oriente vers les partenaires les plus adaptés.',
+      label: 'Nous contacter',
+    },
+    form: {
+      title: 'Décrivez votre projet',
+      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous orienter vers les partenaires les plus adaptés.',
+      success: 'Merci ! Club Laverie étudie votre demande et revient vers vous rapidement pour vous orienter vers les partenaires les plus adaptés.',
+      steps: [
+        {
+          label: 'Votre projet',
+          fields: [
+            {
+              name: 'need', type: 'multiple', label: 'Nature du besoin', required: true,
+              options: [
+                { value: 'Comptabilité', icon: <DocumentIcon className="w-5 h-5" /> },
+                { value: 'Juridique', icon: <ScaleIcon className="w-5 h-5" /> },
+                { value: 'Assurance', icon: <ShieldIcon className="w-5 h-5" /> },
+                { value: 'Financement', icon: <CoinsIcon className="w-5 h-5" /> },
+              ],
+            },
+            {
+              name: 'situation', type: 'choices', label: 'Situation', required: true,
+              options: ['Acquisition', 'Création', 'Exploitation'],
+            },
+            { name: 'department', type: 'department', label: 'Département concerné', required: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
+            {
+              name: 'progress', type: 'choices', label: 'État d’avancement', required: true,
+              options: ['Réflexion', 'Projet défini', 'Démarches en cours', 'À finaliser'],
+            },
+          ],
+        },
+        {
+          label: 'Détails',
+          fields: [
+            {
+              name: 'amount', type: 'select', label: 'Montant ou ordre de grandeur', placeholder: 'Si pertinent (facultatif)',
+              options: ['Moins de 50 000 €', '50 000 € à 150 000 €', '150 000 € à 300 000 €', 'Plus de 300 000 €'],
+            },
+            { name: 'question', type: 'textarea', label: 'Question principale', required: true, placeholder: 'La question à laquelle vous souhaitez une réponse en priorité...' },
+            {
+              name: 'deadline', type: 'choices', label: 'Délai souhaité', required: true,
+              options: ['Dès que possible', 'Sous 1 mois', 'Sous 3 mois', 'Plus de 3 mois'],
             },
           ],
         },
