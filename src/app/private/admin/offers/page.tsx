@@ -1,16 +1,22 @@
 'use client'
 import { useState } from "react";
 import Link from "next/link";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
-import { getOfferRequests } from "@/data-access-layers/offer-requests";
+import { getOfferRequestCounts, getOfferRequests } from "@/data-access-layers/offer-requests";
 import { OFFERS, getOfferTitle } from "@/app/offers/_data";
 import { OfferRequest } from "@/models";
 import { formatDate } from "@/utils/functions";
 import { useDebounce } from "@/utils/hooks";
 import { OFFER_REQUEST_STATUSES } from "@/utils/constants";
 import Search from "@/components/ui/Search";
+import Select from "@/components/ui/Select";
 import StatusBadge from "./_StatusBadge";
+
+const OFFER_OPTIONS = [
+  { value: '', label: 'Toutes les offres' },
+  ...OFFERS.map(({ slug, title }) => ({ value: slug, label: title })),
+]
 
 const STATUS_FILTERS = [
   { value: '', label: 'En cours' },
@@ -27,7 +33,7 @@ function useList({ verbatim, offer, status }: { verbatim: string, offer: string,
     fetchNextPage,
     hasNextPage
   } = useInfiniteQuery({
-    queryKey: ['offer-requests', verbatim, offer, status],
+    queryKey: ['offer-requests', 'list', verbatim, offer, status],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => getOfferRequests({ verbatim, offer, status, page: pageParam, count: 20 }),
     initialPageParam: 1,
     getNextPageParam: (lastPage: OfferRequest[], pages: OfferRequest[][]) => lastPage.length > 0 ? pages.length + 1 : undefined,
@@ -51,6 +57,15 @@ export default function AdminOfferRequests() {
   const [offer, setOffer] = useState('')
   const [status, setStatus] = useState('')
   const debouncedVerbatim = useDebounce(verbatim, 500)
+  // Clé sous « offer-requests » : un changement de statut sur une fiche rafraîchit aussi les compteurs
+  const { data: counts } = useQuery({
+    queryKey: ['offer-requests', 'counts', debouncedVerbatim, offer],
+    queryFn: () => getOfferRequestCounts({ verbatim: debouncedVerbatim, offer }),
+  })
+  // « En cours » : toutes les demandes sauf les archivées
+  const getCount = (value: string) => counts && (value
+    ? counts[value as keyof typeof counts]
+    : counts.new + counts.follow_up + counts.done)
   const { requests, isLoading, error, fetchNextPage, shouldFetchNextPage, isFetchingNextPage } = useList({
     verbatim: debouncedVerbatim,
     offer,
@@ -73,19 +88,26 @@ export default function AdminOfferRequests() {
                 }`}
             >
               {filter.label}
+              {counts && (
+                <span className={`ml-2 rounded-full px-1.5 py-0.5 text-xs font-semibold ${status === filter.value ? 'bg-white/25' : 'bg-white/10'}`}>
+                  {getCount(filter.value)}
+                </span>
+              )}
             </button>
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <select
-            aria-label="Filtrer par offre"
-            value={offer}
-            onChange={event => setOffer(event.target.value)}
-            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" className="text-gray-800">Toutes les offres</option>
-            {OFFERS.map(({ slug, title }) => <option key={slug} value={slug} className="text-gray-800">{title}</option>)}
-          </select>
+          <div className="w-72">
+            <Select
+              variant="glass"
+              size="sm"
+              ariaLabel="Filtrer par offre"
+              value={offer}
+              options={OFFER_OPTIONS}
+              onChange={setOffer}
+              className="!rounded-lg !py-2"
+            />
+          </div>
           <Search value={verbatim} onChange={setVerbatim} />
         </div>
       </div>

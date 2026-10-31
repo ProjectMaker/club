@@ -4,12 +4,22 @@ import { createServiceClient } from "@/lib/supabase-service";
 import { checkIsAdmin } from "@/utils/auth";
 import { createSignedImageUrl } from "@/utils/supabase-images";
 import { OfferRequest, OfferRequestFile } from "@/models";
+import { OFFER_REQUEST_STATUSES, OfferRequestStatus } from "@/utils/constants";
 
 // Ces fonctions sont appelables depuis le navigateur : chacune vérifie que l'utilisateur est admin
 async function assertAdmin() {
   if (!await checkIsAdmin()) {
     throw new Error('Accès réservé aux administrateurs')
   }
+}
+
+// Filtre de recherche commun à la liste et aux compteurs, vide si rien n'est saisi
+function searchFilter(verbatim: string) {
+  // Les caractères , ( ) cassent le filtre or() et % _ sont des jokers : on les retire
+  const search = verbatim.trim().replace(/[,()%_\\]/g, '')
+  return search
+    ? `reference.ilike.%${search}%,firstname.ilike.%${search}%,lastname.ilike.%${search}%,email.ilike.%${search}%`
+    : ''
 }
 
 export async function getOfferRequests({
@@ -34,11 +44,9 @@ export async function getOfferRequests({
   let query = supabase
     .from('offer_requests')
     .select('id, reference, created_at, updated_at, user_id, offer, status, firstname, lastname, email, phone_number, data')
-
-  // Les caractères , ( ) cassent le filtre or() et % _ sont des jokers : on les retire
-  const search = verbatim.trim().replace(/[,()%_\\]/g, '')
+  const search = searchFilter(verbatim)
   if (search) {
-    query = query.or(`reference.ilike.%${search}%,firstname.ilike.%${search}%,lastname.ilike.%${search}%,email.ilike.%${search}%`)
+    query = query.or(search)
   }
   if (offer) {
     query = query.eq('offer', offer)
@@ -52,6 +60,31 @@ export async function getOfferRequests({
     throw error
   }
   return data as OfferRequest[]
+}
+
+// Nombre de demandes par statut, avec la recherche et l'offre sélectionnées
+export async function getOfferRequestCounts({ verbatim = '', offer = '' }: { verbatim?: string, offer?: string }) {
+  await assertAdmin()
+  const supabase = createServiceClient()
+  const counts = await Promise.all(OFFER_REQUEST_STATUSES.map(async ({ value }) => {
+    let query = supabase
+      .from('offer_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', value)
+    const search = searchFilter(verbatim)
+    if (search) {
+      query = query.or(search)
+    }
+    if (offer) {
+      query = query.eq('offer', offer)
+    }
+    const { count, error } = await query
+    if (error) {
+      throw error
+    }
+    return [value, count || 0] as const
+  }))
+  return Object.fromEntries(counts) as Record<OfferRequestStatus, number>
 }
 
 export async function getCountNewOfferRequests() {
