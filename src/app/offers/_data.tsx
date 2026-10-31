@@ -175,7 +175,7 @@ export const OFFERS: Offer[] = [
               name: 'stage', type: 'choices', label: 'Stade du projet', required: true,
               options: ['Recherche', 'Local identifié', 'Travaux prévus'],
             },
-            { name: 'department', type: 'department', label: 'Département', required: true, half: true, placeholder: 'Sélectionnez votre département' },
+            { name: 'department', type: 'department', label: 'Département', required: true, half: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
             { name: 'city', type: 'text', label: 'Ville', half: true, placeholder: 'Votre ville' },
             {
               name: 'location', type: 'choices', label: 'Situation du local', required: true,
@@ -268,7 +268,7 @@ export const OFFERS: Offer[] = [
               name: 'urgency', type: 'choices', label: 'Urgence', required: true,
               options: ['Immédiate', 'Sous 7 jours', 'Non urgente'],
             },
-            { name: 'department', type: 'department', label: 'Département de la laverie', required: true, half: true, placeholder: 'Sélectionnez votre département' },
+            { name: 'department', type: 'department', label: 'Département de la laverie', required: true, half: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
             { name: 'city', type: 'text', label: 'Ville de la laverie', half: true, placeholder: 'Votre ville' },
             { name: 'equipment', type: 'text', label: 'Marque et référence du matériel', placeholder: 'Si connues, ex : Electrolux W5130H' },
           ],

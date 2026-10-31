@@ -121,7 +121,8 @@ const Select: React.FC<SelectProps> = ({
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <Listbox.Options className={`absolute mt-2 max-h-60 w-full overflow-auto rounded-xl py-1 text-base shadow-2xl focus:outline-none z-10 ${isGlass
+                            {/* modal={false} : par défaut Headless UI bloque le défilement de la page tant que la liste est ouverte */}
+                            <Listbox.Options modal={false} className={`absolute mt-2 max-h-60 w-full overflow-auto rounded-xl py-1 text-base shadow-2xl focus:outline-none z-10 ${isGlass
                                 ? 'min-w-max bg-gradient-to-br from-slate-800/95 via-blue-900/95 to-indigo-900/95 backdrop-blur-lg border border-white/15 shadow-black/40'
                                 : 'bg-white ring-1 ring-black ring-opacity-5 border border-gray-200'}`}>
                                 {options.map((option) => (

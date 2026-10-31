@@ -11,6 +11,8 @@ import { createOfferRequest } from '@/actions/offer-request-create';
 import { createOfferUploads } from '@/actions/offer-uploads-create';
 import { createClient } from '@/lib/supabase-client';
 import { DEPARTMENTS, OFFER_UPLOAD } from '@/utils/constants';
+import Select from '@/components/ui/Select';
+import SearchSelect from '@/components/ui/SearchSelect';
 import type { FormField, OfferForm as OfferFormConfig } from '../_data';
 
 // Coordonnées communes à toutes les offres, demandées à la dernière étape.
@@ -190,7 +192,8 @@ const Field = ({ field, control, register, error }: {
   error?: string
 }) => {
   const id = `field-${field.name}`
-  const isGroup = ['choices', 'multiple', 'files'].includes(field.type)
+  // Champs sans élément <input> natif : le libellé est porté par aria-label
+  const isGroup = ['choices', 'multiple', 'files', 'select', 'department'].includes(field.type)
   let input: React.ReactNode
   switch (field.type) {
     case 'choices':
@@ -209,14 +212,32 @@ const Field = ({ field, control, register, error }: {
       )
       break
     case 'select':
+      input = (
+        <Controller name={field.name} control={control} render={({ field: { value, onChange } }) => (
+          <Select
+            variant="minimal"
+            size="sm"
+            ariaLabel={field.label}
+            value={value}
+            onChange={onChange}
+            placeholder={field.placeholder || 'Sélectionnez une option'}
+            options={(field.options || []).map(option => ({ value: optionValue(option), label: optionValue(option) }))}
+            className="!rounded-lg !py-2.5 cursor-pointer"
+          />
+        )} />
+      )
+      break
     case 'department':
       input = (
-        <select id={id} {...register(field.name)} className={inputClasses}>
-          <option value="">{field.placeholder || 'Sélectionnez une option'}</option>
-          {(field.type === 'department' ? DEPARTMENTS : (field.options || []).map(optionValue)).map(option => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
+        <Controller name={field.name} control={control} render={({ field: { value, onChange } }) => (
+          <SearchSelect
+            ariaLabel={field.label}
+            value={value}
+            onChange={onChange}
+            placeholder={field.placeholder || 'Tapez un nom ou un numéro'}
+            options={DEPARTMENTS.map(department => ({ value: department, label: department }))}
+          />
+        )} />
       )
       break
     case 'textarea':
