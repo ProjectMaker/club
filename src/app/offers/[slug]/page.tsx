@@ -61,10 +61,11 @@ export default async function OfferPage({ params }: Params) {
 
           <div className="h-56 rounded-2xl overflow-hidden lg:hidden">{heroVisual}</div>
 
+          {/* Largeur fixe et lignes centrées : les points restent groupés, quel que soit leur nombre */}
           {offer.steps && (
-            <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <ul className="flex flex-wrap justify-center gap-x-2 gap-y-5 sm:gap-x-4">
               {offer.steps.map(step => (
-                <li key={step.label} className="flex flex-col items-center text-center gap-2">
+                <li key={step.label} className="w-24 sm:w-26 flex flex-col items-center text-center gap-2">
                   <span className="w-12 h-12 rounded-full border-2 border-white/60 flex items-center justify-center text-white">
                     {step.icon}
                   </span>
@@ -75,7 +76,7 @@ export default async function OfferPage({ params }: Params) {
           )}
 
           <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
-            <h2 className="text-2xl font-bold text-white mb-1">Nos prestations</h2>
+            <h2 className="text-2xl font-bold text-white mb-1">{offer.prestationsTitle || 'Nos prestations'}</h2>
             <p className="text-white/80 text-sm mb-5">{offer.prestationsIntro || 'Des solutions adaptées à chaque étape de votre projet.'}</p>
             <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${offer.prestations.length % 3 === 0 || offer.prestations.length === 5 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
               {offer.prestations.map(prestation => (
@@ -92,48 +93,75 @@ export default async function OfferPage({ params }: Params) {
             </div>
           </section>
 
-          <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">Pourquoi passer par Club Laverie ?</h2>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-              {offer.benefits.map(benefit => (
-                <li key={benefit} className="flex items-start gap-3 text-white/90 text-sm">
-                  <CheckIcon />
-                  <span>{benefit}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {offer.benefits && (
+            <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
+              <h2 className="text-2xl font-bold text-white mb-4">Pourquoi passer par Club Laverie ?</h2>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
+                {offer.benefits.map(benefit => (
+                  <li key={benefit} className="flex items-start gap-3 text-white/90 text-sm">
+                    <CheckIcon />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-          <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 flex items-center gap-5">
-            <span className="w-14 h-14 rounded-full bg-blue-500/40 flex items-center justify-center text-white flex-shrink-0">
-              <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="4" y="13" width="4" height="7" rx="1" />
-                <rect x="10" y="9" width="4" height="11" rx="1" />
-                <rect x="16" y="5" width="4" height="15" rx="1" />
-              </svg>
-            </span>
-            <div>
-              <h2 className="text-lg font-bold text-white mb-1">Notre modèle</h2>
-              {offer.model.map(line => (
-                <p key={line} className="text-white/80 text-sm">{line}</p>
-              ))}
-            </div>
-          </section>
+          {offer.model && (
+            <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 flex items-center gap-5">
+              <span className="w-14 h-14 rounded-full bg-blue-500/40 flex items-center justify-center text-white flex-shrink-0">
+                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="4" y="13" width="4" height="7" rx="1" />
+                  <rect x="10" y="9" width="4" height="11" rx="1" />
+                  <rect x="16" y="5" width="4" height="15" rx="1" />
+                </svg>
+              </span>
+              <div>
+                <h2 className="text-lg font-bold text-white mb-1">Notre modèle</h2>
+                {offer.model.map(line => (
+                  <p key={line} className="text-white/80 text-sm">{line}</p>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {offer.contact && (
+            <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+              <span className="w-14 h-14 rounded-full bg-blue-500/40 flex items-center justify-center text-white flex-shrink-0">
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4-.83L3 20l1.4-3.72A7.6 7.6 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </span>
+              <div className="flex-1">
+                <h2 className="text-lg font-bold text-white mb-1">{offer.contact.title}</h2>
+                <p className="text-white/80 text-sm">{offer.contact.text}</p>
+              </div>
+              {/* Le formulaire de demande sert de prise de contact */}
+              <a
+                href="#demande"
+                className="self-start sm:self-center whitespace-nowrap rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 transition-colors duration-200"
+              >
+                {offer.contact.label}
+              </a>
+            </section>
+          )}
         </div>
 
         {/* Colonne latérale */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           <div className="hidden lg:block h-64 rounded-2xl overflow-hidden">{heroVisual}</div>
-          <OfferForm
-            offer={offer.slug}
-            form={offer.form}
-            contact={user ? {
-              firstname: profile?.firstname || '',
-              lastname: profile?.lastname || '',
-              email: profile?.email || user.email || '',
-              phone_number: profile?.phone_number || '',
-            } : null}
-          />
+          <div id="demande" className="scroll-mt-24">
+            <OfferForm
+              offer={offer.slug}
+              form={offer.form}
+              contact={user ? {
+                firstname: profile?.firstname || '',
+                lastname: profile?.lastname || '',
+                email: profile?.email || user.email || '',
+                phone_number: profile?.phone_number || '',
+              } : null}
+            />
+          </div>
         </div>
       </div>
     </div>

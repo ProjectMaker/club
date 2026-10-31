@@ -51,11 +51,14 @@ export interface Offer {
   description: string
   image?: string
   steps?: OfferStep[]
-  // Sous-titre de « Nos prestations » (texte par défaut si absent)
+  // Titre et sous-titre de la section des prestations (textes par défaut si absents)
+  prestationsTitle?: string
   prestationsIntro?: string
   prestations: OfferPrestation[]
-  benefits: string[]
-  model: string[]
+  benefits?: string[]
+  model?: string[]
+  // Encart « projet spécifique » qui renvoie vers le formulaire
+  contact?: { title: string, text: string, label: string }
   form: OfferForm
 }
 
@@ -116,6 +119,19 @@ export const LeafIcon = ({ className = 'w-6 h-6' }: IconProps) => (
 export const ChartIcon = ({ className = 'w-6 h-6' }: IconProps) => (
   <svg {...iconProps} className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M4 20h16M7 16v-4m5 4V8m5 8V5" />
+  </svg>
+)
+
+export const CoinsIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <ellipse cx="12" cy="6" rx="7" ry="3" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 6v4c0 1.66 3.13 3 7 3s7-1.34 7-3V6M5 10v4c0 1.66 3.13 3 7 3s7-1.34 7-3v-4M5 14v4c0 1.66 3.13 3 7 3s7-1.34 7-3v-4" />
+  </svg>
+)
+
+export const UsersIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M10 11a4 4 0 100-8 4 4 0 000 8zM21 20v-1a4 4 0 00-3-3.87M15 3.13a4 4 0 010 7.75" />
   </svg>
 )
 
@@ -362,6 +378,99 @@ export const OFFERS: Offer[] = [
       'Club Laverie perçoit une commission sur les prestations facturées par ses partenaires.',
     ],
     form: SERVICE_REQUEST_FORM,
+  },
+  {
+    slug: 'developper-de-nouveaux-revenus',
+    title: 'Développer de nouveaux revenus',
+    summary: 'Lockers, distributeurs, Wash Dog, lavage à l’ozone et services complémentaires pour diversifier l’activité de votre laverie.',
+    image: '/images/offers/developper-de-nouveaux-revenus/hero.jpg',
+    description: 'Diversifiez votre activité et attirez une nouvelle clientèle grâce à des solutions complémentaires déjà éprouvées dans les laveries automatiques et pressings.',
+    steps: [
+      { label: 'Nouvelles sources de chiffre d’affaires', icon: <CoinsIcon /> },
+      { label: 'Une clientèle plus large', icon: <UsersIcon /> },
+      { label: 'Des solutions clés en main', icon: <ChartIcon /> },
+      { label: 'Des partenaires spécialisés', icon: <WrenchIcon /> },
+      { label: 'Une activité plus rentable', icon: <LeafIcon /> },
+    ],
+    prestationsTitle: 'Nos solutions pour développer votre activité',
+    prestationsIntro: 'Des équipements et services complémentaires pour maximiser le potentiel de votre laverie.',
+    prestations: [
+      {
+        title: 'Lockers et casiers connectés',
+        image: '/images/offers/developper-de-nouveaux-revenus/lockers.jpg',
+        description: 'Casiers pour la réception et la livraison de colis, consignes et services de proximité.',
+        icon: <StoreIcon />,
+      },
+      {
+        title: 'Distributeurs multiservices',
+        image: '/images/offers/developper-de-nouveaux-revenus/distributeurs.jpg',
+        description: 'Distributeurs de lessive, produits d’entretien, boissons, snacks, etc.',
+        icon: <StoreIcon />,
+      },
+      {
+        title: 'Wash Dog',
+        image: '/images/offers/developper-de-nouveaux-revenus/wash-dog.jpg',
+        description: 'Solution de lavage pour animaux de compagnie en libre-service.',
+        icon: <HomeIcon />,
+      },
+      {
+        title: 'Lavage à l’ozone',
+        image: '/images/offers/developper-de-nouveaux-revenus/lavage-ozone.jpg',
+        description: 'Désinfection naturelle, sans produits chimiques, idéale pour le linge et les textiles délicats.',
+        icon: <LeafIcon />,
+      },
+      {
+        title: 'Services complémentaires',
+        image: '/images/offers/developper-de-nouveaux-revenus/services-complementaires.jpg',
+        description: 'Pressing, repassage, retouches, photocopie, solutions de confort et autres services adaptés à votre clientèle.',
+        icon: <GearIcon />,
+      },
+    ],
+    contact: {
+      title: 'Un projet spécifique ? Parlez-nous de votre idée.',
+      text: 'Notre équipe vous conseille et vous oriente vers les partenaires les plus adaptés.',
+      label: 'Nous contacter',
+    },
+    form: {
+      title: 'Décrivez votre projet',
+      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous orienter vers les solutions les plus adaptées.',
+      success: 'Merci ! Club Laverie étudie votre projet et revient vers vous rapidement pour vous orienter vers les solutions les plus adaptées.',
+      steps: [
+        {
+          label: 'Votre projet',
+          fields: [
+            {
+              name: 'solutions', type: 'multiple', label: 'Solution(s) souhaitée(s)', required: true,
+              options: ['Lockers et casiers connectés', 'Distributeurs multiservices', 'Wash Dog', 'Lavage à l’ozone', 'Services complémentaires'],
+            },
+            {
+              name: 'establishment', type: 'choices', label: 'Votre établissement', required: true,
+              options: [
+                { value: 'Laverie existante', icon: <StoreIcon className="w-5 h-5" /> },
+                { value: 'Projet de création', icon: <HomeIcon className="w-5 h-5" /> },
+              ],
+            },
+            { name: 'department', type: 'department', label: 'Département', required: true, half: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
+            { name: 'location', type: 'text', label: 'Emplacement', half: true, placeholder: 'Ville, quartier, adresse...' },
+            { name: 'surface', type: 'number', label: 'Surface disponible estimée (m²)', required: true, half: true, placeholder: 'Ex : 20', unit: 'm²' },
+          ],
+        },
+        {
+          label: 'Détails',
+          fields: [
+            { name: 'constraints', type: 'textarea', label: 'Contraintes d’accès ou d’électricité connues', placeholder: 'Accès livraison, horaires, puissance électrique disponible, arrivée d’eau...' },
+            {
+              name: 'budget', type: 'select', label: 'Budget indicatif', placeholder: 'Sélectionnez une fourchette (facultatif)',
+              options: ['Moins de 10 000 €', '10 000 € à 30 000 €', '30 000 € à 60 000 €', 'Plus de 60 000 €'],
+            },
+            {
+              name: 'timeline', type: 'choices', label: 'Délai envisagé', required: true,
+              options: ['Dès que possible', 'Sous 3 mois', 'Sous 6 mois', 'Plus de 6 mois'],
+            },
+          ],
+        },
+      ],
+    },
   },
 ]
 
