@@ -309,28 +309,12 @@ export const LaundryValuation = () => {
             Dossier AFL sur les évolutions du marché, les points de vigilance vendeur et acheteur, et la méthode de valorisation actualisée.
           </p>
         </div>
-        <div className="relative w-full h-48 rounded-xl overflow-hidden bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center mb-4">
-          <svg
-            viewBox="0 0 200 160"
-            className="w-full h-full p-6"
-            aria-hidden="true"
-          >
-            <defs>
-              <linearGradient id="valuationGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#f59e0b" />
-                <stop offset="100%" stopColor="#f97316" />
-              </linearGradient>
-            </defs>
-            <rect x="40" y="30" width="80" height="100" rx="6" fill="white" fillOpacity="0.9" stroke="url(#valuationGradient)" strokeWidth="2" />
-            <line x1="52" y1="50" x2="108" y2="50" stroke="url(#valuationGradient)" strokeWidth="3" strokeLinecap="round" />
-            <line x1="52" y1="68" x2="100" y2="68" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-            <line x1="52" y1="84" x2="95" y2="84" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-            <line x1="52" y1="100" x2="88" y2="100" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="145" cy="70" r="28" fill="none" stroke="url(#valuationGradient)" strokeWidth="3" />
-            <text x="145" y="78" fontSize="22" fill="url(#valuationGradient)" textAnchor="middle" fontWeight="bold">€</text>
-            <path d="M125 95 L155 125" stroke="url(#valuationGradient)" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="155" cy="125" r="5" fill="url(#valuationGradient)" />
-          </svg>
+        <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4">
+          <img
+            src="/images/resources/laundry-valuation.jpg"
+            alt="Remise des clés d'une laverie au-dessus d'un comptoir où sont posés un dossier, des graphiques et une calculatrice"
+            className="w-full h-full object-cover object-center"
+          />
         </div>
       </div>
       <a
