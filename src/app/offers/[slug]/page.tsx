@@ -76,7 +76,7 @@ export default async function OfferPage({ params }: Params) {
 
           <section className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
             <h2 className="text-2xl font-bold text-white mb-1">Nos prestations</h2>
-            <p className="text-white/80 text-sm mb-5">Des solutions adaptées à chaque étape de votre projet.</p>
+            <p className="text-white/80 text-sm mb-5">{offer.prestationsIntro || 'Des solutions adaptées à chaque étape de votre projet.'}</p>
             <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${offer.prestations.length % 3 === 0 || offer.prestations.length === 5 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
               {offer.prestations.map(prestation => (
                 <article key={prestation.title} className="bg-white/5 rounded-xl border border-white/15 overflow-hidden">

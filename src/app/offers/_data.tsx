@@ -51,6 +51,8 @@ export interface Offer {
   description: string
   image?: string
   steps?: OfferStep[]
+  // Sous-titre de « Nos prestations » (texte par défaut si absent)
+  prestationsIntro?: string
   prestations: OfferPrestation[]
   benefits: string[]
   model: string[]
@@ -104,6 +106,54 @@ export const WrenchIcon = ({ className = 'w-6 h-6' }: IconProps) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" />
   </svg>
 )
+
+export const LeafIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15zm0 0c2-4 5-7 9-9" />
+  </svg>
+)
+
+export const ChartIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 20h16M7 16v-4m5 4V8m5 8V5" />
+  </svg>
+)
+
+// Formulaire de demande de service, commun à plusieurs offres
+const SERVICE_REQUEST_FORM: OfferForm = {
+  title: 'Décrivez votre besoin',
+  intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous orienter vers les solutions les plus adaptées.',
+  success: 'Merci ! Votre demande a bien été reçue. Club Laverie revient vers vous rapidement, sur le créneau que vous avez indiqué.',
+  steps: [
+    {
+      label: 'Votre demande',
+      fields: [
+        {
+          name: 'request_type', type: 'choices', label: 'Type de demande', required: true,
+          options: ['Dépannage', 'Entretien', 'Pièces', 'Optimisation'],
+        },
+        {
+          name: 'urgency', type: 'choices', label: 'Urgence', required: true,
+          options: ['Immédiate', 'Sous 7 jours', 'Non urgente'],
+        },
+        { name: 'department', type: 'department', label: 'Département de la laverie', required: true, half: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
+        { name: 'city', type: 'text', label: 'Ville de la laverie', half: true, placeholder: 'Votre ville' },
+        { name: 'equipment', type: 'text', label: 'Marque et référence du matériel', placeholder: 'Si connues, ex : Electrolux W5130H' },
+      ],
+    },
+    {
+      label: 'Détails',
+      fields: [
+        { name: 'description', type: 'textarea', label: 'Description du problème ou objectif', required: true, placeholder: 'Décrivez la panne, le besoin ou ce que vous souhaitez améliorer...' },
+        { name: 'attachments', type: 'files', label: 'Photos ou documents' },
+        {
+          name: 'contact_slot', type: 'choices', label: 'Créneau de contact souhaité', required: true,
+          options: ['Matin (9h - 12h)', 'Midi (12h - 14h)', 'Après-midi (14h - 18h)', 'Indifférent'],
+        },
+      ],
+    },
+  ],
+}
 
 export const OFFERS: Offer[] = [
   {
@@ -252,40 +302,66 @@ export const OFFERS: Offer[] = [
       'La demande est gratuite et sans engagement.',
       'Club Laverie perçoit une commission sur les prestations facturées par ses partenaires.',
     ],
-    form: {
-      title: 'Décrivez votre besoin',
-      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous orienter vers les solutions les plus adaptées.',
-      success: 'Merci ! Votre demande a bien été reçue. Club Laverie revient vers vous rapidement, sur le créneau que vous avez indiqué.',
-      steps: [
-        {
-          label: 'Votre demande',
-          fields: [
-            {
-              name: 'request_type', type: 'choices', label: 'Type de demande', required: true,
-              options: ['Dépannage', 'Entretien', 'Pièces', 'Optimisation'],
-            },
-            {
-              name: 'urgency', type: 'choices', label: 'Urgence', required: true,
-              options: ['Immédiate', 'Sous 7 jours', 'Non urgente'],
-            },
-            { name: 'department', type: 'department', label: 'Département de la laverie', required: true, half: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
-            { name: 'city', type: 'text', label: 'Ville de la laverie', half: true, placeholder: 'Votre ville' },
-            { name: 'equipment', type: 'text', label: 'Marque et référence du matériel', placeholder: 'Si connues, ex : Electrolux W5130H' },
-          ],
-        },
-        {
-          label: 'Détails',
-          fields: [
-            { name: 'description', type: 'textarea', label: 'Description du problème ou objectif', required: true, placeholder: 'Décrivez la panne, le besoin ou ce que vous souhaitez améliorer...' },
-            { name: 'attachments', type: 'files', label: 'Photos ou documents' },
-            {
-              name: 'contact_slot', type: 'choices', label: 'Créneau de contact souhaité', required: true,
-              options: ['Matin (9h - 12h)', 'Midi (12h - 14h)', 'Après-midi (14h - 18h)', 'Indifférent'],
-            },
-          ],
-        },
-      ],
-    },
+    form: SERVICE_REQUEST_FORM,
+  },
+  {
+    slug: 'entretenir-et-optimiser-ma-laverie',
+    title: 'Entretenir et optimiser ma laverie',
+    summary: 'Maintenance, dépannage, télémaintenance, consommables et réduction des coûts énergétiques pour une laverie performante et rentable.',
+    image: '/images/offers/entretenir-et-optimiser-ma-laverie/hero.jpg',
+    description: 'Maintenance, dépannage, télémaintenance, consommables et solutions pour réduire vos coûts énergétiques. Nous vous accompagnons pour assurer la performance et la rentabilité de votre laverie dans la durée.',
+    steps: [
+      { label: 'Interventions rapides et réseau de techniciens', icon: <WrenchIcon /> },
+      { label: 'Réduction des coûts d’exploitation', icon: <GearIcon /> },
+      { label: 'Solutions pour plus de performance', icon: <LeafIcon /> },
+      { label: 'Conseils personnalisés', icon: <ChartIcon /> },
+    ],
+    prestationsIntro: 'Des solutions concrètes pour entretenir, optimiser et sécuriser votre laverie.',
+    prestations: [
+      {
+        title: 'Maintenance et dépannage',
+        image: '/images/offers/entretenir-et-optimiser-ma-laverie/maintenance-depannage.jpg',
+        description: 'Interventions sur toutes marques, réseau de techniciens spécialisés.',
+        icon: <WrenchIcon />,
+      },
+      {
+        title: 'Télémaintenance et suivi à distance',
+        image: '/images/offers/entretenir-et-optimiser-ma-laverie/telemaintenance.jpg',
+        description: 'Optimisation, diagnostic à distance et suivi des performances.',
+        icon: <ChartIcon />,
+      },
+      {
+        title: 'Consommables',
+        image: '/images/offers/entretenir-et-optimiser-ma-laverie/consommables.jpg',
+        description: 'Lessives, adoucissants et consommables professionnels.',
+        icon: <StoreIcon />,
+      },
+      {
+        title: 'Réduction des coûts énergétiques',
+        image: '/images/offers/entretenir-et-optimiser-ma-laverie/couts-energetiques.jpg',
+        description: 'Solutions pour optimiser vos consommations d’eau et d’énergie.',
+        icon: <LeafIcon />,
+      },
+      {
+        title: 'Optimisation de l’exploitation',
+        image: '/images/offers/entretenir-et-optimiser-ma-laverie/optimisation-exploitation.jpg',
+        description: 'Conseils, paramétrages et bonnes pratiques pour améliorer la rentabilité de votre laverie.',
+        icon: <GearIcon />,
+      },
+    ],
+    benefits: [
+      'Des techniciens qualifiés, toutes marques',
+      'Des interventions rapides près de chez vous',
+      'Moins de pannes et d’immobilisation des machines',
+      'Des consommations d’eau et d’énergie maîtrisées',
+      'Des conseils issus du terrain',
+      'Un interlocuteur unique : Club Laverie',
+    ],
+    model: [
+      'La demande est gratuite et sans engagement.',
+      'Club Laverie perçoit une commission sur les prestations facturées par ses partenaires.',
+    ],
+    form: SERVICE_REQUEST_FORM,
   },
 ]
 
