@@ -181,6 +181,20 @@ export const ScaleIcon = ({ className = 'w-6 h-6' }: IconProps) => (
   </svg>
 )
 
+export const LightbulbIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 18h6m-5 3h4M12 3a6 6 0 00-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0012 3z" />
+  </svg>
+)
+
+export const TargetIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <circle cx="12" cy="12" r="9" />
+    <circle cx="12" cy="12" r="5" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 12l7-7m0 0h-3m3 0v3" />
+  </svg>
+)
+
 // Formulaire de demande de service, commun à plusieurs offres
 const SERVICE_REQUEST_FORM: OfferForm = {
   title: 'Décrivez votre besoin',
@@ -706,6 +720,85 @@ export const OFFERS: Offer[] = [
               name: 'deadline', type: 'choices', label: 'Délai souhaité', required: true,
               options: ['Dès que possible', 'Sous 1 mois', 'Sous 3 mois', 'Plus de 3 mois'],
             },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: 'beneficier-d-un-coaching-personnalise',
+    title: 'Bénéficier d’un coaching personnalisé',
+    summary: 'Un accompagnement sur mesure par Club Laverie pour créer, reprendre ou développer votre laverie.',
+    image: '/images/offers/beneficier-d-un-coaching-personnalise/hero.jpg',
+    description: 'Profitez de l’expérience du Club Laverie pour être conseillé à chaque étape de votre projet. Un accompagnement sur mesure, adapté à vos objectifs, que vous soyez en phase de création, de reprise ou de développement.',
+    steps: [
+      { label: 'Des conseils concrets', icon: <LightbulbIcon /> },
+      { label: 'Un accompagnement sur mesure', icon: <TargetIcon /> },
+      { label: 'Une expertise de terrain', icon: <UsersIcon /> },
+      { label: 'Des solutions adaptées à vos objectifs', icon: <ChartIcon /> },
+    ],
+    prestationsTitle: 'Nos formules de coaching',
+    prestationsIntro: 'Un accompagnement personnalisé pour répondre à vos besoins spécifiques.',
+    prestations: [
+      {
+        title: 'Création de laverie',
+        image: '/images/offers/beneficier-d-un-coaching-personnalise/creation.jpg',
+        description: 'Étude de faisabilité, choix du local, matériel, travaux et ouverture.',
+        icon: <HomeIcon />,
+      },
+      {
+        title: 'Reprise d’une laverie',
+        image: '/images/offers/beneficier-d-un-coaching-personnalise/reprise.jpg',
+        description: 'Analyse de l’opportunité, audit de l’existant et accompagnement dans la reprise.',
+        icon: <StoreIcon />,
+      },
+      {
+        title: 'Développement / optimisation',
+        image: '/images/offers/beneficier-d-un-coaching-personnalise/developpement.jpg',
+        description: 'Augmenter votre chiffre d’affaires, optimiser vos coûts et améliorer la rentabilité.',
+        icon: <ChartIcon />,
+      },
+      {
+        title: 'Conseil stratégique',
+        image: '/images/offers/beneficier-d-un-coaching-personnalise/conseil-strategique.jpg',
+        description: 'Étude de nouveaux projets, diversification, accompagnement sur mesure.',
+        icon: <LightbulbIcon />,
+      },
+    ],
+    contact: {
+      title: 'Un projet spécifique ? Parlons-en.',
+      text: 'Notre équipe vous conseille et vous propose un accompagnement adapté à votre situation.',
+      label: 'Nous contacter',
+    },
+    form: {
+      title: 'Décrivez votre projet de coaching',
+      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous proposer un accompagnement adapté. Le budget et la formule sont définis avec vous après un premier échange de cadrage.',
+      success: 'Merci ! Club Laverie étudie votre demande et revient vers vous rapidement pour un premier échange de cadrage.',
+      steps: [
+        {
+          label: 'Votre projet',
+          fields: [
+            {
+              name: 'profile', type: 'choices', label: 'Votre profil', required: true,
+              options: ['Futur exploitant', 'Propriétaire', 'Investisseur'],
+            },
+            {
+              name: 'purpose', type: 'choices', label: 'Objet du coaching', required: true,
+              options: ['Acquisition', 'Création', 'Exploitation', 'Autre'],
+            },
+            { name: 'department', type: 'department', label: 'Département', required: true, placeholder: 'Nom ou numéro, ex : Rhône ou 69' },
+            { name: 'background', type: 'textarea', label: 'Projet, situation et expérience', required: true, placeholder: 'Votre projet, où vous en êtes, votre expérience dans le secteur...' },
+          ],
+        },
+        {
+          label: 'Détails',
+          fields: [
+            { name: 'questions', type: 'textarea', label: 'Principales questions à traiter', required: true, placeholder: 'Les sujets sur lesquels vous attendez des conseils...' },
+            {
+              name: 'format', type: 'multiple', label: 'Format souhaité', required: true,
+              options: ['Visio', 'Téléphone', 'Rendez-vous sur place'],
+            },
+            { name: 'availability', type: 'text', label: 'Disponibilités', placeholder: 'Ex : en semaine après 18h, le samedi matin...' },
           ],
         },
       ],
