@@ -9,6 +9,8 @@ export default function OfferHighlight({ slug }: { slug: string }) {
   if (!offer) {
     return null
   }
+  // Points mis en avant : les étapes de l'offre, ou à défaut ses prestations
+  const points = offer.steps?.map(({ label }) => label) || offer.prestations.map(({ title }) => title)
 
   return (
     <div className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 h-full flex flex-col">
@@ -19,14 +21,14 @@ export default function OfferHighlight({ slug }: { slug: string }) {
           <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4">
             <Visual image={offer.image} alt={offer.title} icon={<StoreIcon />} />
           </div>
-          {offer.steps && (
+          {points.length > 0 && (
             <ul className="space-y-2 mb-6">
-              {offer.steps.map(step => (
-                <li key={step.label} className="flex items-start gap-2 text-white/70">
+              {points.map(point => (
+                <li key={point} className="flex items-start gap-2 text-white/70">
                   <svg className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span>{step.label}</span>
+                  <span>{point}</span>
                 </li>
               ))}
             </ul>

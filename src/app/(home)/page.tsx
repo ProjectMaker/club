@@ -9,7 +9,6 @@ import LoginForm from "@/components/pages/LoginForm";
 import InfosSummary from "@/components/pages/InfosSummary";
 import { User } from "@/models";
 
-import { Consultation } from "@/app/private/services/_Cards";
 import OfferHighlight from "@/app/offers/_OfferHighlight";
 
 export const metadata: Metadata = {
@@ -92,9 +91,9 @@ export default async function Home() {
         }
       </div>
 
-      {/* CTA Consultation et offre mise en avant */}
+      {/* Offres mises en avant */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        <Consultation />
+        <OfferHighlight slug="acheter-ou-financer-du-materiel" />
         <OfferHighlight slug="creer-ou-renover-ma-laverie" />
       </div>
 
