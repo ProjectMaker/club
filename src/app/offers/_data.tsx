@@ -17,7 +17,8 @@ export interface OfferPrestation {
 export interface FormField {
   name: string
   // files : photos ou documents joints (formats et limites dans OFFER_UPLOAD)
-  type: 'text' | 'email' | 'tel' | 'number' | 'textarea' | 'select' | 'department' | 'choices' | 'multiple' | 'files'
+  // checkbox : case à cocher décochée par défaut (ex. consentement), enregistrée « Oui » ou « Non »
+  type: 'text' | 'email' | 'tel' | 'number' | 'textarea' | 'select' | 'department' | 'choices' | 'multiple' | 'files' | 'checkbox'
   label: string
   required?: boolean
   placeholder?: string
@@ -192,6 +193,12 @@ export const TargetIcon = ({ className = 'w-6 h-6' }: IconProps) => (
     <circle cx="12" cy="12" r="9" />
     <circle cx="12" cy="12" r="5" />
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 12l7-7m0 0h-3m3 0v3" />
+  </svg>
+)
+
+export const GraduationCapIcon = ({ className = 'w-6 h-6' }: IconProps) => (
+  <svg {...iconProps} className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4L2 9l10 5 10-5-10-5zm-6 7.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M22 9v6" />
   </svg>
 )
 
@@ -799,6 +806,88 @@ export const OFFERS: Offer[] = [
               options: ['Visio', 'Téléphone', 'Rendez-vous sur place'],
             },
             { name: 'availability', type: 'text', label: 'Disponibilités', placeholder: 'Ex : en semaine après 18h, le samedi matin...' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: 'se-former-et-rester-informe',
+    title: 'Se former et rester informé',
+    summary: 'Webinaires, rendez-vous techniques, guides pratiques et formations pour développer vos compétences et suivre l’actualité du secteur.',
+    image: '/images/offers/se-former-et-rester-informe/hero.jpg',
+    description: 'Accédez à des contenus pratiques et à l’actualité du secteur pour développer vos compétences, rester à la pointe des innovations et échanger avec des experts de la laverie automatique, du pressing et du lavage auto.',
+    steps: [
+      { label: 'Des contenus concrets et pratiques', icon: <GraduationCapIcon /> },
+      { label: 'Des experts du secteur', icon: <UsersIcon /> },
+      { label: 'Les dernières innovations', icon: <LightbulbIcon /> },
+      { label: 'Une veille régulière et ciblée', icon: <DocumentIcon /> },
+    ],
+    prestationsTitle: 'Nos solutions pour vous former et rester informé',
+    prestationsIntro: 'Des contenus variés et adaptés à chaque étape de votre projet.',
+    prestations: [
+      {
+        title: 'Webinaires AFL',
+        image: '/images/offers/se-former-et-rester-informe/webinaires.jpg',
+        description: 'Des webinaires animés par des experts pour approfondir vos connaissances et poser vos questions.',
+        icon: <GraduationCapIcon />,
+      },
+      {
+        title: 'Rendez-vous techniques',
+        image: '/images/offers/se-former-et-rester-informe/rendez-vous-techniques.jpg',
+        description: 'Visites, démonstrations et réunions techniques pour découvrir les équipements et échanger avec des professionnels.',
+        icon: <UsersIcon />,
+      },
+      {
+        title: 'Guides pratiques',
+        image: '/images/offers/se-former-et-rester-informe/guides-pratiques.jpg',
+        description: 'Des guides et fiches pratiques sur l’exploitation, la maintenance, la réglementation et la rentabilité.',
+        icon: <DocumentIcon />,
+      },
+      {
+        title: 'Formations et innovations',
+        image: '/images/offers/se-former-et-rester-informe/formations-innovations.jpg',
+        description: 'Des formations spécialisées et une présentation des dernières innovations du secteur (laverie, pressing, lavage auto).',
+        icon: <LightbulbIcon />,
+      },
+    ],
+    contact: {
+      title: 'Une question sur nos formations ?',
+      text: 'Notre équipe vous conseille et vous oriente vers les contenus les plus adaptés.',
+      label: 'Nous contacter',
+    },
+    form: {
+      title: 'Décrivez votre projet de formation',
+      intro: 'Remplissez ce formulaire pour que nous puissions étudier votre demande et vous proposer les contenus les plus adaptés.',
+      success: 'Merci ! Club Laverie étudie votre demande et revient vers vous avec les contenus les plus adaptés.',
+      steps: [
+        {
+          label: 'Vos besoins',
+          fields: [
+            {
+              name: 'themes', type: 'multiple', label: 'Thème(s) d’intérêt', required: true,
+              options: ['Exploitation', 'Maintenance', 'Réglementation', 'Rentabilité', 'Innovations', 'Pressing', 'Lavage auto'],
+            },
+            {
+              name: 'formats', type: 'multiple', label: 'Format(s) souhaité(s)', required: true,
+              options: [
+                { value: 'Webinaire', icon: <GraduationCapIcon className="w-5 h-5" /> },
+                { value: 'Atelier', icon: <UsersIcon className="w-5 h-5" /> },
+                { value: 'Guide', icon: <DocumentIcon className="w-5 h-5" /> },
+              ],
+            },
+            {
+              name: 'level', type: 'choices', label: 'Niveau', required: true,
+              options: ['Découverte', 'Exploitant', 'Avancé'],
+            },
+          ],
+        },
+        {
+          label: 'Détails',
+          fields: [
+            { name: 'details', type: 'textarea', label: 'Précisez votre demande', placeholder: 'Sujets précis, contraintes de calendrier, préférence en ligne ou en présentiel...' },
+            // Consentement distinct, décoché par défaut : il ne conditionne pas l’envoi de la demande
+            { name: 'sessions_optin', type: 'checkbox', label: 'J’accepte d’être informé(e) par email des prochaines sessions et des nouveaux contenus de formation.' },
           ],
         },
       ],

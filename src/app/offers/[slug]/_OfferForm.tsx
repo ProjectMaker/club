@@ -32,6 +32,10 @@ const fieldSchema = (field: FormField) => {
     const schema = yup.array(yup.string().required()).default([])
     return field.required ? schema.min(1, 'Choisissez au moins une option') : schema
   }
+  if (field.type === 'checkbox') {
+    const schema = yup.boolean().default(false)
+    return field.required ? schema.oneOf([true], 'Cette case doit être cochée') : schema
+  }
   if (field.type === 'files') {
     const schema = yup.array(yup.mixed<File>().required()).default([])
     return field.required ? schema.min(1, 'Ajoutez au moins un fichier') : schema
@@ -200,6 +204,17 @@ const Field = ({ field, control, register, error }: {
   error?: string
 }) => {
   const id = `field-${field.name}`
+  if (field.type === 'checkbox') {
+    return (
+      <div className="sm:col-span-2">
+        <label htmlFor={id} className="flex items-start gap-3 text-white/90 text-sm cursor-pointer">
+          <input id={id} type="checkbox" {...register(field.name)} className="mt-0.5 w-4 h-4 accent-blue-500 flex-shrink-0" />
+          <span>{field.label}{field.required && <span className="text-red-300 ml-1">*</span>}</span>
+        </label>
+        <FieldError message={error} />
+      </div>
+    )
+  }
   // Champs sans élément <input> natif : le libellé est porté par aria-label
   const isGroup = ['choices', 'multiple', 'files', 'select', 'department'].includes(field.type)
   let input: React.ReactNode
@@ -300,7 +315,7 @@ export default function OfferForm({ offer, form, contact }: Props) {
   const { register, control, trigger, handleSubmit, getValues, watch, formState: { errors } } = useForm<Record<string, any>>({
     resolver: yupResolver(schema),
     defaultValues: {
-      ...Object.fromEntries(fields.map(field => [field.name, ['multiple', 'files'].includes(field.type) ? [] : field.defaultValue || ''])),
+      ...Object.fromEntries(fields.map(field => [field.name, field.type === 'checkbox' ? false : ['multiple', 'files'].includes(field.type) ? [] : field.defaultValue || ''])),
       consent: false,
     },
   })
@@ -316,7 +331,10 @@ export default function OfferForm({ offer, form, contact }: Props) {
 
   // Chaque réponse est enregistrée avec l'intitulé de sa question, pour rester lisible si le formulaire évolue
   const toAnswers = (values: Record<string, any>) => [
-    ...fields.filter(field => isVisible(field, values)).map(field => ({ field, value: values[field.name] })),
+    ...fields.filter(field => isVisible(field, values)).map(field => ({
+      field,
+      value: field.type === 'checkbox' ? (values[field.name] ? 'Oui' : 'Non') : values[field.name],
+    })),
     ...knownFields.map(field => ({ field, value: contact?.[field.name as keyof Contact] })),
   ]
 
