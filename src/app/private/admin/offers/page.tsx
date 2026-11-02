@@ -35,6 +35,8 @@ function useList({ verbatim, offer, status }: { verbatim: string, offer: string,
   } = useInfiniteQuery({
     queryKey: ['offer-requests', 'list', verbatim, offer, status],
     queryFn: ({ pageParam = 1 }: { pageParam?: number }) => getOfferRequests({ verbatim, offer, status, page: pageParam, count: 20 }),
+    // Les demandes arrivent depuis le site public : on ne se fie jamais au cache (30 min par défaut)
+    staleTime: 0,
     initialPageParam: 1,
     getNextPageParam: (lastPage: OfferRequest[], pages: OfferRequest[][]) => lastPage.length > 0 ? pages.length + 1 : undefined,
   })
@@ -61,6 +63,7 @@ export default function AdminOfferRequests() {
   const { data: counts } = useQuery({
     queryKey: ['offer-requests', 'counts', debouncedVerbatim, offer],
     queryFn: () => getOfferRequestCounts({ verbatim: debouncedVerbatim, offer }),
+    staleTime: 0,
   })
   // « En cours » : toutes les demandes sauf les archivées
   const getCount = (value: string) => counts && (value
@@ -116,6 +119,9 @@ export default function AdminOfferRequests() {
         <p role="alert" className="mt-4 bg-red-500/20 border border-red-500/50 rounded-lg px-4 py-2 text-red-200 text-sm">
           Impossible de charger les demandes : {error.message}
         </p>
+      )}
+      {isLoading && (
+        <p className="text-white/70 mt-4">Chargement des demandes...</p>
       )}
       {requests.length === 0 && !isLoading && !error && (
         <h1 className="text-white text-xl font-bold mt-4">Aucune demande</h1>

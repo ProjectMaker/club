@@ -118,6 +118,7 @@ const OffersNavigation = () => {
   const { data: count } = useQuery({
     queryKey: ['count-new-offer-requests'],
     queryFn: () => getCountNewOfferRequests(),
+    staleTime: 0,
   })
   const isActive = pathname.indexOf('/private/admin/offers') === 0
   return (
