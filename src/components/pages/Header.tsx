@@ -136,7 +136,7 @@ export default function Header({ user }: { user: User | null }) {
                   alt="Club Laverie"
                   width={260}
                   height={80}
-                  className="text-white"
+                  className="text-white w-40 sm:w-[260px] h-auto"
                 />
               </Link>
             </h1>
@@ -145,7 +145,7 @@ export default function Header({ user }: { user: User | null }) {
 
           {/* Navigation visiteur : seules les offres et services sont publiques */}
           {!user && (
-            <nav className="flex items-center pr-4">
+            <nav className="flex items-center gap-2 md:gap-4 pr-4">
               {/* Sur mobile, le libellé passe sur deux lignes pour tenir à côté du logo */}
               <Link
                 href="/offers"
@@ -158,6 +158,17 @@ export default function Header({ user }: { user: User | null }) {
                 <span className="absolute -top-2.5 -right-1 md:-right-3 rounded-full bg-yellow-300 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-blue-950 shadow-md">
                   Nouveau
                 </span>
+              </Link>
+              {/* Sur mobile, seule l'icône est affichée */}
+              <Link
+                href="/login"
+                aria-label="Se connecter"
+                className="flex items-center gap-2 rounded-lg border border-white/40 px-2.5 py-2 md:px-4 text-sm font-semibold text-white hover:bg-white/10 transition-colors duration-200 whitespace-nowrap"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM4 21a8 8 0 0116 0" />
+                </svg>
+                <span className="hidden md:inline">Se connecter</span>
               </Link>
             </nav>
           )}
