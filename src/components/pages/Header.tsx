@@ -145,7 +145,7 @@ export default function Header({ user }: { user: User | null }) {
 
           {/* Navigation visiteur : seules les offres et services sont publiques */}
           {!user && (
-            <nav className="flex items-center gap-2 md:gap-4 pr-4">
+            <nav className="ml-auto flex items-center gap-2 md:gap-4 pr-4">
               {/* Sur mobile, le libellé passe sur deux lignes pour tenir à côté du logo */}
               <Link
                 href="/offers"
