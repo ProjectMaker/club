@@ -120,7 +120,7 @@ export default async function Home() {
 
       {/* Offres mises en avant */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-        <OfferHighlight slug="acheter-ou-financer-du-materiel" />
+        <OfferHighlight slug="beneficier-d-un-coaching-personnalise" />
         <OfferHighlight slug="creer-ou-renover-ma-laverie" />
       </div>
 
